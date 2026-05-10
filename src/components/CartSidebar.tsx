@@ -13,9 +13,12 @@ interface CartSidebarProps {
   t: (key: string) => string;
   lang: string;
   formatPrice: (n: number) => string;
+  requireAuth?: (page: Page) => void;
+  isLoggedIn?: boolean;
+  guestCheckoutEnabled?: boolean;
 }
 
-export const CartSidebar: React.FC<CartSidebarProps> = ({lang,  cart, show, onClose, onUpdateQty, onRemove, setPage, t , formatPrice }) => {
+export const CartSidebar: React.FC<CartSidebarProps> = ({lang, cart, show, onClose, onUpdateQty, onRemove, setPage, t, formatPrice, requireAuth, isLoggedIn, guestCheckoutEnabled }) => {
   const [coupon, setCoupon] = useState('');
   const [couponApplied, setCouponApplied] = useState(false);
   const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
@@ -88,7 +91,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({lang,  cart, show, onCl
                 </div>
               )}
 
-              <button className="btn-checkout" onClick={() => { onClose(); setPage('checkout'); }}>
+              <button className="btn-checkout" onClick={() => { onClose(); if (!isLoggedIn && !guestCheckoutEnabled && requireAuth) { requireAuth('checkout'); } else { setPage('checkout'); } }}>
                 {t('checkout')} <ArrowRight size={16}/>
               </button>
             </div>

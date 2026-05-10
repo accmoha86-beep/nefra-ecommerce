@@ -52,12 +52,17 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({lang, setPage, them
     }
   };
 
-  const themeOptions: { id: Theme; name: string; desc: string; emoji: string; colors: string[] }[] = [
-    { id: 'elegant-dark', name: t('theme.elegantDark'), desc: t('theme.elegantDarkDesc'), emoji: '🖤', colors: ['#1A1A1A', '#D4A020', '#FFFFFF'] },
-    { id: 'modern-soft', name: t('theme.modernSoft'), desc: t('theme.modernSoftDesc'), emoji: '🌊', colors: ['#3D4F5F', '#4DB8C7', '#FAFBFC'] },
-    { id: 'royal-premium', name: t('theme.royalPremium'), desc: t('theme.royalPremiumDesc'), emoji: '👑', colors: ['#1E2A4A', '#C8962D', '#FFFFFF'] },
-    { id: 'pure-minimalist', name: t('theme.pureMinimalist'), desc: t('theme.pureMinimalistDesc'), emoji: '⬛', colors: ['#000000', '#FFFFFF', '#F5F5F5'] },
-    { id: 'natural-organic', name: t('theme.naturalOrganic'), desc: t('theme.naturalOrganicDesc'), emoji: '🌿', colors: ['#0D8674', '#48BC64', '#FFF9F5'] },
+  const themeOptions: { id: Theme; name: string; desc: string; emoji: string; colors: string[]; group?: string }[] = [
+    { id: 'elegant-dark', name: t('theme.elegantDark'), desc: t('theme.elegantDarkDesc'), emoji: '🖤', colors: ['#1A1A1A', '#D4A020', '#FFFFFF'], group: 'brand' },
+    { id: 'modern-soft', name: t('theme.modernSoft'), desc: t('theme.modernSoftDesc'), emoji: '🌊', colors: ['#3D4F5F', '#4DB8C7', '#FAFBFC'], group: 'brand' },
+    { id: 'royal-premium', name: t('theme.royalPremium'), desc: t('theme.royalPremiumDesc'), emoji: '👑', colors: ['#1E2A4A', '#C8962D', '#FFFFFF'], group: 'brand' },
+    { id: 'pure-minimalist', name: t('theme.pureMinimalist'), desc: t('theme.pureMinimalistDesc'), emoji: '⬛', colors: ['#000000', '#FFFFFF', '#F5F5F5'], group: 'brand' },
+    { id: 'natural-organic', name: t('theme.naturalOrganic'), desc: t('theme.naturalOrganicDesc'), emoji: '🌿', colors: ['#0D8674', '#48BC64', '#FFF9F5'], group: 'brand' },
+    { id: 'flag-saudi', name: t('theme.flagSaudi'), desc: t('theme.flagSaudiDesc'), emoji: '🇸🇦', colors: ['#0A1A0F', '#00A651', '#E8F0E8'], group: 'country' },
+    { id: 'flag-uae', name: t('theme.flagUae'), desc: t('theme.flagUaeDesc'), emoji: '🇦🇪', colors: ['#1A0A0A', '#CE1126', '#F0E0D8'], group: 'country' },
+    { id: 'flag-qatar', name: t('theme.flagQatar'), desc: t('theme.flagQatarDesc'), emoji: '🇶🇦', colors: ['#1A0F14', '#8D1B3D', '#F0E0E8'], group: 'country' },
+    { id: 'flag-egypt', name: t('theme.flagEgypt'), desc: t('theme.flagEgyptDesc'), emoji: '🇪🇬', colors: ['#0F0E0A', '#C8A94D', '#F0E8D0'], group: 'country' },
+    { id: 'flag-italy', name: t('theme.flagItaly'), desc: t('theme.flagItalyDesc'), emoji: '🇮🇹', colors: ['#F8F5F0', '#008C45', '#CE2B37'], group: 'country' },
   ];
 
   const handleSave = () => {
@@ -99,6 +104,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({lang, setPage, them
           </button>
           <button className="btn-outline" onClick={() => setPage('admin-users')}>
             <Shield size={16}/> {t('adminUsers')}
+          </button>
+          <button className="btn-outline" onClick={() => setPage('products-admin')}>
+            <Package size={16}/> {t('productsManagement')}
           </button>
         </div>
       </div>
@@ -213,8 +221,35 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({lang, setPage, them
                 <p>{t('chooseThemeDesc')}</p>
               </div>
             </div>
+
+            <h4 style={{ margin: '16px 0 10px', color: 'var(--text-secondary)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              🎨 {t('brandThemes')}
+            </h4>
             <div className="theme-selector-grid">
-              {themeOptions.map(thm => (
+              {themeOptions.filter(t => t.group === 'brand').map(thm => (
+                <button key={thm.id} className={`theme-selector-card ${theme === thm.id ? 'selected' : ''}`}
+                  onClick={() => setTheme(thm.id)}>
+                  <div className="theme-selector-preview">
+                    {thm.colors.map((c, i) => (
+                      <div key={i} className="theme-color-swatch" style={{ background: c }} />
+                    ))}
+                  </div>
+                  <div className="theme-selector-info">
+                    <span className="theme-selector-emoji">{thm.emoji}</span>
+                    <strong>{thm.name}</strong>
+                    <span className="theme-selector-desc">{thm.desc}</span>
+                  </div>
+                  {theme === thm.id && <div className="theme-selector-check"><Check size={16}/></div>}
+                </button>
+              ))}
+            </div>
+
+            <h4 style={{ margin: '20px 0 10px', color: 'var(--text-secondary)', fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+              🏳️ {t('countryThemes')}
+            </h4>
+            <p style={{ margin: '0 0 12px', color: 'var(--text-muted)', fontSize: '12px' }}>{t('countryThemesDesc')}</p>
+            <div className="theme-selector-grid">
+              {themeOptions.filter(t => t.group === 'country').map(thm => (
                 <button key={thm.id} className={`theme-selector-card ${theme === thm.id ? 'selected' : ''}`}
                   onClick={() => setTheme(thm.id)}>
                   <div className="theme-selector-preview">
@@ -321,6 +356,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({lang, setPage, them
               </button>
               <button className="settings-link-card" onClick={() => setPage('admin-users')}>
                 <Shield size={20}/> <span>{t('adminUsers')}</span> <span className="settings-link-count">8</span>
+              </button>
+              <button className="settings-link-card" onClick={() => setPage('products-admin')}>
+                <Package size={20}/> <span>{t('productsManagement')}</span> <ChevronRight size={14}/>
               </button>
               <button className="settings-link-card">
                 <CreditCard size={20}/> <span>{t('paymentMethods')}</span> <span className="settings-link-count">{t('activePayments')}</span>

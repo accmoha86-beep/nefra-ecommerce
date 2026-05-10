@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ChevronRight, Truck, RotateCcw, Shield, Headphones, Zap, ArrowRight, Mail } from 'lucide-react';
-import { Theme, Page, Product, TFunc } from '../types';
+import { ChevronRight, Truck, RotateCcw, Shield, Headphones, Zap, ArrowRight, Mail, Star, Quote } from 'lucide-react';
+import { Theme, Page, Product, TFunc, FeatureFlag } from '../types';
 import { products, categories } from '../data';
 import { ProductCard } from './ProductCard';
 
@@ -20,12 +20,14 @@ interface HomePageProps {
   tc: (cat: string) => string;
   tb: (badge: string) => string;
   formatPrice?: (price: number, product?: any) => string;
+  featureFlags?: FeatureFlag[];
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
   theme, setPage, setFilter, onSelectProduct, onAddToCart,
-  onToggleWishlist, onToggleCompare, wishlist, compareList, recentlyViewed, t, tc, tb, lang, formatPrice
+  onToggleWishlist, onToggleCompare, wishlist, compareList, recentlyViewed, t, tc, tb, lang, formatPrice, featureFlags
 }) => {
+  const ff = (id: string) => featureFlags?.find(f => f.id === id)?.enabled ?? true;
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -35,15 +37,20 @@ export const HomePage: React.FC<HomePageProps> = ({
     'royal-premium': { badge: t('heroTagRoyal'), title: t('heroTitleRoyal'), desc: t('heroDescRoyal'), cta: t('heroCtaRoyal') },
     'pure-minimalist': { badge: t('heroTagMinimal'), title: t('heroTitleMinimal'), desc: t('heroDescMinimal'), cta: t('heroCtaMinimal') },
     'natural-organic': { badge: t('heroTagNatural'), title: t('heroTitleNatural'), desc: t('heroDescNatural'), cta: t('heroCtaNatural') },
+    'flag-saudi': { badge: t('heroTagSaudi'), title: t('heroTitleSaudi'), desc: t('heroDescSaudi'), cta: t('heroCtaSaudi') },
+    'flag-uae': { badge: t('heroTagUae'), title: t('heroTitleUae'), desc: t('heroDescUae'), cta: t('heroCtaUae') },
+    'flag-qatar': { badge: t('heroTagQatar'), title: t('heroTitleQatar'), desc: t('heroDescQatar'), cta: t('heroCtaQatar') },
+    'flag-egypt': { badge: t('heroTagEgypt'), title: t('heroTitleEgypt'), desc: t('heroDescEgypt'), cta: t('heroCtaEgypt') },
+    'flag-italy': { badge: t('heroTagItaly'), title: t('heroTitleItaly'), desc: t('heroDescItaly'), cta: t('heroCtaItaly') },
   };
-  const hero = heroContent[theme];
+  const hero = heroContent[theme] || heroContent['elegant-dark'];
   const featured = products.filter(p => p.badge);
   const recentProducts = products.filter(p => recentlyViewed.includes(p.id));
 
   return (
     <div className="home-page">
       {/* HERO */}
-      <section className="hero">
+      {ff('ff_hero_banner') && <section className="hero">
         <div className="hero-inner">
           <div className="hero-content">
             <div className="hero-badge"><Zap size={14}/> {hero.badge}</div>
@@ -68,7 +75,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
           </div>
         </div>
-      </section>
+      </section>}
 
       {/* TRUST BAR */}
       <div className="trustbar">
@@ -87,30 +94,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </div>
 
-      {/* CATEGORIES */}
-      <section className="section">
-        <div className="section-inner">
-          <div className="section-header">
-            <div>
-              <h2 className="section-title">{t('shopByCategory')}</h2>
-              <p className="section-subtitle">{t('findExactly')}</p>
-            </div>
-            <button className="section-link" onClick={() => setPage('shop')}>{t('viewAll')} <ChevronRight size={14}/></button>
-          </div>
-          <div className="categories-grid">
-            {categories.map(c => (
-              <button key={c.name} className="cat-card" onClick={() => { setFilter(c.name); setPage('shop'); }}>
-                <div className="cat-card-bg" style={{ background: c.grad }} />
-                <div className="cat-card-content">
-                  <div className="cat-card-emoji">{c.emoji}</div>
-                  <div className="cat-card-name">{tc(c.name)}</div>
-                  <div className="cat-card-count">{c.count}+ {t('heroStatProducts')}</div>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* CATEGORIES — removed: now merged into main navbar */}
 
       {/* FLASH SALE BANNER */}
       <section className="flash-sale-banner">
@@ -166,6 +150,64 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
         </section>
       )}
+
+      {/* TESTIMONIALS */}
+      <section className="section testimonials-section">
+        <div className="section-inner">
+          <div className="section-header" style={{ textAlign: 'center', justifyContent: 'center' }}>
+            <div>
+              <h2 className="section-title">{t('testimonialsTitle')}</h2>
+              <p className="section-subtitle">{t('testimonialsSubtitle')}</p>
+            </div>
+          </div>
+          <div className="testimonials-grid">
+            {[
+              { name: lang === 'ar' ? 'سارة الأحمد' : lang === 'it' ? 'Sara Al-Ahmad' : 'Sara Al-Ahmad', country: '🇸🇦', rating: 5, key: 'testimonial1' },
+              { name: lang === 'ar' ? 'محمد الراشد' : lang === 'it' ? 'Mohammed Al-Rashid' : 'Mohammed Al-Rashid', country: '🇦🇪', rating: 5, key: 'testimonial2' },
+              { name: lang === 'ar' ? 'فاطمة حسن' : lang === 'it' ? 'Fatma Hassan' : 'Fatma Hassan', country: '🇪🇬', rating: 5, key: 'testimonial3' },
+              { name: lang === 'ar' ? 'ماركو روسي' : lang === 'it' ? 'Marco Rossi' : 'Marco Rossi', country: '🇮🇹', rating: 4, key: 'testimonial4' },
+            ].map((review, i) => (
+              <div key={i} className="testimonial-card">
+                <div className="testimonial-quote"><Quote size={24} /></div>
+                <p className="testimonial-text">{t(review.key)}</p>
+                <div className="testimonial-stars">
+                  {[1,2,3,4,5].map(s => (
+                    <Star key={s} size={14} fill={s <= review.rating ? '#f59e0b' : 'none'}
+                      strokeWidth={s <= review.rating ? 0 : 1.5}
+                      style={{ color: s <= review.rating ? '#f59e0b' : '#6b7280' }} />
+                  ))}
+                </div>
+                <div className="testimonial-author">
+                  <div className="testimonial-avatar">{review.name[0]}</div>
+                  <div>
+                    <div className="testimonial-name">{review.name}</div>
+                    <div className="testimonial-country">{review.country} {t('verifiedBuyer')}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* BNPL BANNER */}
+      <section className="section">
+        <div className="section-inner">
+          <div className="bnpl-banner">
+            <div className="bnpl-content">
+              <div className="bnpl-title">💳 {t('bnpl.title')}</div>
+              <p className="bnpl-desc">{t('bnpl.desc')}</p>
+              <div className="bnpl-icons">
+                <div className="bnpl-icon-badge">🔄</div>
+                <div className="bnpl-icon-badge">💳</div>
+                <div className="bnpl-icon-badge">✅</div>
+                <div className="bnpl-icon-badge">🛡️</div>
+              </div>
+            </div>
+            <button className="btn-primary" onClick={() => setPage('shop')}>{t('bnpl.cta')}</button>
+          </div>
+        </div>
+      </section>
 
       {/* NEWSLETTER */}
       <section className="newsletter-section">
