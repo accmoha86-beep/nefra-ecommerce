@@ -1,4 +1,4 @@
-import { Product, BlogPost, Order, FeatureFlag, Address, Notification, GiftCard, CategoryInfo, ChartDataPoint, Country, Language, TaxConfig, Invoice, Translations } from './types';
+import { Product, BlogPost, Order, FeatureFlag, Address, Notification, GiftCard, CategoryInfo, ChartDataPoint, Country, Language, TaxConfig, Invoice, Translations, PromoMessage, SocialLink } from './types';
 import { allTranslations } from './i18n';
 
 // ============ LANGUAGES ============
@@ -297,6 +297,49 @@ export const featureFlags: FeatureFlag[] = [
   { id:'ff_returns_page', name:'Returns Policy Page', category:'Pages', enabled:true, description:'Returns and exchanges policy page' },
   { id:'ff_size_guide', name:'Size Guide Page', category:'Pages', enabled:true, description:'Size guide with measurement charts' },
   { id:'ff_contact_page', name:'Contact Us Page', category:'Pages', enabled:true, description:'Contact form and information' },
+  // ===== NEW: Sports Direct inspired features =====
+  { id:'ff_promo_ticker', name:'Promo Ticker Bar', category:'Marketing', enabled:false, description:'Rotating promotional messages at top of page' },
+  { id:'ff_breadcrumbs', name:'Breadcrumbs', category:'Navigation', enabled:true, description:'Navigation trail on all pages' },
+  { id:'ff_strikethrough', name:'Strikethrough Pricing', category:'Products', enabled:true, description:'Show original price crossed out next to sale price' },
+  { id:'ff_discount_badge', name:'Discount Badge', category:'Products', enabled:true, description:'Show discount percentage badge on product images' },
+  { id:'ff_sizes_on_card', name:'Sizes on Cards', category:'Products', enabled:true, description:'Show available sizes on product cards' },
+  { id:'ff_sort_options', name:'Advanced Sort', category:'Products', enabled:true, description:'Multiple sort options: price, newest, discount, rating' },
+  { id:'ff_category_chips', name:'Category Quick Chips', category:'Navigation', enabled:true, description:'Horizontal scrollable category tags' },
+  { id:'ff_recently_viewed', name:'Recently Viewed', category:'Products', enabled:true, description:'Show recently viewed products carousel' },
+  { id:'ff_recommended', name:'Recommended Products', category:'Products', enabled:true, description:'Related products on product detail page' },
+  { id:'ff_product_count', name:'Product Count', category:'Products', enabled:true, description:'Show total product count on shop page' },
+  { id:'ff_social_links', name:'Social Media Links', category:'Marketing', enabled:true, description:'Social media links in footer' },
+  { id:'ff_payment_icons', name:'Payment Icons', category:'Payments', enabled:true, description:'Payment method icons in footer' },
+  { id:'ff_delivery_accordion', name:'Delivery Accordion', category:'Products', enabled:true, description:'Expandable delivery & returns info on product page' },
+  { id:'ff_brand_on_card', name:'Brand on Cards', category:'Products', enabled:true, description:'Show brand name on product cards' },
+  { id:'ff_bnpl_banner', name:'Buy Now Pay Later', category:'Marketing', enabled:true, description:'BNPL promotional banner on homepage' },
+  { id:'ff_category_nav', name:'Category Navigation Bar', category:'Navigation', enabled:true, description:'Category links bar below main navigation' },
+  { id:'ff_show_price', name:'Show Product Price', category:'Products', enabled:true, description:'Show/hide product prices on cards and detail page' },
+  { id:'ff_product_badges', name:'Product Badges', category:'Products', enabled:true, description:'Show product badges (Best Seller, New, Premium, etc.)' },
+  { id:'ff_best_seller_badge', name:'Best Seller Badge', category:'Products', enabled:true, description:'Highlight best seller products with special badge' },
+  { id:'ff_product_stock', name:'Show Stock Level', category:'Products', enabled:true, description:'Show stock availability on product pages' },
+  { id:'ff_product_management', name:'Product Management', category:'Admin', enabled:true, description:'Enable product CRUD from admin dashboard' },
+  { id:'ff_category_management', name:'Category Management', category:'Admin', enabled:true, description:'Enable category management from admin dashboard' },
+  { id:'ff_hero_banner', name:'Hero Banner', category:'UI', enabled:true, description:'Show hero/flash sale banner on homepage' },
+];
+
+// ============ PROMO MESSAGES (Admin-controlled) ============
+export const promoMessages: PromoMessage[] = [
+  { id: 'promo_1', textKey: 'promo.freeShipping', emoji: '🚚', enabled: true },
+  { id: 'promo_2', textKey: 'promo.newArrivals', emoji: '✨', enabled: true },
+  { id: 'promo_3', textKey: 'promo.bnpl', emoji: '💳', enabled: true },
+  { id: 'promo_4', textKey: 'promo.loyalty', emoji: '🏆', enabled: true },
+  { id: 'promo_5', textKey: 'promo.flashSale', emoji: '⚡', enabled: true },
+];
+
+// ============ SOCIAL LINKS (Admin-controlled) ============
+export const socialLinks: SocialLink[] = [
+  { id: 'social_ig', platform: 'Instagram', url: 'https://instagram.com/nefra', icon: 'instagram', enabled: true },
+  { id: 'social_tw', platform: 'Twitter/X', url: 'https://x.com/nefra', icon: 'twitter', enabled: true },
+  { id: 'social_fb', platform: 'Facebook', url: 'https://facebook.com/nefra', icon: 'facebook', enabled: true },
+  { id: 'social_yt', platform: 'YouTube', url: 'https://youtube.com/nefra', icon: 'youtube', enabled: false },
+  { id: 'social_tk', platform: 'TikTok', url: 'https://tiktok.com/@nefra', icon: 'tiktok', enabled: true },
+  { id: 'social_sc', platform: 'Snapchat', url: 'https://snapchat.com/add/nefra', icon: 'snapchat', enabled: true },
 ];
 
 // ============ ADDRESSES ============
@@ -323,10 +366,10 @@ export const giftCards: GiftCard[] = [
 
 // ============ CATEGORIES ============
 export const categories: CategoryInfo[] = [
-  { name:'Electronics', emoji:'📱', count:5, grad:'from-blue-500 to-indigo-600' },
-  { name:'Fashion', emoji:'👗', count:2, grad:'from-pink-500 to-rose-600' },
-  { name:'Beauty', emoji:'✨', count:2, grad:'from-purple-500 to-fuchsia-600' },
-  { name:'Accessories', emoji:'⌚', count:3, grad:'from-amber-500 to-orange-600' },
+  { name:'Electronics', nameAr:'إلكترونيات', nameIt:'Elettronica', emoji:'📱', count:5, grad:'from-blue-500 to-indigo-600', enabled:true },
+  { name:'Fashion', nameAr:'أزياء', nameIt:'Moda', emoji:'👗', count:2, grad:'from-pink-500 to-rose-600', enabled:true },
+  { name:'Beauty', nameAr:'جمال', nameIt:'Bellezza', emoji:'✨', count:2, grad:'from-purple-500 to-fuchsia-600', enabled:true },
+  { name:'Accessories', nameAr:'إكسسوارات', nameIt:'Accessori', emoji:'⌚', count:3, grad:'from-amber-500 to-orange-600', enabled:true },
 ];
 
 // ============ CHART DATA ============

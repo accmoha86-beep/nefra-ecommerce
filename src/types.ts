@@ -1,12 +1,14 @@
-export type Theme = 'elegant-dark' | 'modern-soft' | 'royal-premium' | 'pure-minimalist' | 'natural-organic';
+export type Theme = 'elegant-dark' | 'modern-soft' | 'royal-premium' | 'pure-minimalist' | 'natural-organic' | 'flag-saudi' | 'flag-uae' | 'flag-qatar' | 'flag-egypt' | 'flag-italy';
 
 export type Page = 
   | 'home' | 'shop' | 'detail' | 'cart' | 'checkout'
   | 'wishlist' | 'compare' | 'blog' | 'blogpost'
   | 'track' | 'account' | 'giftcards'
+  | 'login'
   | 'dash' | 'flags' | 'marketing' | 'countries'
   | 'tax' | 'invoices' | 'languages' | 'admin-users'
-  | 'faq' | 'shipping-info' | 'returns-policy' | 'size-guide' | 'contact';
+  | 'faq' | 'shipping-info' | 'returns-policy' | 'size-guide' | 'contact'
+  | 'products-admin';
 
 export interface Language {
   code: string;
@@ -197,15 +199,34 @@ export interface GiftCard {
 
 export interface CategoryInfo {
   name: string;
+  nameAr?: string;
+  nameIt?: string;
   emoji: string;
-  count: number;
-  grad: string;
+  count?: number;
+  grad?: string;
+  enabled?: boolean;
 }
 
 export interface ChartDataPoint {
   label?: string;
   labelKey?: string;
   value: number;
+}
+
+export interface PromoMessage {
+  id: string;
+  textKey: string;
+  emoji: string;
+  link?: string;
+  enabled: boolean;
+}
+
+export interface SocialLink {
+  id: string;
+  platform: string;
+  url: string;
+  icon: string;
+  enabled: boolean;
 }
 
 export type Translations = Record<string, string>;
