@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Search, SlidersHorizontal, X, RotateCcw, Sparkles } from 'lucide-react';
-import { Product, Page, TFunc } from '../types';
-import { products, cats, brands } from '../data';
+import { Product, Page, TFunc, FeatureFlag } from '../types';
+import { products, cats, brands, categories } from '../data';
 import { ProductCard } from './ProductCard';
 
 interface ShopPageProps {
@@ -18,12 +18,13 @@ interface ShopPageProps {
   tc: (cat: string) => string;
   tb: (badge: string) => string;
   formatPrice?: (price: number, product?: any) => string;
+  featureFlags?: FeatureFlag[];
 }
 
 export const ShopPage: React.FC<ShopPageProps> = ({
   filter, setFilter, onSelectProduct, onAddToCart,
   onToggleWishlist, onToggleCompare, wishlist, compareList,
-  t, tc, tb, lang, formatPrice
+  t, tc, tb, lang, formatPrice, featureFlags
 }) => {
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('featured');
@@ -95,6 +96,11 @@ export const ShopPage: React.FC<ShopPageProps> = ({
       case 'price-high': return result.sort((a, b) => b.price - a.price);
       case 'rating': return result.sort((a, b) => b.rating - a.rating);
       case 'reviews': return result.sort((a, b) => b.reviews - a.reviews);
+      case 'discount': return result.sort((a, b) => {
+        const dA = a.old ? ((a.old - a.price) / a.old) : 0;
+        const dB = b.old ? ((b.old - b.price) / b.old) : 0;
+        return dB - dA;
+      });
       case 'newest': return result.reverse();
       default: return result;
     }
@@ -149,6 +155,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
             <option value="price-high">{t('priceHighLow')}</option>
             <option value="rating">{t('topRated')}</option>
             <option value="reviews">{t('mostReviews')}</option>
+            <option value="discount">{t('biggestDiscount')}</option>
           </select>
         </div>
       </div>
@@ -310,6 +317,20 @@ export const ShopPage: React.FC<ShopPageProps> = ({
 
         {/* Products Grid */}
         <div className="shop-grid-area">
+          {/* Category Quick Chips — hidden when category nav bar is active to avoid duplication */}
+          {(!featureFlags || featureFlags.find(f => f.id === 'ff_category_nav')?.enabled !== true) &&
+           (!featureFlags || featureFlags.find(f => f.id === 'ff_category_chips')?.enabled !== false) && (
+            <div className="category-quick-chips">
+              {categories.map(cat => (
+                <button key={cat.name} className={`quick-chip${filter === cat.name ? ' active' : ''}`}
+                  onClick={() => setFilter(filter === cat.name ? 'All' : cat.name)}>
+                  <span className="quick-chip-emoji">{cat.emoji}</span>
+                  <span>{tc(cat.name)}</span>
+                  <span className="quick-chip-count">{cat.count}</span>
+                </button>
+              ))}
+            </div>
+          )}
           {filtered.length === 0 ? (
             <div className="shop-empty">
               <h3>{t('noProductsFound')}</h3>
@@ -322,7 +343,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
                 <ProductCard key={p.id} p={p} onSelect={onSelectProduct} onAddToCart={onAddToCart}
                   onToggleWishlist={onToggleWishlist} onToggleCompare={onToggleCompare}
                   isInWishlist={wishlist.includes(p.id)} isInCompare={compareList.includes(p.id)}
-                  t={t} tb={tb} lang={lang} formatPrice={formatPrice} />
+                  t={t} tb={tb} lang={lang} formatPrice={formatPrice} featureFlags={featureFlags} />
               ))}
             </div>
           )}

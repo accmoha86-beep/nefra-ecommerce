@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Heart, Scale, ShoppingBag, Truck, RotateCcw, Shield, Star, Share2, Minus, Plus, Check, Zap } from 'lucide-react';
-import { Product, Page } from '../types';
+import { ArrowLeft, Heart, Scale, ShoppingBag, Truck, RotateCcw, Shield, Star, Share2, Minus, Plus, Check, Zap, ChevronDown, ChevronUp, Package, Clock, CreditCard } from 'lucide-react';
+import { Product, Page, FeatureFlag } from '../types';
 import { products, disc } from '../data';
 import { Stars } from './ProductCard';
 import { ProductCard } from './ProductCard';
@@ -21,38 +21,43 @@ interface ProductDetailPageProps {
   tb: (badge: string) => string;
   lang: string;
   formatPrice?: (price: number, product?: any) => string;
+  recentlyViewed?: Product[];
+  featureFlags?: FeatureFlag[];
 }
 
 export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   product, setPage, onAddToCart, onToggleWishlist, onToggleCompare,
-  isInWishlist, isInCompare, onSelectProduct, wishlist, compareList, t, tc, tb, lang, formatPrice
+  isInWishlist, isInCompare, onSelectProduct, wishlist, compareList, t, tc, tb, lang, formatPrice,
+  recentlyViewed, featureFlags
 }) => {
   const [qty, setQty] = useState(1);
   const [activeTab, setActiveTab] = useState<'desc' | 'specs' | 'reviews'>('desc');
   const [imgError, setImgError] = useState(false);
+  const [openAccordion, setOpenAccordion] = useState<string | null>(null);
   const p = product;
-  const d = disc(p);
+  const d = disc(p.price, p.old);
   const related = products.filter(r => r.cat === p.cat && r.id !== p.id).slice(0, 4);
+  const recommended = products.filter(r => r.cat !== p.cat && r.id !== p.id).sort((a, b) => b.rating - a.rating).slice(0, 4);
+  const recentFiltered = (recentlyViewed || []).filter(r => r.id !== p.id).slice(0, 4);
 
-  // Get translated product name
+  const ff = (id: string) => !featureFlags || featureFlags.find(f => f.id === id)?.enabled !== false;
+
   const getName = () => lang === 'ar' ? (p.nameAr || p.name) : lang === 'it' ? (p.nameIt || p.name) : p.name;
-  // Get translated description
   const getDesc = () => lang === 'ar' ? (p.descAr || p.desc) : lang === 'it' ? (p.descIt || p.desc) : p.desc;
-  // Get translated specs
   const getSpecs = (): string[] => {
     if (lang === 'ar' && p.specsAr && p.specsAr.length > 0) return p.specsAr;
     if (lang === 'it' && p.specsIt && p.specsIt.length > 0) return p.specsIt;
     return p.specs;
   };
-  // Get translated category
   const getCat = () => tc ? tc(p.cat) : p.cat;
 
-  // Sample reviews with translation
   const sampleReviews = [
     { name: lang === 'ar' ? 'أحمد م.' : lang === 'it' ? 'Marco R.' : 'Ahmed M.', rating: 5, date: '2026-04-28', text: t('sampleReview1') },
     { name: lang === 'ar' ? 'سارة ك.' : lang === 'it' ? 'Sara K.' : 'Sara K.', rating: 4, date: '2026-04-20', text: t('sampleReview2') },
     { name: lang === 'ar' ? 'عمر هـ.' : lang === 'it' ? 'Omar H.' : 'Omar H.', rating: 5, date: '2026-04-15', text: t('sampleReview3') },
   ];
+
+  const toggleAccordion = (id: string) => setOpenAccordion(openAccordion === id ? null : id);
 
   return (
     <div className="detail-page">
@@ -71,9 +76,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             </div>
           )}
           {p.badge && <span className={`detail-badge badge-${p.badge.toLowerCase().replace(/\s/g,'')}`}>{tb(p.badge)}</span>}
+          {ff('ff_discount_badge') && d > 0 && <span className="detail-discount-badge">-{d}%</span>}
         </div>
 
         <div className="detail-info">
+          {ff('ff_brand_on_card') && p.brand && <div className="detail-brand">{p.brand}</div>}
           <div className="detail-cat">{getCat()}</div>
           <h1 className="detail-name">{getName()}</h1>
           <div className="detail-rating">
@@ -84,7 +91,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
           <div className="detail-price-row">
             <span className="detail-price">{formatPrice ? formatPrice(p.price) : p.price}</span>
-            {p.old && <span className="detail-old">{formatPrice ? formatPrice(p.old) : p.old}</span>}
+            {ff('ff_strikethrough') && p.old && <span className="detail-old">{formatPrice ? formatPrice(p.old) : p.old}</span>}
             {d > 0 && <span className="detail-save">{t('save')} {d}%</span>}
           </div>
 
@@ -130,11 +137,50 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <button className="btn-icon" title={t('share')}><Share2 size={18}/></button>
           </div>
 
-          <div className="detail-promises">
-            <div><Truck size={16}/> {t('freeShippingOver')}</div>
-            <div><RotateCcw size={16}/> {t('thirtyDayReturns')}</div>
-            <div><Shield size={16}/> {t('twoYearWarranty')}</div>
-          </div>
+          {/* DELIVERY & RETURNS ACCORDION */}
+          {ff('ff_delivery_accordion') && (
+            <div className="delivery-accordion">
+              <div className={`accordion-item${openAccordion === 'delivery' ? ' open' : ''}`}>
+                <button className="accordion-header" onClick={() => toggleAccordion('delivery')}>
+                  <div className="accordion-header-left"><Truck size={16}/> {t('delivery.title')}</div>
+                  {openAccordion === 'delivery' ? <ChevronUp size={16}/> : <ChevronDown size={16}/>}
+                </button>
+                {openAccordion === 'delivery' && (
+                  <div className="accordion-body">
+                    <div className="accordion-row"><Package size={14}/> {t('delivery.standard')}</div>
+                    <div className="accordion-row"><Zap size={14}/> {t('delivery.express')}</div>
+                    <div className="accordion-row"><Truck size={14}/> {t('delivery.freeOver')}</div>
+                  </div>
+                )}
+              </div>
+              <div className={`accordion-item${openAccordion === 'returns' ? ' open' : ''}`}>
+                <button className="accordion-header" onClick={() => toggleAccordion('returns')}>
+                  <div className="accordion-header-left"><RotateCcw size={16}/> {t('delivery.returnsTitle')}</div>
+                  {openAccordion === 'returns' ? <ChevronUp size={16}/> : <ChevronDown size={16}/>}
+                </button>
+                {openAccordion === 'returns' && (
+                  <div className="accordion-body">
+                    <div className="accordion-row"><Clock size={14}/> {t('delivery.returnDays')}</div>
+                    <div className="accordion-row"><Package size={14}/> {t('delivery.returnFree')}</div>
+                    <div className="accordion-row"><CreditCard size={14}/> {t('delivery.refundMethod')}</div>
+                  </div>
+                )}
+              </div>
+              <div className={`accordion-item${openAccordion === 'payment' ? ' open' : ''}`}>
+                <button className="accordion-header" onClick={() => toggleAccordion('payment')}>
+                  <div className="accordion-header-left"><CreditCard size={16}/> {t('delivery.paymentTitle')}</div>
+                  {openAccordion === 'payment' ? <ChevronUp size={16}/> : <ChevronDown size={16}/>}
+                </button>
+                {openAccordion === 'payment' && (
+                  <div className="accordion-body">
+                    <div className="accordion-row"><CreditCard size={14}/> {t('delivery.paymentCards')}</div>
+                    <div className="accordion-row"><Shield size={14}/> {t('delivery.paymentSecure')}</div>
+                    <div className="accordion-row"><Clock size={14}/> {t('delivery.paymentBnpl')}</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -194,7 +240,39 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               {related.map(r => (
                 <ProductCard lang={lang} tb={tb} key={r.id} p={r} onSelect={onSelectProduct} onAddToCart={onAddToCart}
                   onToggleWishlist={onToggleWishlist} onToggleCompare={onToggleCompare}
-                  isInWishlist={wishlist.includes(r.id)} isInCompare={compareList.includes(r.id)} t={t} formatPrice={formatPrice} />
+                  isInWishlist={wishlist.includes(r.id)} isInCompare={compareList.includes(r.id)} t={t} formatPrice={formatPrice} featureFlags={featureFlags} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* RECOMMENDED FOR YOU */}
+      {ff('ff_recommended') && recommended.length > 0 && (
+        <div className="section">
+          <div className="section-inner">
+            <h2 className="section-title">{t('recommendedForYou')}</h2>
+            <div className="products-grid">
+              {recommended.map(r => (
+                <ProductCard lang={lang} tb={tb} key={r.id} p={r} onSelect={onSelectProduct} onAddToCart={onAddToCart}
+                  onToggleWishlist={onToggleWishlist} onToggleCompare={onToggleCompare}
+                  isInWishlist={wishlist.includes(r.id)} isInCompare={compareList.includes(r.id)} t={t} formatPrice={formatPrice} featureFlags={featureFlags} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* RECENTLY VIEWED */}
+      {ff('ff_recently_viewed') && recentFiltered.length > 0 && (
+        <div className="section">
+          <div className="section-inner">
+            <h2 className="section-title">{t('recentlyViewed')}</h2>
+            <div className="products-grid">
+              {recentFiltered.map(r => (
+                <ProductCard lang={lang} tb={tb} key={r.id} p={r} onSelect={onSelectProduct} onAddToCart={onAddToCart}
+                  onToggleWishlist={onToggleWishlist} onToggleCompare={onToggleCompare}
+                  isInWishlist={wishlist.includes(r.id)} isInCompare={compareList.includes(r.id)} t={t} formatPrice={formatPrice} featureFlags={featureFlags} />
               ))}
             </div>
           </div>
