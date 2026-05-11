@@ -109,7 +109,7 @@ export const countries: Country[] = [
     exchangeRate: 13.2, taxRate: 14, taxName: 'VAT',
     languages: ['ar', 'en'], defaultLanguage: 'ar', direction: 'rtl',
     shippingCost: 150, freeShippingMin: 2000,
-    paymentMethods: ['Visa/Mastercard', 'Fawry', 'Vodafone Cash', 'InstaPay', 'valU', 'Cash on Delivery'],
+    paymentMethods: ['Cash on Delivery', 'InstaPay', 'Vodafone Cash', 'Bank Transfer', 'Fawry', 'Visa/Mastercard', 'valU'],
     shippingCompanies: ['Bosta', 'Egypt Post', 'Aramex', 'DHL', 'J&T Express', 'Mylerz'],
     enabled: true, isDefault: false, phone: '+20', timezone: 'Africa/Cairo',
     dbName: 'db_egypt',

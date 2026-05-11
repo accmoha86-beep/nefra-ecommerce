@@ -31,6 +31,7 @@ import { SizeGuidePage } from './components/SizeGuidePage';
 import { ContactPage } from './components/ContactPage';
 import { ProductManagementPage } from './components/ProductManagementPage';
 import { PromoTicker } from './components/PromoTicker';
+import { WhatsAppButton } from './components/WhatsAppButton';
 import { Breadcrumbs } from './components/Breadcrumbs';
 
 const App: React.FC = () => {
@@ -348,6 +349,8 @@ const App: React.FC = () => {
       )}
 
       {/* Cookie Consent */}
+      <WhatsAppButton t={t} currentCountry={currentCountry} lang={lang} />
+
       {showCookie && (
         <div className="cookie-banner">
           <Cookie size={20}/>
