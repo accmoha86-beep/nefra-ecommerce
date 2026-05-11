@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronRight, Truck, RotateCcw, Shield, Headphones, Zap, ArrowRight, Mail, Star, Quote } from 'lucide-react';
-import { Theme, Page, Product, TFunc, FeatureFlag } from '../types';
+import { Theme, Page, Product, TFunc, FeatureFlag, Testimonial } from '../types';
 import { products, categories } from '../data';
 import { ProductCard } from './ProductCard';
 
@@ -21,11 +21,14 @@ interface HomePageProps {
   tb: (badge: string) => string;
   formatPrice?: (price: number, product?: any) => string;
   featureFlags?: FeatureFlag[];
+  testimonials?: Testimonial[];
+  featuredProductIds?: number[];
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
   theme, setPage, setFilter, onSelectProduct, onAddToCart,
-  onToggleWishlist, onToggleCompare, wishlist, compareList, recentlyViewed, t, tc, tb, lang, formatPrice, featureFlags
+  onToggleWishlist, onToggleCompare, wishlist, compareList, recentlyViewed, t, tc, tb, lang, formatPrice, featureFlags,
+  testimonials, featuredProductIds
 }) => {
   const ff = (id: string) => featureFlags?.find(f => f.id === id)?.enabled ?? true;
   const [email, setEmail] = useState('');
@@ -44,7 +47,10 @@ export const HomePage: React.FC<HomePageProps> = ({
     'flag-italy': { badge: t('heroTagItaly'), title: t('heroTitleItaly'), desc: t('heroDescItaly'), cta: t('heroCtaItaly') },
   };
   const hero = heroContent[theme] || heroContent['elegant-dark'];
-  const featured = products.filter(p => p.badge);
+  const featured = featuredProductIds && featuredProductIds.length > 0
+    ? [...featuredProductIds.map(id => products.find(p => p.id === id)).filter(Boolean) as Product[], ...products.filter(p => p.badge && !(featuredProductIds || []).includes(p.id))]
+    : products.filter(p => p.badge);
+  const activeTestimonials = (testimonials || []).filter(t => t.enabled);
   const recentProducts = products.filter(p => recentlyViewed.includes(p.id));
 
   return (
@@ -70,7 +76,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
           <div className="hero-visual">
             <div className="hero-product-showcase">
-              <img src="/assets/iphone.jpg" alt="Featured" className="hero-showcase-img"
+              <img src="./assets/iphone.jpg" alt="Featured" className="hero-showcase-img"
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
             </div>
           </div>
@@ -161,15 +167,12 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
           </div>
           <div className="testimonials-grid">
-            {[
-              { name: lang === 'ar' ? 'سارة الأحمد' : lang === 'it' ? 'Sara Al-Ahmad' : 'Sara Al-Ahmad', country: '🇸🇦', rating: 5, key: 'testimonial1' },
-              { name: lang === 'ar' ? 'محمد الراشد' : lang === 'it' ? 'Mohammed Al-Rashid' : 'Mohammed Al-Rashid', country: '🇦🇪', rating: 5, key: 'testimonial2' },
-              { name: lang === 'ar' ? 'فاطمة حسن' : lang === 'it' ? 'Fatma Hassan' : 'Fatma Hassan', country: '🇪🇬', rating: 5, key: 'testimonial3' },
-              { name: lang === 'ar' ? 'ماركو روسي' : lang === 'it' ? 'Marco Rossi' : 'Marco Rossi', country: '🇮🇹', rating: 4, key: 'testimonial4' },
-            ].map((review, i) => (
-              <div key={i} className="testimonial-card">
+            {activeTestimonials.map((review) => (
+              <div key={review.id} className="testimonial-card">
                 <div className="testimonial-quote"><Quote size={24} /></div>
-                <p className="testimonial-text">{t(review.key)}</p>
+                <p className="testimonial-text">
+                  {lang === 'ar' ? review.textAr : lang === 'it' ? review.textIt : review.textEn}
+                </p>
                 <div className="testimonial-stars">
                   {[1,2,3,4,5].map(s => (
                     <Star key={s} size={14} fill={s <= review.rating ? '#f59e0b' : 'none'}
@@ -178,9 +181,13 @@ export const HomePage: React.FC<HomePageProps> = ({
                   ))}
                 </div>
                 <div className="testimonial-author">
-                  <div className="testimonial-avatar">{review.name[0]}</div>
+                  <div className="testimonial-avatar">
+                    {(lang === 'ar' ? review.nameAr : lang === 'it' ? review.nameIt : review.nameEn)[0]}
+                  </div>
                   <div>
-                    <div className="testimonial-name">{review.name}</div>
+                    <div className="testimonial-name">
+                      {lang === 'ar' ? review.nameAr : lang === 'it' ? review.nameIt : review.nameEn}
+                    </div>
                     <div className="testimonial-country">{review.country} {t('verifiedBuyer')}</div>
                   </div>
                 </div>

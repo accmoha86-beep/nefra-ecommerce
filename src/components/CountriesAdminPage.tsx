@@ -12,7 +12,7 @@ interface Props {
 export const CountriesAdminPage: React.FC<Props> = ({ countriesData, setCountriesData, setPage, t }) => {
   const [editingCountry, setEditingCountry] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
-  const [tab, setTab] = useState<'overview' | 'address' | 'shipping' | 'payment' | 'legal'>('overview');
+  const [tab, setTab] = useState<'overview' | 'address' | 'shipping' | 'payment' | 'paymentDetails' | 'legal'>('overview');
 
   const toggleCountry = (code: string) => {
     setCountriesData(countriesData.map(c => c.code === code ? { ...c, enabled: !c.enabled } : c));
@@ -49,9 +49,9 @@ export const CountriesAdminPage: React.FC<Props> = ({ countriesData, setCountrie
         {saved && <div className="toast-success">✅ {t('countries.changesSaved')}</div>}
 
         <div className="detail-tabs">
-          {(['overview','address','shipping','payment','legal'] as const).map(tb => (
+          {(['overview','address','shipping','payment','paymentDetails','legal'] as const).map(tb => (
             <button key={tb} className={`detail-tab ${tab === tb ? 'active' : ''}`} onClick={() => setTab(tb)}>
-              {tb === 'overview' ? `⚙️ ${t('countries.general')}` : tb === 'address' ? `📍 ${t('countries.addressFormat')}` : tb === 'shipping' ? `🚚 ${t('countries.shipping')}` : tb === 'payment' ? `💳 ${t('countries.payment')}` : `⚖️ ${t('countries.legal')}`}
+              {tb === 'overview' ? `⚙️ ${t('countries.general')}` : tb === 'address' ? `📍 ${t('countries.addressFormat')}` : tb === 'shipping' ? `🚚 ${t('countries.shipping')}` : tb === 'payment' ? `💳 ${t('countries.payment')}` : tb === 'paymentDetails' ? `🏦 Payment Details` : `⚖️ ${t('countries.legal')}`}
             </button>
           ))}
         </div>
@@ -206,6 +206,87 @@ export const CountriesAdminPage: React.FC<Props> = ({ countriesData, setCountrie
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {tab === 'paymentDetails' && (
+          <div className="admin-grid">
+            <div className="admin-card">
+              <h3>📱 WhatsApp & COD</h3>
+              <div className="form-grid">
+                <div className="form-group">
+                  <label>WhatsApp Number</label>
+                  <input value={editCountry.whatsappNumber || ''} onChange={e => updateField(editCountry.code, 'whatsappNumber', e.target.value)} placeholder="e.g. 201000000000" />
+                </div>
+                <div className="form-group">
+                  <label>COD Fee %</label>
+                  <input type="number" step="0.5" value={editCountry.codFeePercent ?? 2} onChange={e => updateField(editCountry.code, 'codFeePercent', parseFloat(e.target.value) || 0)} />
+                </div>
+              </div>
+            </div>
+            {editCountry.paymentMethods.some(pm => pm === 'InstaPay') && (
+              <div className="admin-card">
+                <h3>📲 InstaPay Details</h3>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>IPA Address</label>
+                    <input value={editCountry.paymentAccountDetails?.instapay?.ipaAddress || ''} onChange={e => {
+                      const pad = { ...(editCountry.paymentAccountDetails || {}), instapay: { ...(editCountry.paymentAccountDetails?.instapay || {}), ipaAddress: e.target.value } };
+                      updateField(editCountry.code, 'paymentAccountDetails', pad);
+                    }} placeholder="nefra@instapay" />
+                  </div>
+                </div>
+              </div>
+            )}
+            {editCountry.paymentMethods.some(pm => pm === 'Bank Transfer') && (
+              <div className="admin-card">
+                <h3>🏦 Bank Transfer Details</h3>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>Bank Name</label>
+                    <input value={editCountry.paymentAccountDetails?.bankTransfer?.bankName || ''} onChange={e => {
+                      const pad = { ...(editCountry.paymentAccountDetails || {}), bankTransfer: { ...(editCountry.paymentAccountDetails?.bankTransfer || {}), bankName: e.target.value } };
+                      updateField(editCountry.code, 'paymentAccountDetails', pad);
+                    }} />
+                  </div>
+                  <div className="form-group">
+                    <label>Account Name</label>
+                    <input value={editCountry.paymentAccountDetails?.bankTransfer?.accountName || ''} onChange={e => {
+                      const pad = { ...(editCountry.paymentAccountDetails || {}), bankTransfer: { ...(editCountry.paymentAccountDetails?.bankTransfer || {}), accountName: e.target.value } };
+                      updateField(editCountry.code, 'paymentAccountDetails', pad);
+                    }} />
+                  </div>
+                  <div className="form-group">
+                    <label>Account Number</label>
+                    <input value={editCountry.paymentAccountDetails?.bankTransfer?.accountNumber || ''} onChange={e => {
+                      const pad = { ...(editCountry.paymentAccountDetails || {}), bankTransfer: { ...(editCountry.paymentAccountDetails?.bankTransfer || {}), accountNumber: e.target.value } };
+                      updateField(editCountry.code, 'paymentAccountDetails', pad);
+                    }} />
+                  </div>
+                  <div className="form-group">
+                    <label>IBAN</label>
+                    <input value={editCountry.paymentAccountDetails?.bankTransfer?.iban || ''} onChange={e => {
+                      const pad = { ...(editCountry.paymentAccountDetails || {}), bankTransfer: { ...(editCountry.paymentAccountDetails?.bankTransfer || {}), iban: e.target.value } };
+                      updateField(editCountry.code, 'paymentAccountDetails', pad);
+                    }} />
+                  </div>
+                </div>
+              </div>
+            )}
+            {editCountry.paymentMethods.some(pm => pm === 'Vodafone Cash') && (
+              <div className="admin-card">
+                <h3>📱 Vodafone Cash Details</h3>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>Phone Number</label>
+                    <input value={editCountry.paymentAccountDetails?.vodafoneCash?.phoneNumber || ''} onChange={e => {
+                      const pad = { ...(editCountry.paymentAccountDetails || {}), vodafoneCash: { ...(editCountry.paymentAccountDetails?.vodafoneCash || {}), phoneNumber: e.target.value } };
+                      updateField(editCountry.code, 'paymentAccountDetails', pad);
+                    }} placeholder="010 XXXX XXXX" />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 

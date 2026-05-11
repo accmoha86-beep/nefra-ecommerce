@@ -3,7 +3,7 @@ export type Theme = 'elegant-dark' | 'modern-soft' | 'royal-premium' | 'pure-min
 export type Page = 
   | 'home' | 'shop' | 'detail' | 'cart' | 'checkout'
   | 'wishlist' | 'compare' | 'blog' | 'blogpost'
-  | 'track' | 'account' | 'giftcards'
+  | 'account' | 'giftcards'
   | 'login'
   | 'dash' | 'flags' | 'marketing' | 'countries'
   | 'tax' | 'invoices' | 'languages' | 'admin-users'
@@ -101,6 +101,9 @@ export interface Country {
   supportHours: string;
   supportHoursAr: string;
   supportHoursIt: string;
+  whatsappNumber?: string;
+  codFeePercent?: number;
+  paymentAccountDetails?: Record<string, Record<string, string>>;
 }
 
 export interface Product {
@@ -227,6 +230,58 @@ export interface SocialLink {
   url: string;
   icon: string;
   enabled: boolean;
+}
+
+export interface Testimonial {
+  id: string;
+  nameEn: string;
+  nameAr: string;
+  nameIt: string;
+  country: string;
+  rating: number;
+  textEn: string;
+  textAr: string;
+  textIt: string;
+  enabled: boolean;
+}
+
+export interface HeroBannerConfig {
+  enabled: boolean;
+  imageUrl: string;
+  overlayOpacity: number;
+}
+
+export interface FooterLink {
+  id: string;
+  labelEn: string;
+  labelAr: string;
+  labelIt: string;
+  page: Page;
+  section: string;
+  enabled: boolean;
+}
+
+export interface SeoMeta {
+  titleEn: string;
+  titleAr: string;
+  titleIt: string;
+  descriptionEn: string;
+  descriptionAr: string;
+  descriptionIt: string;
+  keywords: string;
+  ogImage: string;
+}
+
+export interface SiteSettings {
+  socialLinks: SocialLink[];
+  testimonials: Testimonial[];
+  heroBanner: HeroBannerConfig;
+  promoMessages: PromoMessage[];
+  footerLinks: FooterLink[];
+  seoMeta: SeoMeta;
+  whatsappDefaultMessage: Record<string, string>;
+  featuredProductIds: number[];
+  codFeeLabel: string;
 }
 
 export type Translations = Record<string, string>;

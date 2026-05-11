@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ArrowUp, MessageCircle, X, Cookie } from 'lucide-react';
-import { Theme, Page, Product, CartItem, Country, Language, TaxConfig, Invoice, Translations, TFunc } from './types';
-import { products, countries as countriesInitial, languages as languagesInitial, translations as translationsInitial, taxConfigs as taxConfigsInitial, sampleInvoices, orders, featureFlags as ffInit, categories, revenueData, countryRevenueData, giftCards, promoMessages, socialLinks } from './data';
+import { Theme, Page, Product, CartItem, Country, Language, TaxConfig, Invoice, Translations, TFunc, Testimonial, FooterLink, SeoMeta, SiteSettings } from './types';
+import { products, countries as countriesInitial, languages as languagesInitial, translations as translationsInitial, taxConfigs as taxConfigsInitial, sampleInvoices, orders, featureFlags as ffInit, categories, revenueData, countryRevenueData, giftCards, promoMessages, socialLinks, defaultTestimonials, defaultFooterLinks, defaultSeoMeta, defaultSiteSettings } from './data';
 import { TopBar, Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { HomePage } from './components/HomePage';
@@ -13,7 +13,7 @@ import { WishlistPage } from './components/WishlistPage';
 import { ComparePage } from './components/ComparePage';
 import { AccountPage } from './components/AccountPage';
 import { LoginPage } from './components/LoginPage';
-import { TrackOrderPage } from './components/TrackOrderPage';
+
 import { GiftCardsPage } from './components/GiftCardsPage';
 import { CheckoutPage } from './components/CheckoutPage';
 import { DashboardPage } from './components/DashboardPage';
@@ -31,39 +31,61 @@ import { SizeGuidePage } from './components/SizeGuidePage';
 import { ContactPage } from './components/ContactPage';
 import { ProductManagementPage } from './components/ProductManagementPage';
 import { PromoTicker } from './components/PromoTicker';
+import { WhatsAppButton } from './components/WhatsAppButton';
 import { Breadcrumbs } from './components/Breadcrumbs';
+
+
+// ═══════════════════════════════════════════════════════
+// LocalStorage Persistence — all admin changes saved permanently
+// ═══════════════════════════════════════════════════════
+const STORAGE_PREFIX = 'nefra_';
+
+function loadState<T>(key: string, fallback: T): T {
+  try {
+    const saved = localStorage.getItem(STORAGE_PREFIX + key);
+    if (saved) return JSON.parse(saved);
+  } catch (e) { /* ignore */ }
+  return fallback;
+}
+
+function saveState(key: string, value: any): void {
+  try {
+    localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(value));
+  } catch (e) { /* ignore */ }
+}
 
 const App: React.FC = () => {
   // Core state
-  const [theme, setTheme] = useState<Theme>('elegant-dark');
+  const [theme, setTheme] = useState<Theme>(() => loadState('theme', 'elegant-dark'));
   const [page, setPage] = useState<Page>('home');
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [wishlist, setWishlist] = useState<number[]>([]);
+  const [cart, setCart] = useState<CartItem[]>(() => loadState('cart', []));
+  const [wishlist, setWishlist] = useState<number[]>(() => loadState('wishlist', []));
   const [compareList, setCompareList] = useState<number[]>([]);
   const [recentlyViewed, setRecentlyViewed] = useState<number[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showCart, setShowCart] = useState(false);
   const [filter, setFilter] = useState('All');
   const [activeCat, setActiveCat] = useState('');
-  const [categoriesData, setCategoriesData] = useState(categories);
-  const [productsData, setProductsData] = useState(products);
-  const [showCookie, setShowCookie] = useState(true);
+  const [categoriesData, setCategoriesData] = useState(() => loadState('categoriesData', categories));
+  const [productsData, setProductsData] = useState(() => loadState('productsData', products));
+  const [showCookie, setShowCookie] = useState(() => loadState('cookieAccepted', false) ? false : true);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   // Auth state
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentUser, setCurrentUser] = useState<{ name: string; email: string; phone?: string } | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => loadState('isLoggedIn', false));
+  const [currentUser, setCurrentUser] = useState<{ name: string; email: string; phone?: string } | null>(() => loadState('currentUser', null));
   const [authRedirect, setAuthRedirect] = useState<Page | null>(null);
 
   // Multi-country & multi-language state
-  const [countriesData, setCountriesData] = useState<Country[]>(countriesInitial);
-  const [languagesData, setLanguagesData] = useState<Language[]>(languagesInitial);
+  const [countriesData, setCountriesData] = useState<Country[]>(() => loadState('countriesData', countriesInitial));
+  const [languagesData, setLanguagesData] = useState<Language[]>(() => loadState('languagesData', languagesInitial));
   const [translationsData, setTranslationsData] = useState<Record<string, Translations>>(translationsInitial);
-  const [taxData, setTaxData] = useState<TaxConfig[]>(taxConfigsInitial);
-  const [featureFlags, setFeatureFlags] = useState(ffInit);
+  const [taxData, setTaxData] = useState<TaxConfig[]>(() => loadState('taxData', taxConfigsInitial));
+  const [featureFlags, setFeatureFlags] = useState(() => loadState('featureFlags', ffInit));
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => loadState('siteSettings', defaultSiteSettings));
   
-  const [currentCountry, setCurrentCountry] = useState<Country>(countriesInitial.find(c => c.isDefault) || countriesInitial[0]);
-  const [currentLang, setCurrentLang] = useState<Language>(languagesInitial.find(l => l.isDefault) || languagesInitial[0]);
+  const [currentCountry, setCurrentCountry] = useState<Country>(() => { const saved = loadState<Country|null>('currentCountry', null); return saved || countriesInitial.find(c => c.isDefault) || countriesInitial[0]; });
+  const [currentLang, setCurrentLang] = useState<Language>(() => { const saved = loadState<Language|null>('currentLang', null); return saved || languagesInitial.find(l => l.isDefault) || languagesInitial[0]; });
 
   // Translation function
   // Category translation helper
@@ -136,6 +158,25 @@ const App: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+
+  // ═══════════════════════════════════════════════════════
+  // Auto-save state to localStorage
+  // ═══════════════════════════════════════════════════════
+  useEffect(() => { saveState('featureFlags', featureFlags); }, [featureFlags]);
+  useEffect(() => { saveState('countriesData', countriesData); }, [countriesData]);
+  useEffect(() => { saveState('languagesData', languagesData); }, [languagesData]);
+  useEffect(() => { saveState('taxData', taxData); }, [taxData]);
+  useEffect(() => { saveState('productsData', productsData); }, [productsData]);
+  useEffect(() => { saveState('categoriesData', categoriesData); }, [categoriesData]);
+  useEffect(() => { saveState('cart', cart); }, [cart]);
+  useEffect(() => { saveState('wishlist', wishlist); }, [wishlist]);
+  useEffect(() => { saveState('theme', theme); }, [theme]);
+  useEffect(() => { saveState('isLoggedIn', isLoggedIn); }, [isLoggedIn]);
+  useEffect(() => { saveState('currentUser', currentUser); }, [currentUser]);
+  useEffect(() => { saveState('currentCountry', currentCountry); }, [currentCountry]);
+  useEffect(() => { saveState('currentLang', currentLang); }, [currentLang]);
+  useEffect(() => { saveState('siteSettings', siteSettings); }, [siteSettings]);
 
   // Price formatting based on current country
   const formatPrice = useCallback((price: number, product?: Product) => {
@@ -236,7 +277,8 @@ const App: React.FC = () => {
         return <HomePage lang={lang} tc={tc} tb={tb} theme={theme} setPage={setPage} setFilter={setFilter} onSelectProduct={selectProduct}
           onAddToCart={addToCart} onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
           wishlist={wishlist} compareList={compareList} recentlyViewed={recentlyViewed}
-          t={t} formatPrice={formatPrice} featureFlags={featureFlags} />;
+          t={t} formatPrice={formatPrice} featureFlags={featureFlags}
+          testimonials={siteSettings.testimonials} featuredProductIds={siteSettings.featuredProductIds} />;
       case 'shop':
         return <ShopPage lang={lang} getProductName={getProductName} getProductDesc={getProductDesc} tb={tb} filter={filter} setFilter={setFilter} tc={tc} setPage={setPage} onSelectProduct={selectProduct}
           onAddToCart={addToCart} onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
@@ -261,12 +303,11 @@ const App: React.FC = () => {
           onAddToCart={addToCart} onSelectProduct={selectProduct} t={t} formatPrice={formatPrice} />;
       case 'account':
         return <AccountPage lang={lang} setPage={setPage} t={t} formatPrice={(n: number) => formatPrice(n)} />;
-      case 'track':
-        return <TrackOrderPage lang={lang} setPage={setPage} t={t} />;
+
       case 'giftcards':
         return <GiftCardsPage lang={lang} setPage={setPage} t={t} formatPrice={formatPrice} />;
       case 'dash':
-        return <DashboardPage lang={lang} setPage={setPage} theme={theme} setTheme={setTheme} t={t} getProductName={getProductName} formatPrice={(n: number) => formatPrice(n)} />;
+        return <DashboardPage lang={lang} setPage={setPage} theme={theme} setTheme={setTheme} t={t} getProductName={getProductName} formatPrice={(n: number) => formatPrice(n)} siteSettings={siteSettings} setSiteSettings={setSiteSettings} />;
       case 'flags':
         return <FeatureFlagsPage lang={lang} featureFlags={featureFlags} setFeatureFlags={setFeatureFlags} setPage={setPage} t={t} />;
       case 'marketing':
@@ -304,7 +345,7 @@ const App: React.FC = () => {
   return (
     <div className={`app theme-${theme}`} dir={currentLang.direction}>
       {featureFlags.find(f => f.id === 'ff_promo_ticker')?.enabled !== false && (
-        <PromoTicker messages={promoMessages} t={t} lang={lang} />
+        <PromoTicker messages={siteSettings.promoMessages} t={t} lang={lang} />
       )}
       <div className="site-header-wrapper">
         <TopBar t={t} currentCountry={currentCountry} />
@@ -326,7 +367,7 @@ const App: React.FC = () => {
         <Breadcrumbs page={page} product={selectedProduct} t={t} tc={tc} lang={lang} setPage={setPage} getProductName={getProductName} />
       )}
       <main className="main">{renderPage()}</main>
-      <Footer setPage={setPage} theme={theme} t={t} country={currentCountry} socialLinks={socialLinks} featureFlags={featureFlags} />
+      <Footer setPage={setPage} theme={theme} t={t} lang={lang} country={currentCountry} socialLinks={siteSettings.socialLinks} featureFlags={featureFlags} footerLinks={siteSettings.footerLinks} />
 
       {/* Cart Sidebar */}
       {showCart && <CartSidebar lang={lang} cart={cart} show={showCart}
@@ -349,13 +390,15 @@ const App: React.FC = () => {
       )}
 
       {/* Cookie Consent */}
+      <WhatsAppButton t={t} currentCountry={currentCountry} lang={lang} siteSettings={siteSettings} />
+
       {showCookie && (
         <div className="cookie-banner">
           <Cookie size={20}/>
           <p>{t('cookieMessage')}</p>
           <div className="cookie-actions">
-            <button className="btn-cookie-accept" onClick={() => setShowCookie(false)}>{t('cookieAcceptAll')}</button>
-            <button className="btn-cookie-settings" onClick={() => setShowCookie(false)}>{t('cookieSettings')}</button>
+            <button className="btn-cookie-accept" onClick={() => { setShowCookie(false); saveState('cookieAccepted', true); }}>{t('cookieAcceptAll')}</button>
+            <button className="btn-cookie-settings" onClick={() => { setShowCookie(false); saveState('cookieAccepted', true); }}>{t('cookieSettings')}</button>
           </div>
         </div>
       )}

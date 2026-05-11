@@ -1,14 +1,16 @@
 import React from 'react';
 import { MapPin, Phone, Mail, CreditCard, Shield, Truck, Award, Instagram, Facebook, Youtube, Twitter } from 'lucide-react';
-import { Page, Theme, TFunc, Country, SocialLink, FeatureFlag } from '../types';
+import { Page, Theme, TFunc, Country, SocialLink, FeatureFlag, FooterLink } from '../types';
 
 interface FooterProps {
   setPage: (p: Page) => void;
   theme?: Theme;
   t: TFunc;
+  lang?: string;
   country?: Country;
   socialLinks?: SocialLink[];
   featureFlags?: FeatureFlag[];
+  footerLinks?: FooterLink[];
 }
 
 const SocialIcon: React.FC<{icon: string; size?: number}> = ({icon, size = 18}) => {
@@ -40,8 +42,8 @@ const PaymentIcon: React.FC<{method: string}> = ({method}) => {
   return <span className="payment-icon-emoji">{emoji}</span>;
 };
 
-export const Footer: React.FC<FooterProps> = ({ setPage, theme = 'elegant-dark', t, country, socialLinks, featureFlags }) => {
-  const logoSrc = '/assets/logo-v2.png';
+export const Footer: React.FC<FooterProps> = ({ setPage, theme = 'elegant-dark', t, lang = 'en', country, socialLinks, featureFlags, footerLinks }) => {
+  const logoSrc = './assets/logo-v2.png';
   const phone = country?.phone ? `${country.phone} 800-NEFRA` : '800-123-4567';
   const email = country?.email || 'support@nefra.com';
   const address = country?.address || t('footerAddress');
@@ -76,16 +78,23 @@ export const Footer: React.FC<FooterProps> = ({ setPage, theme = 'elegant-dark',
           <h4 className="footer-col-title">{t('quickLinks')}</h4>
           <button className="footer-link" onClick={() => setPage('shop')}>{t('shopAll')}</button>
           <button className="footer-link" onClick={() => setPage('giftcards')}>{t('giftCards')}</button>
-          <button className="footer-link" onClick={() => setPage('track')}>{t('trackOrder')}</button>
           <button className="footer-link" onClick={() => setPage('account')}>{t('myAccount')}</button>
         </div>
         <div className="footer-col">
           <h4 className="footer-col-title">{t('customerService')}</h4>
-          <button className="footer-link" onClick={() => setPage('faq')}>{t('faq')}</button>
-          <button className="footer-link" onClick={() => setPage('shipping-info')}>{t('shippingInfo')}</button>
-          <button className="footer-link" onClick={() => setPage('returns-policy')}>{t('returnsPolicy')}</button>
-          <button className="footer-link" onClick={() => setPage('size-guide')}>{t('sizeGuide')}</button>
-          <button className="footer-link" onClick={() => setPage('contact')}>{t('contactUs')}</button>
+          {footerLinks && footerLinks.length > 0 ? (
+            footerLinks.filter(fl => fl.enabled).map(fl => (
+              <button key={fl.id} className="footer-link" onClick={() => setPage(fl.page)}>
+                {lang === 'ar' ? fl.labelAr : lang === 'it' ? fl.labelIt : fl.labelEn}
+              </button>
+            ))
+          ) : (<>
+            <button className="footer-link" onClick={() => setPage('faq')}>{t('faq')}</button>
+            <button className="footer-link" onClick={() => setPage('shipping-info')}>{t('shippingInfo')}</button>
+            <button className="footer-link" onClick={() => setPage('returns-policy')}>{t('returnsPolicy')}</button>
+            <button className="footer-link" onClick={() => setPage('size-guide')}>{t('sizeGuide')}</button>
+            <button className="footer-link" onClick={() => setPage('contact')}>{t('contactUs')}</button>
+          </>)}
         </div>
         <div className="footer-col">
           <h4 className="footer-col-title">{t('weAccept')}</h4>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TrendingUp, Users, Package, DollarSign, Eye, ShoppingBag, ArrowUp, ArrowDown, BarChart3, Settings, Sliders, Megaphone, Palette, Globe, Bell, Shield, Truck, CreditCard, Mail, Image, Type, MapPin, Clock, ToggleLeft, ToggleRight, Check, ChevronRight } from 'lucide-react';
-import { Page, Theme } from '../types';
-import { sampleOrders, chartData } from '../data';
+import { Page, Theme, SiteSettings, Testimonial } from '../types';
+import { sampleOrders, chartData, products } from '../data';
 
 interface DashboardPageProps {
   setPage: (p: Page) => void;
@@ -11,9 +11,11 @@ interface DashboardPageProps {
   lang: string;
   getProductName: (p: any) => string;
   formatPrice: (n: number) => string;
+  siteSettings?: SiteSettings;
+  setSiteSettings?: (s: SiteSettings) => void;
 }
 
-export const DashboardPage: React.FC<DashboardPageProps> = ({lang, setPage, theme, setTheme, t, getProductName, formatPrice }) => {
+export const DashboardPage: React.FC<DashboardPageProps> = ({lang, setPage, theme, setTheme, t, getProductName, formatPrice, siteSettings, setSiteSettings }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'settings'>('overview');
   const [storeName, setStoreName] = useState('MAISON Store');
   const [storeEmail, setStoreEmail] = useState('info@maison-store.com');
@@ -32,6 +34,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({lang, setPage, them
   const [enableCookieBar, setEnableCookieBar] = useState(true);
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
+  const toggleSection = (key: string) => setCollapsedSections(prev => ({ ...prev, [key]: !prev[key] }));
 
   const maxChart = Math.max(...chartData.map(d => d.value));
 
@@ -73,12 +77,12 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({lang, setPage, them
   const ToggleSwitch: React.FC<{ on: boolean; onToggle: () => void; label: string }> = ({ on, onToggle, label }) => (
     <div className="settings-toggle-row">
       <span className="settings-toggle-label">{label}</span>
-      <button className={`settings-toggle ${on ? 'on' : 'off'}`} onClick={onToggle}>
-        <span className="settings-toggle-track">
+      <div className="settings-toggle-wrapper" onClick={onToggle}>
+        <div className={`settings-toggle ${on ? 'on' : 'off'}`}>
           <span className="settings-toggle-thumb" />
-        </span>
-        <span className="settings-toggle-text">{on ? t('toggleOn') : t('toggleOff')}</span>
-      </button>
+        </div>
+        <span className="settings-toggle-status">{on ? t('toggleOn') : t('toggleOff')}</span>
+      </div>
     </div>
   );
 
@@ -374,6 +378,203 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({lang, setPage, them
               </button>
             </div>
           </div>
+
+          {/* ======== SITE SETTINGS SECTIONS ======== */}
+          {siteSettings && setSiteSettings && (<>
+
+          {/* 📱 Social Links */}
+          <div className="settings-section">
+            <div className="settings-section-header" style={{ cursor: 'pointer' }} onClick={() => toggleSection('social')}>
+              <Eye size={20}/>
+              <div>
+                <h3>📱 Social Links</h3>
+                <p>Manage social media links shown in the footer</p>
+              </div>
+              <span style={{ marginInlineStart: 'auto', fontSize: '18px' }}>{collapsedSections['social'] ? '▸' : '▾'}</span>
+            </div>
+            {!collapsedSections['social'] && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {siteSettings.socialLinks.map((link, idx) => (
+                  <div key={link.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 12px', background: 'var(--bg-secondary)', borderRadius: '8px' }}>
+                    <span style={{ minWidth: '80px', fontWeight: 600 }}>{link.platform}</span>
+                    <input style={{ flex: 1, padding: '6px 10px', borderRadius: '6px', border: '1px solid var(--border)', background: 'var(--bg-primary)' }}
+                      value={link.url} onChange={e => {
+                        const updated = [...siteSettings.socialLinks];
+                        updated[idx] = { ...updated[idx], url: e.target.value };
+                        setSiteSettings({ ...siteSettings, socialLinks: updated });
+                      }} />
+                    <div className="settings-toggle-wrapper" onClick={() => {
+                      const updated = [...siteSettings.socialLinks];
+                      updated[idx] = { ...updated[idx], enabled: !updated[idx].enabled };
+                      setSiteSettings({ ...siteSettings, socialLinks: updated });
+                    }}>
+                      <div className={`settings-toggle ${link.enabled ? 'on' : 'off'}`}>
+                        <span className="settings-toggle-thumb" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* ⭐ Testimonials */}
+          <div className="settings-section">
+            <div className="settings-section-header" style={{ cursor: 'pointer' }} onClick={() => toggleSection('testimonials')}>
+              <Eye size={20}/>
+              <div>
+                <h3>⭐ Testimonials</h3>
+                <p>Manage customer testimonials on the homepage</p>
+              </div>
+              <span style={{ marginInlineStart: 'auto', fontSize: '18px' }}>{collapsedSections['testimonials'] ? '▸' : '▾'}</span>
+            </div>
+            {!collapsedSections['testimonials'] && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {siteSettings.testimonials.map((test, idx) => (
+                  <div key={test.id} style={{ padding: '12px', background: 'var(--bg-secondary)', borderRadius: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                      <span>{test.country}</span>
+                      <strong>{test.nameEn}</strong>
+                      <span style={{ marginInlineStart: 'auto' }}>{'⭐'.repeat(test.rating)}</span>
+                      <div className="settings-toggle-wrapper" onClick={() => {
+                        const updated = [...siteSettings.testimonials];
+                        updated[idx] = { ...updated[idx], enabled: !updated[idx].enabled };
+                        setSiteSettings({ ...siteSettings, testimonials: updated });
+                      }}>
+                        <div className={`settings-toggle ${test.enabled ? 'on' : 'off'}`}>
+                          <span className="settings-toggle-thumb" />
+                        </div>
+                      </div>
+                      <button style={{ background: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer', fontSize: '12px' }}
+                        onClick={() => {
+                          setSiteSettings({ ...siteSettings, testimonials: siteSettings.testimonials.filter((_, i) => i !== idx) });
+                        }}>✕</button>
+                    </div>
+                    <div className="settings-form-grid" style={{ gap: '6px' }}>
+                      <div className="settings-field"><label>Name (EN)</label><input value={test.nameEn} onChange={e => {
+                        const updated = [...siteSettings.testimonials]; updated[idx] = { ...updated[idx], nameEn: e.target.value }; setSiteSettings({ ...siteSettings, testimonials: updated });
+                      }} /></div>
+                      <div className="settings-field"><label>Name (AR)</label><input value={test.nameAr} onChange={e => {
+                        const updated = [...siteSettings.testimonials]; updated[idx] = { ...updated[idx], nameAr: e.target.value }; setSiteSettings({ ...siteSettings, testimonials: updated });
+                      }} /></div>
+                      <div className="settings-field"><label>Name (IT)</label><input value={test.nameIt} onChange={e => {
+                        const updated = [...siteSettings.testimonials]; updated[idx] = { ...updated[idx], nameIt: e.target.value }; setSiteSettings({ ...siteSettings, testimonials: updated });
+                      }} /></div>
+                      <div className="settings-field"><label>Country Flag</label><input value={test.country} onChange={e => {
+                        const updated = [...siteSettings.testimonials]; updated[idx] = { ...updated[idx], country: e.target.value }; setSiteSettings({ ...siteSettings, testimonials: updated });
+                      }} /></div>
+                      <div className="settings-field"><label>Rating</label><input type="number" min="1" max="5" value={test.rating} onChange={e => {
+                        const updated = [...siteSettings.testimonials]; updated[idx] = { ...updated[idx], rating: parseInt(e.target.value) || 5 }; setSiteSettings({ ...siteSettings, testimonials: updated });
+                      }} /></div>
+                    </div>
+                    <div className="settings-form-grid" style={{ gap: '6px', marginTop: '6px' }}>
+                      <div className="settings-field"><label>Text (EN)</label><input value={test.textEn} onChange={e => {
+                        const updated = [...siteSettings.testimonials]; updated[idx] = { ...updated[idx], textEn: e.target.value }; setSiteSettings({ ...siteSettings, testimonials: updated });
+                      }} /></div>
+                      <div className="settings-field"><label>Text (AR)</label><input value={test.textAr} onChange={e => {
+                        const updated = [...siteSettings.testimonials]; updated[idx] = { ...updated[idx], textAr: e.target.value }; setSiteSettings({ ...siteSettings, testimonials: updated });
+                      }} /></div>
+                      <div className="settings-field"><label>Text (IT)</label><input value={test.textIt} onChange={e => {
+                        const updated = [...siteSettings.testimonials]; updated[idx] = { ...updated[idx], textIt: e.target.value }; setSiteSettings({ ...siteSettings, testimonials: updated });
+                      }} /></div>
+                    </div>
+                  </div>
+                ))}
+                <button className="btn-outline" onClick={() => {
+                  const newT: Testimonial = { id: `t_${Date.now()}`, nameEn: 'New Customer', nameAr: 'عميل جديد', nameIt: 'Nuovo Cliente', country: '🌍', rating: 5, textEn: 'Great experience!', textAr: 'تجربة رائعة!', textIt: 'Ottima esperienza!', enabled: true };
+                  setSiteSettings({ ...siteSettings, testimonials: [...siteSettings.testimonials, newT] });
+                }}>+ Add Testimonial</button>
+              </div>
+            )}
+          </div>
+
+          {/* 📢 Promo Messages */}
+          <div className="settings-section">
+            <div className="settings-section-header" style={{ cursor: 'pointer' }} onClick={() => toggleSection('promos')}>
+              <Bell size={20}/>
+              <div>
+                <h3>📢 Promo Messages</h3>
+                <p>Manage the promotional ticker messages</p>
+              </div>
+              <span style={{ marginInlineStart: 'auto', fontSize: '18px' }}>{collapsedSections['promos'] ? '▸' : '▾'}</span>
+            </div>
+            {!collapsedSections['promos'] && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {siteSettings.promoMessages.map((promo, idx) => (
+                  <div key={promo.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 12px', background: 'var(--bg-secondary)', borderRadius: '8px' }}>
+                    <input style={{ width: '40px', padding: '6px', borderRadius: '6px', border: '1px solid var(--border)', textAlign: 'center', background: 'var(--bg-primary)' }}
+                      value={promo.emoji} onChange={e => {
+                        const updated = [...siteSettings.promoMessages]; updated[idx] = { ...updated[idx], emoji: e.target.value }; setSiteSettings({ ...siteSettings, promoMessages: updated });
+                      }} />
+                    <span style={{ flex: 1, fontSize: '13px' }}>{promo.textKey}</span>
+                    <div className="settings-toggle-wrapper" onClick={() => {
+                      const updated = [...siteSettings.promoMessages]; updated[idx] = { ...updated[idx], enabled: !updated[idx].enabled }; setSiteSettings({ ...siteSettings, promoMessages: updated });
+                    }}>
+                      <div className={`settings-toggle ${promo.enabled ? 'on' : 'off'}`}>
+                        <span className="settings-toggle-thumb" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* 🔍 SEO Settings */}
+          <div className="settings-section">
+            <div className="settings-section-header" style={{ cursor: 'pointer' }} onClick={() => toggleSection('seo')}>
+              <Globe size={20}/>
+              <div>
+                <h3>🔍 SEO Settings</h3>
+                <p>Search engine optimization metadata</p>
+              </div>
+              <span style={{ marginInlineStart: 'auto', fontSize: '18px' }}>{collapsedSections['seo'] ? '▸' : '▾'}</span>
+            </div>
+            {!collapsedSections['seo'] && (
+              <div className="settings-form-grid">
+                <div className="settings-field"><label>Title (EN)</label><input value={siteSettings.seoMeta.titleEn} onChange={e => setSiteSettings({ ...siteSettings, seoMeta: { ...siteSettings.seoMeta, titleEn: e.target.value } })} /></div>
+                <div className="settings-field"><label>Title (AR)</label><input value={siteSettings.seoMeta.titleAr} onChange={e => setSiteSettings({ ...siteSettings, seoMeta: { ...siteSettings.seoMeta, titleAr: e.target.value } })} /></div>
+                <div className="settings-field"><label>Title (IT)</label><input value={siteSettings.seoMeta.titleIt} onChange={e => setSiteSettings({ ...siteSettings, seoMeta: { ...siteSettings.seoMeta, titleIt: e.target.value } })} /></div>
+                <div className="settings-field"><label>Description (EN)</label><input value={siteSettings.seoMeta.descriptionEn} onChange={e => setSiteSettings({ ...siteSettings, seoMeta: { ...siteSettings.seoMeta, descriptionEn: e.target.value } })} /></div>
+                <div className="settings-field"><label>Description (AR)</label><input value={siteSettings.seoMeta.descriptionAr} onChange={e => setSiteSettings({ ...siteSettings, seoMeta: { ...siteSettings.seoMeta, descriptionAr: e.target.value } })} /></div>
+                <div className="settings-field"><label>Description (IT)</label><input value={siteSettings.seoMeta.descriptionIt} onChange={e => setSiteSettings({ ...siteSettings, seoMeta: { ...siteSettings.seoMeta, descriptionIt: e.target.value } })} /></div>
+                <div className="settings-field"><label>Keywords</label><input value={siteSettings.seoMeta.keywords} onChange={e => setSiteSettings({ ...siteSettings, seoMeta: { ...siteSettings.seoMeta, keywords: e.target.value } })} /></div>
+                <div className="settings-field"><label>OG Image URL</label><input value={siteSettings.seoMeta.ogImage} onChange={e => setSiteSettings({ ...siteSettings, seoMeta: { ...siteSettings.seoMeta, ogImage: e.target.value } })} /></div>
+              </div>
+            )}
+          </div>
+
+          {/* ⭐ Featured Products */}
+          <div className="settings-section">
+            <div className="settings-section-header" style={{ cursor: 'pointer' }} onClick={() => toggleSection('featured')}>
+              <Package size={20}/>
+              <div>
+                <h3>⭐ Featured Products</h3>
+                <p>Select which products appear as featured on the homepage</p>
+              </div>
+              <span style={{ marginInlineStart: 'auto', fontSize: '18px' }}>{collapsedSections['featured'] ? '▸' : '▾'}</span>
+            </div>
+            {!collapsedSections['featured'] && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {products.map(p => {
+                  const isSelected = siteSettings.featuredProductIds.includes(p.id);
+                  return (
+                    <label key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 12px', background: isSelected ? 'var(--accent-bg)' : 'var(--bg-secondary)', borderRadius: '8px', cursor: 'pointer', border: isSelected ? '2px solid var(--accent)' : '2px solid transparent' }}>
+                      <input type="checkbox" checked={isSelected} onChange={() => {
+                        const updated = isSelected
+                          ? siteSettings.featuredProductIds.filter(id => id !== p.id)
+                          : [...siteSettings.featuredProductIds, p.id];
+                        setSiteSettings({ ...siteSettings, featuredProductIds: updated });
+                      }} />
+                      <span>{p.emoji} {getProductName(p)}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          </>)}
 
           {/* Save Button */}
           <div className="settings-save-bar">
