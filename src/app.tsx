@@ -87,7 +87,7 @@ const App: React.FC = () => {
   const [featureFlags, setFeatureFlags] = useState(() => loadState('featureFlags', ffInit));
   const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => loadState('siteSettings', defaultSiteSettings));
   
-  const [currentCountry, setCurrentCountry] = useState<Country>(() => { const saved = loadState<Country|null>('currentCountry', null); return saved || countriesInitial.find(c => c.isDefault) || countriesInitial[0]; });
+  const [currentCountry, setCurrentCountry] = useState<Country>(() => { const saved = loadState<Country|null>('currentCountry', null); const enabledCountries = countriesInitial.filter(c => c.enabled); if (saved && enabledCountries.find(c => c.code === saved.code)) return saved; return enabledCountries.find(c => c.isDefault) || enabledCountries[0] || countriesInitial[0]; });
   const [currentLang, setCurrentLang] = useState<Language>(() => { const saved = loadState<Language|null>('currentLang', null); return saved || languagesInitial.find(l => l.isDefault) || languagesInitial[0]; });
 
   // Translation function

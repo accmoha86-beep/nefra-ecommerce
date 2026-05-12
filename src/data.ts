@@ -23,7 +23,7 @@ export const countries: Country[] = [
     whatsappNumber: '966500000000', codFeePercent: 2, paymentAccountDetails: {},
     paymentMethods: ['Visa/Mastercard', 'Apple Pay', 'Mada', 'Tabby', 'Tamara', 'STC Pay', 'Cash on Delivery'],
     shippingCompanies: ['Aramex', 'SMSA', 'DHL', 'Saudi Post', 'FedEx', 'J&T Express'],
-    enabled: true, isDefault: true, phone: '+966', timezone: 'Asia/Riyadh',
+    enabled: false, isDefault: false, phone: '+966', timezone: 'Asia/Riyadh',
     dbName: 'db_saudi',
     returnDays: 7, email: 'support-sa@nefra.com',
     address: 'Riyadh, King Fahd Road, Tower 1, Floor 15',
@@ -55,7 +55,7 @@ export const countries: Country[] = [
     whatsappNumber: '971500000000', codFeePercent: 2, paymentAccountDetails: {},
     paymentMethods: ['Visa/Mastercard', 'Apple Pay', 'Tabby', 'Tamara', 'Cash on Delivery'],
     shippingCompanies: ['Aramex', 'Emirates Post', 'DHL', 'FedEx', 'Fetchr'],
-    enabled: true, isDefault: false, phone: '+971', timezone: 'Asia/Dubai',
+    enabled: false, isDefault: false, phone: '+971', timezone: 'Asia/Dubai',
     dbName: 'db_uae',
     returnDays: 7, email: 'support-ae@nefra.com',
     address: 'Dubai, Downtown, Business Bay, Tower B, Floor 22',
@@ -86,7 +86,7 @@ export const countries: Country[] = [
     whatsappNumber: '97400000000', codFeePercent: 2, paymentAccountDetails: {},
     paymentMethods: ['Visa/Mastercard', 'Apple Pay', 'QPay', 'NAPS', 'Cash on Delivery'],
     shippingCompanies: ['Q-Post', 'Aramex', 'DHL', 'FedEx'],
-    enabled: true, isDefault: false, phone: '+974', timezone: 'Asia/Qatar',
+    enabled: false, isDefault: false, phone: '+974', timezone: 'Asia/Qatar',
     dbName: 'db_qatar',
     returnDays: 7, email: 'support-qa@nefra.com',
     address: 'Doha, West Bay, Al Dafna Tower, Floor 10',
@@ -120,7 +120,7 @@ export const countries: Country[] = [
     },
     paymentMethods: ['Cash on Delivery', 'InstaPay', 'Vodafone Cash', 'Bank Transfer', 'Fawry', 'Visa/Mastercard', 'valU'],
     shippingCompanies: ['Bosta', 'Egypt Post', 'Aramex', 'DHL', 'J&T Express', 'Mylerz'],
-    enabled: true, isDefault: false, phone: '+20', timezone: 'Africa/Cairo',
+    enabled: true, isDefault: true, phone: '+20', timezone: 'Africa/Cairo',
     dbName: 'db_egypt',
     returnDays: 14, email: 'support-eg@nefra.com',
     address: 'Cairo, New Cairo, 5th Settlement, Business Park, Building 7',
@@ -153,7 +153,7 @@ export const countries: Country[] = [
     whatsappNumber: '393000000000', codFeePercent: 0, paymentAccountDetails: {},
     paymentMethods: ['Visa/Mastercard', 'PayPal', 'Satispay', 'PostePay', 'Scalapay', 'Klarna', 'Bonifico Bancario'],
     shippingCompanies: ['Poste Italiane', 'BRT/Bartolini', 'GLS', 'DHL', 'UPS', 'TNT'],
-    enabled: true, isDefault: false, phone: '+39', timezone: 'Europe/Rome',
+    enabled: false, isDefault: false, phone: '+39', timezone: 'Europe/Rome',
     dbName: 'db_italy',
     returnDays: 14, email: 'support-it@nefra.com',
     address: 'Milan, Via Monte Napoleone 8, 20121',
@@ -414,8 +414,8 @@ export const defaultSiteSettings: SiteSettings = {
 
 // ============ ADDRESSES ============
 export const addresses: Address[] = [
-  { id:1, labelKey:'address.home', name:'Mohamed Ahmed', street:'King Fahd Road, Al Narjis District', city:'Riyadh', phone:'+966 55 XXX XXXX', isDefault:true },
-  { id:2, labelKey:'address.office', name:'Mohamed Ahmed', street:'Olaya Street, Al Sahafa', city:'Riyadh', phone:'+966 55 XXX XXXX', isDefault:false },
+  { id:1, labelKey:'address.home', name:'Mohamed Ahmed', street:'شارع فؤاد، سموحة', city:'الإسكندرية', phone:'+20 10 XXX XXXX', isDefault:true },
+  { id:2, labelKey:'address.office', name:'Mohamed Ahmed', street:'شارع التحرير، وسط البلد', city:'القاهرة', phone:'+20 12 XXX XXXX', isDefault:false },
 ];
 
 // ============ NOTIFICATIONS ============
