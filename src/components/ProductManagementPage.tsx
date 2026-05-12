@@ -464,7 +464,7 @@ export const ProductManagementPage: React.FC<ProductManagementPageProps> = ({
                   </div>
                   <div className="form-group">
                     <label>{t('imageURL') || 'Image URL'}</label>
-                    <input className="form-input" value={formProduct.img || ''} onChange={e => setFormProduct({...formProduct, img: e.target.value})} placeholder="/assets/..."/>
+                    <input className="form-input" value={formProduct.img || ''} onChange={e => setFormProduct({...formProduct, img: e.target.value})} placeholder="./assets/..."/>
                   </div>
                 </div>
               </div>
