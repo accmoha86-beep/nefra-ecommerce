@@ -339,6 +339,12 @@ export const ShopPage: React.FC<ShopPageProps> = ({
           ))}
         </div>
       )}
+
+      {/* SEO Text Block */}
+      <div className="shop-seo-block">
+        <h2 className="shop-seo-title">{t('shop.seo.title')}</h2>
+        <p className="shop-seo-text">{t('shop.seo.text')}</p>
+      </div>
     </div>
   );
 };
