@@ -92,7 +92,7 @@ const App: React.FC = () => {
 
   // Translation function
   // Category translation helper
-  const catMap: Record<string, string> = { 'Electronics': 'catElectronics', 'Fashion': 'catFashion', 'Beauty': 'catBeauty', 'Accessories': 'catAccessories', 'Technology': 'catTechnology', 'Lifestyle': 'catLifestyle', 'All': 'all' };
+  const catMap: Record<string, string> = { 'Electronics': 'catElectronics', 'Fashion': 'catFashion', 'Beauty': 'catBeauty', 'Accessories': 'catAccessories', 'Technology': 'catTechnology', 'Lifestyle': 'catLifestyle', 'Brush Sets': 'catBrushSets', 'Lashes': 'catLashes', 'Face': 'catFace', 'Eyes': 'catEyes', 'Lips': 'catLips', 'Tools': 'catTools', 'All': 'all' };
   // Badge translation helper
   const badgeMap: Record<string, string> = { 'Best Seller': 'badgeBestSeller', 'New': 'badgeNew', 'Premium': 'badgePremium', 'Limited': 'badgeLimited', 'Popular': 'badgePopular', 'Pro': 'badgePro', 'Trending': 'badgeTrending', 'Luxury': 'badgeLuxury', 'Hot': 'badgeHot', 'Exclusive': 'badgeExclusive' };
   // Feature flag name map
@@ -290,11 +290,11 @@ const App: React.FC = () => {
           onAddToCart={addToCart} onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
           wishlist={wishlist} compareList={compareList} recentlyViewed={recentlyViewed}
           t={t} formatPrice={formatPrice} featureFlags={featureFlags}
-          testimonials={siteSettings.testimonials} featuredProductIds={siteSettings.featuredProductIds} onBuyNow={buyNow} />;
+          testimonials={siteSettings.testimonials} featuredProductIds={siteSettings.featuredProductIds} />;
       case 'shop':
         return <ShopPage lang={lang} getProductName={getProductName} getProductDesc={getProductDesc} tb={tb} filter={filter} setFilter={setFilter} tc={tc} setPage={setPage} onSelectProduct={selectProduct}
           onAddToCart={addToCart} onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
-          wishlist={wishlist} compareList={compareList} t={t} formatPrice={formatPrice} featureFlags={featureFlags} onBuyNow={buyNow} />;
+          wishlist={wishlist} compareList={compareList} t={t} formatPrice={formatPrice} featureFlags={featureFlags} />;
       case 'detail':
         return selectedProduct ? (
           <ProductDetailPage tb={tb} tc={tc} lang={lang} product={selectedProduct} onAddToCart={addToCart}

@@ -2991,12 +2991,60 @@ ul, ol { list-style: none; }
   .footer-payments-enhanced { justify-content: center; }
 }
 
-/* ============ CATEGORY NAV BAR ============ */
-/* Category items merged into main nav */
-.nav-cat-link {
+/* ============ BEAUTY CATEGORY NAV ============ */
+.nav-beauty-wrap {
+  position: relative;
+  display: inline-flex;
+}
+.nav-beauty-link {
   display: flex !important;
   align-items: center;
   gap: 5px;
+  cursor: pointer;
+}
+.nav-beauty-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  inset-inline-start: 0;
+  min-width: 220px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  z-index: 1000;
+  flex-direction: column;
+  gap: 2px;
+}
+.nav-beauty-wrap:hover .nav-beauty-dropdown {
+  display: flex;
+}
+.nav-beauty-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.6rem 0.8rem;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+  width: 100%;
+  text-align: start;
+}
+.nav-beauty-item:hover {
+  background: var(--glow-color);
+  color: var(--bg-primary);
+}
+.nav-beauty-item.active {
+  background: rgba(var(--glow-rgb, 212,160,32), 0.15);
+  color: var(--glow-color);
+  font-weight: 600;
 }
 .nav-cat-emoji { font-size: 1rem; line-height: 1; }
 

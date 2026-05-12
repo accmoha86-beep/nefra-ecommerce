@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, ShoppingBag, Heart, User, Truck, RotateCcw, Shield, Phone, BarChart3, ChevronDown, ChevronRight, Scale, Globe, Menu, X, Home, Package, Gift, MapPin, Settings, Flag, Zap, Globe2, Receipt, FileText, Type } from 'lucide-react';
+import { Search, ShoppingBag, Heart, User, Truck, RotateCcw, Shield, Phone, BarChart3, ChevronDown, ChevronRight, Scale, Globe, Menu, X, Home, Package, Gift, Settings, Flag, Zap, Globe2, Receipt, FileText, Type } from 'lucide-react';
 import { Theme, Page, Country, Language, Translations, Product } from '../types';
 import { products } from '../data';
 
@@ -75,7 +75,6 @@ export const Header: React.FC<HeaderProps> = ({
     { label: t('home'), page: 'home' },
     { label: t('shop'), page: 'shop' },
     { label: t('giftCards'), page: 'giftcards' },
-    { label: t('trackOrder'), page: 'track' },
   ];
 
   const adminPages: Page[] = ['dash', 'flags', 'marketing', 'countries', 'tax', 'invoices', 'languages', 'admin-users', 'products-admin'];
@@ -88,7 +87,7 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="header" dir={currentLang.direction}>
       <div className="header-inner">
         <button className="logo" onClick={() => setPage('home')}>
-          <img src="/assets/logo-v2.png" alt="NEFRA" className="logo-img" />
+          <img src="./assets/logo-v2.png" alt="NEFRA" className="logo-img" />
         </button>
         <div className="search-box">
           <Search size={16} className="search-icon" />
@@ -210,14 +209,13 @@ export const Header: React.FC<HeaderProps> = ({
         <button className="mobile-nav-close" onClick={() => setMobileMenuOpen(false)}><X size={24}/></button>
         <div style={{padding:'0.5rem 0.5rem 1rem',borderBottom:'1px solid var(--border-light)',marginBottom:'0.5rem'}}>
           <span className="logo" style={{fontSize:'1.1rem'}}>
-            <img src="/assets/logo-v2.png" alt="NEFRA" className="logo-img-mobile" />
+            <img src="./assets/logo-v2.png" alt="NEFRA" className="logo-img-mobile" />
           </span>
         </div>
         {/* Main Nav */}
         <button onClick={() => {setPage('home');setMobileMenuOpen(false);}}><Home size={16} style={{marginInlineEnd:'8px'}}/>{t('home')}</button>
         <button onClick={() => {setPage('shop');setMobileMenuOpen(false);}}><Package size={16} style={{marginInlineEnd:'8px'}}/>{t('shop')}</button>
         <button onClick={() => {setPage('giftcards');setMobileMenuOpen(false);}}><Gift size={16} style={{marginInlineEnd:'8px'}}/>{t('giftCards')}</button>
-        <button onClick={() => {setPage('track');setMobileMenuOpen(false);}}><MapPin size={16} style={{marginInlineEnd:'8px'}}/>{t('trackOrder')}</button>
         {/* User */}
         <div style={{padding:'0.75rem 1rem 0.25rem',fontSize:'0.7rem',color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:'0.1em'}}>{t('account')}</div>
         {isLoggedIn ? (
@@ -242,8 +240,11 @@ export const Header: React.FC<HeaderProps> = ({
         <button onClick={() => {setPage('languages');setMobileMenuOpen(false);}}><Type size={16} style={{marginInlineEnd:'8px'}}/>{t('languages')}</button>
         <button onClick={() => {setPage('admin-users');setMobileMenuOpen(false);}}><Shield size={16} style={{marginInlineEnd:'8px'}}/>{t('adminUsers')}</button>
         <button onClick={() => {setPage('products-admin');setMobileMenuOpen(false);}}><Package size={16} style={{marginInlineEnd:'8px'}}/>{t('productsManagement') || 'Products Management'}</button>
-        {/* Categories in mobile */}
-        <div style={{padding:'0.75rem 1rem 0.25rem',fontSize:'0.7rem',color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:'0.1em'}}>{t('categories') || 'Categories'}</div>
+        {/* Beauty category in mobile */}
+        <div style={{padding:'0.75rem 1rem 0.25rem',fontSize:'0.7rem',color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:'0.1em'}}>💄 {t('catBeauty')}</div>
+        <button onClick={() => {onCategoryClick('All');setPage('shop');setMobileMenuOpen(false);}}>
+          <span style={{marginInlineEnd:'8px'}}>🛍️</span>{t('allProducts')}
+        </button>
         {enabledCats.map(c => (
           <button key={c.name} onClick={() => {onCategoryClick(c.name);setPage('shop');setMobileMenuOpen(false);}}>
             <span style={{marginInlineEnd:'8px'}}>{c.emoji}</span>{getCatName(c)}
@@ -256,16 +257,28 @@ export const Header: React.FC<HeaderProps> = ({
             <button key={n.label} className={`nav-link${n.page === page ? ' active' : ''}`}
               onClick={() => n.page && setPage(n.page)}>{n.label}</button>
           ))}
-          {/* Category items merged into main nav */}
+          {/* Beauty category with subcategory dropdown */}
           {ff.ff_category_nav !== false && enabledCats.length > 0 && (<>
             <div className="nav-divider" />
-            {enabledCats.map(c => (
-              <button key={c.name} className={`nav-link nav-cat-link${win.__activeCat === c.name ? ' active' : ''}`}
-                onClick={() => { onCategoryClick(c.name); setPage('shop'); }}>
-                <span className="nav-cat-emoji">{c.emoji}</span>
-                {getCatName(c)}
+            <div className="nav-beauty-wrap">
+              <button className={`nav-link nav-beauty-link${page === 'shop' ? ' active' : ''}`}
+                onClick={() => { onCategoryClick('All'); setPage('shop'); }}>
+                <span className="nav-cat-emoji">💄</span>
+                {t('catBeauty')}
+                <ChevronDown size={12} style={{marginInlineStart:'4px',opacity:0.6}}/>
               </button>
-            ))}
+              <div className="nav-beauty-dropdown">
+                <button className="nav-beauty-item" onClick={() => { onCategoryClick('All'); setPage('shop'); }}>
+                  <span className="nav-cat-emoji">🛍️</span> {t('allProducts')}
+                </button>
+                {enabledCats.map(c => (
+                  <button key={c.name} className={`nav-beauty-item${win.__activeCat === c.name ? ' active' : ''}`}
+                    onClick={() => { onCategoryClick(c.name); setPage('shop'); }}>
+                    <span className="nav-cat-emoji">{c.emoji}</span> {getCatName(c)}
+                  </button>
+                ))}
+              </div>
+            </div>
           </>)}
           <div className="nav-divider" />
           <button className={`nav-link nav-admin${adminPages.includes(page) ? ' active' : ''}`}
