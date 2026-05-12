@@ -12,33 +12,26 @@ export const FAQPage: React.FC<FAQPageProps> = ({ lang, setPage, t, country }) =
   
   const countryName = lang === 'ar' ? country.nameAr : lang === 'it' ? country.nameIt : country.name;
 
-  // Static FAQ categories
   const categories = [
-    { id: 'all', label: t('faqPage.allCategories'), icon: HelpCircle },
-    { id: 'orders', label: t('faqPage.orders'), icon: Truck },
-    { id: 'payments', label: t('faqPage.payments'), icon: CreditCard },
-    { id: 'returns', label: t('faqPage.returns'), icon: RotateCcw },
-    { id: 'security', label: t('faqPage.security'), icon: Shield },
+    { id: 'all', label: t('faqPage.cat.all'), icon: HelpCircle },
+    { id: 'orders', label: t('faqPage.cat.orders'), icon: Truck },
+    { id: 'payments', label: t('faqPage.cat.payments'), icon: CreditCard },
+    { id: 'returns', label: t('faqPage.cat.returns'), icon: RotateCcw },
+    { id: 'security', label: t('faqPage.cat.account'), icon: Shield },
     { id: 'country', label: t('faq.countrySpecific', { country: countryName }), icon: Globe },
   ];
 
-  // Build FAQ items - static + dynamic per country
   const faqs = [
-    // Orders
     { id: 'q1', cat: 'orders', q: t('faqPage.q1'), a: t('faqPage.a1') },
     { id: 'q2', cat: 'orders', q: t('faqPage.q2'), a: t('faqPage.a2') },
     { id: 'q3', cat: 'orders', q: t('faqPage.q3'), a: t('faqPage.a3') },
-    // Payments
     { id: 'q4', cat: 'payments', q: t('faqPage.q4'), a: t('faqPage.a4') },
     { id: 'q5', cat: 'payments', q: t('faqPage.q5'), a: t('faqPage.a5') },
-    // Returns
     { id: 'q6', cat: 'returns', q: t('faqPage.q6'), a: t('faqPage.a6') },
     { id: 'q7', cat: 'returns', q: t('faqPage.q7'), a: t('faqPage.a7') },
-    // Security
     { id: 'q8', cat: 'security', q: t('faqPage.q8'), a: t('faqPage.a8') },
     { id: 'q9', cat: 'security', q: t('faqPage.q9'), a: t('faqPage.a9') },
     { id: 'q10', cat: 'security', q: t('faqPage.q10'), a: t('faqPage.a10') },
-    // Country-specific dynamic FAQs
     { id: 'qc1', cat: 'country', q: t('faq.paymentQuestion', { country: countryName }), a: t('faq.paymentAnswer', { methods: country.paymentMethods.join(', ') }) },
     { id: 'qc2', cat: 'country', q: t('faq.shippingQuestion', { country: countryName }), a: t('shipping.deliveryTime', { days: '3-7' }) + '. ' + t('shipping.countryProviders', { country: countryName }) + ': ' + country.shippingCompanies.join(', ') },
     { id: 'qc3', cat: 'country', q: t('faq.returnQuestion', { country: countryName }), a: t('faq.returnAnswer', { days: String(country.returnDays) }) + (country.code === 'IT' ? '. ' + t('returns.euRights') : '') },
@@ -59,15 +52,10 @@ export const FAQPage: React.FC<FAQPageProps> = ({ lang, setPage, t, country }) =
         <p className="info-page-subtitle">{t('faqPage.subtitle')}</p>
       </div>
 
-      {/* Country indicator */}
-      <div className="country-indicator">
-        <Globe size={16} /> {t('faq.countrySpecific', { country: countryName })} {country.flag}
-      </div>
-
       {/* Search */}
       <div className="faq-search">
         <Search size={18} />
-        <input type="text" placeholder={t('faqPage.searchPlaceholder')} value={search} onChange={e => setSearch(e.target.value)} />
+        <input type="text" placeholder={t('faqPage.search')} value={search} onChange={e => setSearch(e.target.value)} />
       </div>
 
       {/* Categories */}
@@ -95,7 +83,7 @@ export const FAQPage: React.FC<FAQPageProps> = ({ lang, setPage, t, country }) =
 
       <div className="info-page-footer">
         <p>{t('faqPage.stillNeedHelp')}</p>
-        <button className="btn-primary" onClick={() => setPage('contact')}>{t('faqPage.contactSupport')}</button>
+        <button className="btn-primary" onClick={() => setPage('contact')}>{t('faqPage.contactTeam')}</button>
       </div>
     </div>
   );
