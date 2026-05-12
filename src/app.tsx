@@ -290,11 +290,11 @@ const App: React.FC = () => {
           onAddToCart={addToCart} onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
           wishlist={wishlist} compareList={compareList} recentlyViewed={recentlyViewed}
           t={t} formatPrice={formatPrice} featureFlags={featureFlags}
-          testimonials={siteSettings.testimonials} featuredProductIds={siteSettings.featuredProductIds} />;
+          testimonials={siteSettings.testimonials} featuredProductIds={siteSettings.featuredProductIds} onBuyNow={buyNow} />;
       case 'shop':
         return <ShopPage lang={lang} getProductName={getProductName} getProductDesc={getProductDesc} tb={tb} filter={filter} setFilter={setFilter} tc={tc} setPage={setPage} onSelectProduct={selectProduct}
           onAddToCart={addToCart} onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
-          wishlist={wishlist} compareList={compareList} t={t} formatPrice={formatPrice} featureFlags={featureFlags} />;
+          wishlist={wishlist} compareList={compareList} t={t} formatPrice={formatPrice} featureFlags={featureFlags} onBuyNow={buyNow} />;
       case 'detail':
         return selectedProduct ? (
           <ProductDetailPage tb={tb} tc={tc} lang={lang} product={selectedProduct} onAddToCart={addToCart}
