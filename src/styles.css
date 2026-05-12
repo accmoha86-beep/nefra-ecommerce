@@ -613,8 +613,11 @@ ul, ol { list-style: none; }
 .pcard { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-md); overflow: hidden; transition: var(--transition-fast); position: relative; display: flex; flex-direction: column; }
 .pcard:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--accent); }
 .pcard-img-wrap { position: relative; aspect-ratio: 1/1; overflow: hidden; background: var(--bg-secondary); }
-.pcard-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+.pcard-img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.4s ease; padding: 8px; background: #f8f6f3; }
 .pcard:hover .pcard-img { transform: scale(1.05); }
+[data-theme="elegant-dark"] .pcard-img, [data-theme="flag-saudi"] .pcard-img, [data-theme="flag-uae"] .pcard-img, [data-theme="flag-qatar"] .pcard-img, [data-theme="flag-egypt"] .pcard-img { background: rgba(255,255,255,0.06); }
+[data-theme="royal-premium"] .pcard-img { background: #faf7f2; }
+[data-theme="natural-organic"] .pcard-img { background: #f5f2ed; }
 .pcard-img-fallback { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: var(--bg-secondary); }
 .pcard-emoji { font-size: 3rem; }
 .pcard-badge { position: absolute; top: 0.75rem; left: 0.75rem; padding: 0.2rem 0.6rem; border-radius: var(--radius-sm); font-size: 0.7rem; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 0.03em; }
@@ -717,8 +720,20 @@ ul, ol { list-style: none; }
 
 /* Gallery — premium framed look */
 .detail-gallery { position: relative; border-radius: var(--radius-lg, 16px); overflow: hidden; background: var(--bg-secondary); border: 1px solid var(--border-light); box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
-.detail-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; transition: transform 0.5s ease; }
+.detail-img { width: 100%; aspect-ratio: 1/1; object-fit: contain; display: block; transition: transform 0.5s ease; padding: 16px; background: #f8f6f3; cursor: zoom-in; }
 .detail-gallery:hover .detail-img { transform: scale(1.03); }
+[data-theme="elegant-dark"] .detail-img, [data-theme="flag-saudi"] .detail-img, [data-theme="flag-uae"] .detail-img, [data-theme="flag-qatar"] .detail-img, [data-theme="flag-egypt"] .detail-img { background: rgba(255,255,255,0.06); }
+[data-theme="royal-premium"] .detail-img { background: #faf7f2; }
+[data-theme="natural-organic"] .detail-img { background: #f5f2ed; }
+
+/* Image Lightbox Modal */
+.lightbox-overlay { position: fixed; inset: 0; z-index: 10000; background: rgba(0,0,0,0.92); display: flex; align-items: center; justify-content: center; cursor: zoom-out; animation: lightboxFadeIn 0.3s ease; backdrop-filter: blur(8px); }
+@keyframes lightboxFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.lightbox-img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 12px; box-shadow: 0 20px 80px rgba(0,0,0,0.5); animation: lightboxZoomIn 0.3s ease; }
+@keyframes lightboxZoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.lightbox-close { position: absolute; top: 20px; right: 20px; width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; backdrop-filter: blur(8px); }
+.lightbox-close:hover { background: rgba(255,255,255,0.25); transform: scale(1.1); }
+.lightbox-hint { position: absolute; bottom: 20px; color: rgba(255,255,255,0.5); font-size: 0.85rem; letter-spacing: 0.05em; }
 .detail-img-fallback { width: 100%; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; background: var(--bg-secondary); font-size: 5rem; }
 .detail-badge { position: absolute; top: 1.25rem; left: 1.25rem; padding: 0.5rem 1.2rem; border-radius: 6px; font-size: 0.75rem; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.08em; backdrop-filter: blur(8px); z-index: 2; }
 

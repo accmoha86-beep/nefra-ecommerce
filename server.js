@@ -1,3 +1,4 @@
+// NEFRA Build v8 - Image contain fix + Lightbox modal
 import express from 'express';
 import compression from 'compression';
 import { fileURLToPath } from 'url';

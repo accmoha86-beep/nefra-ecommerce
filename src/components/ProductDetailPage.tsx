@@ -38,6 +38,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [showStickyBar, setShowStickyBar] = useState(false);
+  const [showLightbox, setShowLightbox] = useState(false);
   const p = product;
   const d = disc(p.price, p.old);
   const related = products.filter(r => r.cat === p.cat && r.id !== p.id).slice(0, 4);
@@ -97,6 +98,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         <div className="detail-gallery">
           {!imgError ? (
             <img src={p.img} alt={getName()} className="detail-img"
+              onClick={() => setShowLightbox(true)}
               onError={() => setImgError(true)} />
           ) : (
             <div className="detail-img-fallback" style={{ background: p.grad }}>
@@ -331,6 +333,16 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               ))}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* IMAGE LIGHTBOX MODAL */}
+      {showLightbox && !imgError && (
+        <div className="lightbox-overlay" onClick={() => setShowLightbox(false)}
+          onKeyDown={(e) => e.key === 'Escape' && setShowLightbox(false)} tabIndex={0} ref={(el) => el?.focus()}>
+          <button className="lightbox-close" onClick={(e) => { e.stopPropagation(); setShowLightbox(false); }}>✕</button>
+          <img src={p.img} alt={getName()} className="lightbox-img" onClick={(e) => e.stopPropagation()} />
+          <span className="lightbox-hint">{lang === 'ar' ? 'اضغط في أي مكان للإغلاق' : lang === 'it' ? 'Clicca ovunque per chiudere' : 'Click anywhere to close'}</span>
         </div>
       )}
 
