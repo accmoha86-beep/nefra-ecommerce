@@ -377,11 +377,6 @@ const App: React.FC = () => {
           onClose={() => setShowCart(false)} setPage={(p: Page) => { setPage(p); setShowCart(false); }}
           t={t} formatPrice={formatPrice} />}
 
-      {/* WhatsApp */}
-      <a className="whatsapp-fab" href="#" onClick={e => e.preventDefault()} title="WhatsApp">
-        <MessageCircle size={24}/>
-      </a>
-
       {/* Back to Top */}
       {showBackToTop && (
         <button className="back-to-top" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
@@ -389,8 +384,10 @@ const App: React.FC = () => {
         </button>
       )}
 
-      {/* Cookie Consent */}
-      <WhatsAppButton t={t} currentCountry={currentCountry} lang={lang} siteSettings={siteSettings} />
+      {/* WhatsApp Floating Button */}
+      {featureFlags.find(f => f.name === 'WhatsApp Chat')?.enabled && (
+        <WhatsAppButton t={t} currentCountry={currentCountry} lang={lang} siteSettings={siteSettings} />
+      )}
 
       {showCookie && (
         <div className="cookie-banner">

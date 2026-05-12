@@ -380,7 +380,7 @@ ul, ol { list-style: none; }
 .btn-read-more { color: var(--accent); font-weight: 500; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 0.25rem; }
 .back-btn { color: var(--text-secondary); display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; font-size: 0.9rem; padding: 0.5rem 1rem; border: 1px solid var(--border-light); border-radius: 8px; background: var(--bg-secondary); transition: all 0.2s ease; font-weight: 500; }
 .back-btn:hover { color: var(--accent); border-color: var(--accent); background: rgba(var(--accent-rgb, 212, 160, 32), 0.05); }
-.back-to-top { position: fixed; bottom: 2rem; right: 2rem; width: 42px; height: 42px; border-radius: var(--radius-full); background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-md); z-index: 100; transition: var(--transition-fast); }
+.back-to-top { position: fixed; bottom: 100px; left: 24px; width: 42px; height: 42px; border-radius: var(--radius-full); background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-md); z-index: 100; transition: var(--transition-fast); }
 .back-to-top:hover { transform: translateY(-3px); }
 
 /* ===== TOPBAR ===== */
@@ -1288,9 +1288,7 @@ ul, ol { list-style: none; }
 .toast-warning { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: var(--warning); color: #fff; padding: 0.65rem 1.5rem; border-radius: var(--radius-full); font-size: 0.85rem; font-weight: 500; z-index: 2000; box-shadow: var(--shadow-lg); }
 @keyframes toast-in { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
 
-/* ===== WHATSAPP FAB ===== */
-.whatsapp-fab { position: fixed; bottom: 2rem; left: 2rem; width: 50px; height: 50px; border-radius: var(--radius-full); background: #25D366; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; z-index: 100; box-shadow: var(--shadow-lg); transition: var(--transition-fast); }
-.whatsapp-fab:hover { transform: scale(1.1); }
+/* ===== WHATSAPP FAB (moved to component CSS section) ===== */
 
 /* ===== TYPE BADGE ===== */
 .type-badge { padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); font-size: 0.65rem; font-weight: 600; background: var(--bg-secondary); color: var(--text-muted); }
@@ -1686,8 +1684,7 @@ ul, ol { list-style: none; }
 [dir="rtl"] .settings-toggle.on::after { right: 23px; left: auto; }
 
 /* --- Fixed Position Elements — position swaps --- */
-[dir="rtl"] .back-to-top { right: auto; left: 2rem; }
-[dir="rtl"] .whatsapp-fab { left: auto; right: 2rem; }
+[dir="rtl"] .back-to-top { left: auto; right: 24px; }
 [dir="rtl"] .cart-badge, [dir="rtl"] .cart-count { right: auto; left: 2px; }
 
 /* --- Dropdown position swaps --- */
@@ -3707,38 +3704,38 @@ ul, ol { list-style: none; }
 .whatsapp-float {
   position: fixed;
   bottom: 24px;
-  right: 24px;
+  left: 24px;
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 12px;
 }
 
 [dir="rtl"] .whatsapp-float {
-  right: auto;
-  left: 24px;
+  left: auto;
+  right: 24px;
 }
 
 .whatsapp-fab {
-  width: 60px;
-  height: 60px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   background: #25D366;
   color: white;
-  border: none;
+  border: 2px solid var(--accent);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3), 0 0 0 3px rgba(var(--accent-rgb, 212, 160, 32), 0.15);
   transition: all 0.3s ease;
   position: relative;
 }
 
 .whatsapp-fab:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 28px rgba(37, 211, 102, 0.5);
+  box-shadow: 0 6px 28px rgba(37, 211, 102, 0.4), 0 0 0 4px rgba(var(--accent-rgb, 212, 160, 32), 0.25);
 }
 
 .whatsapp-badge {
