@@ -17,7 +17,7 @@
   --transition-fast: all 0.2s ease;
   --transition-med: all 0.35s ease;
   --transition-slow: all 0.5s ease;
-  --max-width: 1440px;
+  --max-width: 1600px;
   --header-height: 60px;
 }
 
