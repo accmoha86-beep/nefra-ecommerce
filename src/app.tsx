@@ -390,7 +390,7 @@ const App: React.FC = () => {
         <WhatsAppButton t={t} currentCountry={currentCountry} lang={lang} siteSettings={siteSettings} />
       )}
 
-      {ff('ff_newsletter') && <NewsletterPopup t={t} lang={lang} />}
+      {featureFlags.find(f => f.name === 'Newsletter')?.enabled && <NewsletterPopup t={t} lang={lang} />}
 
       {showCookie && (
         <div className="cookie-banner">
