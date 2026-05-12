@@ -388,8 +388,9 @@ const App: React.FC = () => {
       {/* WhatsApp Floating Button */}
       {featureFlags.find(f => f.name === 'WhatsApp Chat')?.enabled && (
         <WhatsAppButton t={t} currentCountry={currentCountry} lang={lang} siteSettings={siteSettings} />
-        {ff('ff_newsletter') && <NewsletterPopup t={t} lang={lang} />}
       )}
+
+      {ff('ff_newsletter') && <NewsletterPopup t={t} lang={lang} />}
 
       {showCookie && (
         <div className="cookie-banner">
