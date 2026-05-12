@@ -331,6 +331,15 @@ export const featureFlags: FeatureFlag[] = [
   { id:'ff_product_management', name:'Product Management', category:'Admin', enabled:true, description:'Enable product CRUD from admin dashboard' },
   { id:'ff_category_management', name:'Category Management', category:'Admin', enabled:true, description:'Enable category management from admin dashboard' },
   { id:'ff_hero_banner', name:'Hero Banner', category:'UI', enabled:true, description:'Show hero/flash sale banner on homepage' },
+  // ===== NEW: BiOrganic-inspired features =====
+  { id:'ff_buy_now', name:'Buy Now Button', category:'Products', enabled:true, description:'Direct purchase button skipping cart' },
+  { id:'ff_sticky_cart', name:'Sticky Add to Cart', category:'Products', enabled:true, description:'Fixed bottom bar on product detail page' },
+  { id:'ff_share_tools', name:'Product Share Tools', category:'Products', enabled:true, description:'Share product via link, WhatsApp, social media' },
+  { id:'ff_app_banner', name:'App Download Banner', category:'Marketing', enabled:true, description:'Promotional banner to download mobile app' },
+  { id:'ff_loyalty_widget', name:'Loyalty Widget', category:'Marketing', enabled:true, description:'Floating loyalty points widget' },
+  { id:'ff_referral', name:'Referral Program', category:'Marketing', enabled:true, description:'Invite friends and earn rewards' },
+  { id:'ff_engagement_banners', name:'Engagement Banners', category:'Marketing', enabled:true, description:'Loyalty, Gift Cards, Spin & Win cards' },
+  { id:'ff_brand_carousel', name:'Brand Carousel', category:'UI', enabled:true, description:'Auto-scrolling brand logos strip' },
 ];
 
 // ============ PROMO MESSAGES (Admin-controlled) ============
@@ -451,5 +460,19 @@ export const brands: string[] = ['All', ...new Set(products.map(p => p.brand).fi
 
 
 // ============ HELPER FUNCTIONS ============
+// ============ BRAND LOGOS DATA ============
+export const brandLogos: { name: string; emoji: string }[] = [
+  { name: 'Sony', emoji: '🎧' },
+  { name: 'Omega', emoji: '⌚' },
+  { name: 'Apple', emoji: '🍎' },
+  { name: 'Loro Piana', emoji: '🧥' },
+  { name: 'Tom Ford', emoji: '✨' },
+  { name: 'Ray-Ban', emoji: '🕶️' },
+  { name: 'Nike', emoji: '👟' },
+  { name: 'La Mer', emoji: '💎' },
+  { name: 'Louis Vuitton', emoji: '👜' },
+  { name: 'Bose', emoji: '🔊' },
+];
+
 export const fmt = (n: number, symbol: string = 'ر.س'): string => `${n.toLocaleString()} ${symbol}`;
 export const disc = (price: number, old?: number): number => old ? Math.round(((old - price) / old) * 100) : 0;

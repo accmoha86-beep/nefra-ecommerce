@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Heart, Scale, ShoppingBag, Truck, RotateCcw, Shield, Star, Share2, Minus, Plus, Check, Zap, ChevronDown, ChevronUp, Package, Clock, CreditCard } from 'lucide-react';
+import { ArrowLeft, Heart, Scale, ShoppingBag, Truck, RotateCcw, Shield, Star, Share2, Minus, Plus, Check, Zap, ChevronDown, ChevronUp, Package, Clock, CreditCard, Link2, Copy, MessageCircle } from 'lucide-react';
 import { Product, Page, FeatureFlag } from '../types';
 import { products, disc } from '../data';
 import { Stars } from './ProductCard';
@@ -21,6 +21,7 @@ interface ProductDetailPageProps {
   tb: (badge: string) => string;
   lang: string;
   formatPrice?: (price: number, product?: any) => string;
+  onBuyNow?: (p: Product, qty: number) => void;
   recentlyViewed?: Product[];
   featureFlags?: FeatureFlag[];
 }
@@ -28,12 +29,15 @@ interface ProductDetailPageProps {
 export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   product, setPage, onAddToCart, onToggleWishlist, onToggleCompare,
   isInWishlist, isInCompare, onSelectProduct, wishlist, compareList, t, tc, tb, lang, formatPrice,
-  recentlyViewed, featureFlags
+  onBuyNow, recentlyViewed, featureFlags
 }) => {
   const [qty, setQty] = useState(1);
   const [activeTab, setActiveTab] = useState<'desc' | 'specs' | 'reviews'>('desc');
   const [imgError, setImgError] = useState(false);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
+  const [showStickyBar, setShowStickyBar] = useState(false);
   const p = product;
   const d = disc(p.price, p.old);
   const related = products.filter(r => r.cat === p.cat && r.id !== p.id).slice(0, 4);
@@ -58,6 +62,30 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   ];
 
   const toggleAccordion = (id: string) => setOpenAccordion(openAccordion === id ? null : id);
+
+  // Sticky bar: show when scrolled past main add-to-cart
+  React.useEffect(() => {
+    if (!ff('ff_sticky_cart')) return;
+    const handleScroll = () => {
+      const btn = document.querySelector('.btn-add-to-cart');
+      if (btn) {
+        const rect = btn.getBoundingClientRect();
+        setShowStickyBar(rect.bottom < 0);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [featureFlags]);
+
+  const handleShareCopy = () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    });
+  };
+
+  const shareUrl = encodeURIComponent(window.location.href);
+  const shareText = encodeURIComponent(getName());
 
   return (
     <div className="detail-page">
@@ -126,6 +154,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <button className="btn-add-to-cart" onClick={() => { for(let i = 0; i < qty; i++) onAddToCart(p); }}>
               <ShoppingBag size={18}/> {t('addToCart')} — {formatPrice ? formatPrice(p.price * qty) : p.price * qty}
             </button>
+            {ff('ff_buy_now') && onBuyNow && (
+              <button className="btn-buy-now" onClick={() => onBuyNow(p, qty)}>
+                <Zap size={18}/> {t('buyNow')}
+              </button>
+            )}
             <button className={`btn-icon${isInWishlist ? ' active' : ''}`}
               onClick={() => onToggleWishlist(p.id)}>
               <Heart size={18} fill={isInWishlist ? 'currentColor' : 'none'} />
@@ -134,7 +167,29 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               onClick={() => onToggleCompare(p.id)}>
               <Scale size={18} />
             </button>
-            <button className="btn-icon" title={t('share')}><Share2 size={18}/></button>
+            {ff('ff_share_tools') ? (
+              <div className="share-tools-wrap">
+                <button className="btn-icon" onClick={() => setShowShareMenu(!showShareMenu)} title={t('share')}><Share2 size={18}/></button>
+                {showShareMenu && (
+                  <div className="share-dropdown">
+                    <button className="share-option" onClick={handleShareCopy}>
+                      {shareCopied ? <><Check size={14}/> {t('share.copied')}</> : <><Copy size={14}/> {t('share.copy')}</>}
+                    </button>
+                    <a className="share-option" href={`https://wa.me/?text=${shareText}%20${shareUrl}`} target="_blank" rel="noopener noreferrer">
+                      <MessageCircle size={14}/> {t('share.whatsapp')}
+                    </a>
+                    <a className="share-option" href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} target="_blank" rel="noopener noreferrer">
+                      <Share2 size={14}/> {t('share.facebook')}
+                    </a>
+                    <a className="share-option" href={`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`} target="_blank" rel="noopener noreferrer">
+                      <Link2 size={14}/> {t('share.twitter')}
+                    </a>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button className="btn-icon" title={t('share')}><Share2 size={18}/></button>
+            )}
           </div>
 
           {/* DELIVERY & RETURNS ACCORDION */}
@@ -275,6 +330,21 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                   isInWishlist={wishlist.includes(r.id)} isInCompare={compareList.includes(r.id)} t={t} formatPrice={formatPrice} featureFlags={featureFlags} />
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* STICKY ADD-TO-CART BAR */}
+      {ff('ff_sticky_cart') && showStickyBar && (
+        <div className="sticky-cart-bar">
+          <div className="sticky-cart-inner">
+            <div className="sticky-cart-info">
+              <span className="sticky-cart-name">{getName().length > 30 ? getName().slice(0, 30) + '…' : getName()}</span>
+              <span className="sticky-cart-price">{formatPrice ? formatPrice(p.price) : p.price}</span>
+            </div>
+            <button className="sticky-cart-btn" onClick={() => { for(let i = 0; i < qty; i++) onAddToCart(p); }}>
+              <ShoppingBag size={16}/> {t('stickyCart.addToCart')}
+            </button>
           </div>
         </div>
       )}

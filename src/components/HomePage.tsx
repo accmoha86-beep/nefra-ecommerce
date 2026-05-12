@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { ChevronRight, Truck, RotateCcw, Shield, Headphones, Zap, ArrowRight, Mail, Star, Quote } from 'lucide-react';
 import { Theme, Page, Product, TFunc, FeatureFlag, Testimonial } from '../types';
-import { products, categories } from '../data';
+import { products, categories, brandLogos } from '../data';
 import { ProductCard } from './ProductCard';
+import { BrandCarousel } from './BrandCarousel';
+import { EngagementBanners } from './EngagementBanners';
+import { ReferralBanner } from './ReferralBanner';
 
 interface HomePageProps {
   theme: Theme;
@@ -136,6 +139,9 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
+      {/* BRAND CAROUSEL */}
+      {ff('ff_brand_carousel') && <BrandCarousel t={t} brands={brandLogos} />}
+
       {/* RECENTLY VIEWED */}
       {recentProducts.length > 0 && (
         <section className="section">
@@ -196,6 +202,12 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
         </div>
       </section>
+
+      {/* REFERRAL BANNER */}
+      {ff('ff_referral') && <ReferralBanner t={t} />}
+
+      {/* ENGAGEMENT BANNERS */}
+      {ff('ff_engagement_banners') && <EngagementBanners t={t} setPage={setPage} />}
 
       {/* BNPL BANNER */}
       <section className="section">

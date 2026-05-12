@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Star, Heart, Eye, ShoppingBag, Scale } from 'lucide-react';
+import { Star, Heart, Eye, ShoppingBag, Scale, Zap } from 'lucide-react';
 import { Product, TFunc, FeatureFlag } from '../types';
 import { disc } from '../data';
 
@@ -7,6 +7,7 @@ interface ProductCardProps {
   p: Product;
   onSelect: (p: Product) => void;
   onAddToCart: (p: Product) => void;
+  onBuyNow?: (p: Product) => void;
   onToggleWishlist: (id: number) => void;
   onToggleCompare: (id: number) => void;
   isInWishlist: boolean;
@@ -52,7 +53,7 @@ const getAllSizesForCat = (p: Product): string[] => {
   return [];
 };
 
-export const ProductCard: React.FC<ProductCardProps> = ({ p, onSelect, onAddToCart, onToggleWishlist, onToggleCompare, isInWishlist, isInCompare, t, tb, lang, formatPrice, featureFlags }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ p, onSelect, onAddToCart, onBuyNow, onToggleWishlist, onToggleCompare, isInWishlist, isInCompare, t, tb, lang, formatPrice, featureFlags }) => {
   const [imgError, setImgError] = useState(false);
   const d = disc(p.price, p.old);
 
@@ -121,9 +122,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({ p, onSelect, onAddToCa
             {p.stock <= 3 ? `🔥 ${t('product.onlyLeft').replace('{n}', String(p.stock))}` : `⚡ ${t('product.lowStock')}`}
           </div>
         )}
-        <button className="pcard-cart-btn" onClick={e => { e.stopPropagation(); onAddToCart(p); }}>
-          <ShoppingBag size={14}/> {t('addToCart')}
-        </button>
+        <div className="pcard-btn-row">
+          <button className="pcard-cart-btn" onClick={e => { e.stopPropagation(); onAddToCart(p); }}>
+            <ShoppingBag size={14}/> {t('addToCart')}
+          </button>
+          {ff('ff_buy_now') && onBuyNow && (
+            <button className="pcard-buy-now-btn" onClick={e => { e.stopPropagation(); onBuyNow(p); }}>
+              <Zap size={14}/> {t('buyNow')}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

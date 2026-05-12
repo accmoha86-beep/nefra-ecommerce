@@ -4190,3 +4190,241 @@ ul, ol { list-style: none; }
   .pcard-img { height: 100px; }
   .admin-bar { display: none; }
 }
+
+/* ============================================================
+   BiOrganic-inspired features CSS
+   ============================================================ */
+
+/* --- Buy Now Button (ProductCard) --- */
+.pcard-btn-row { display: flex; gap: 6px; }
+.pcard-cart-btn { flex: 1; }
+.pcard-buy-now-btn {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 8px 12px; border: none; border-radius: 8px; cursor: pointer;
+  font-size: 0.78rem; font-weight: 600;
+  background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff;
+  transition: all .2s;
+}
+.pcard-buy-now-btn:hover { background: linear-gradient(135deg, #d97706, #b45309); transform: translateY(-1px); }
+
+/* --- Buy Now Button (ProductDetail) --- */
+.btn-buy-now {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 12px 24px; border: none; border-radius: 10px; cursor: pointer;
+  font-size: 0.95rem; font-weight: 700;
+  background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff;
+  transition: all .2s;
+}
+.btn-buy-now:hover { background: linear-gradient(135deg, #d97706, #b45309); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(245,158,11,.3); }
+
+/* --- Share Tools Dropdown --- */
+.share-tools-wrap { position: relative; }
+.share-dropdown {
+  position: absolute; bottom: calc(100% + 8px); right: 0; z-index: 50;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 6px; min-width: 180px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
+  animation: fadeSlideUp .2s ease;
+}
+@keyframes fadeSlideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.share-option {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%; padding: 8px 12px; border: none; border-radius: 8px;
+  background: transparent; color: var(--text); cursor: pointer;
+  font-size: 0.85rem; text-decoration: none; transition: background .15s;
+}
+.share-option:hover { background: var(--hover); }
+
+/* --- Sticky Add-to-Cart Bar --- */
+.sticky-cart-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 90;
+  background: var(--card); border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 20px rgba(0,0,0,.12);
+  padding: 10px 0;
+  animation: slideUpBar .3s ease;
+}
+@keyframes slideUpBar { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.sticky-cart-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.sticky-cart-info { display: flex; align-items: center; gap: 12px; }
+.sticky-cart-name { font-weight: 600; font-size: 0.9rem; color: var(--text); }
+.sticky-cart-price { font-weight: 700; font-size: 1.05rem; color: var(--accent); }
+.sticky-cart-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 24px; border: none; border-radius: 10px; cursor: pointer;
+  font-weight: 700; font-size: 0.9rem;
+  background: var(--accent); color: #fff; transition: all .2s;
+}
+.sticky-cart-btn:hover { opacity: .9; transform: translateY(-1px); }
+
+/* --- App Download Banner --- */
+.app-download-banner {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  color: #fff; padding: 16px 0;
+  animation: slideUpBar .4s ease;
+}
+.app-download-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 20px;
+  display: flex; align-items: center; gap: 16px; position: relative;
+}
+.app-download-close {
+  position: absolute; top: -4px; right: 16px;
+  background: transparent; border: none; color: rgba(255,255,255,.6);
+  cursor: pointer; padding: 4px; transition: color .2s;
+}
+.app-download-close:hover { color: #fff; }
+.app-download-icon { flex-shrink: 0; background: rgba(255,255,255,.1); border-radius: 12px; padding: 10px; }
+.app-download-content h3 { font-size: 1rem; font-weight: 700; margin: 0 0 2px; }
+.app-download-content p { font-size: 0.82rem; opacity: .8; margin: 0; }
+.app-download-buttons { display: flex; gap: 8px; flex-shrink: 0; margin-left: auto; }
+.app-store-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border: 1px solid rgba(255,255,255,.3); border-radius: 8px;
+  background: rgba(255,255,255,.1); color: #fff; cursor: pointer;
+  font-size: 0.8rem; font-weight: 600; transition: all .2s;
+}
+.app-store-btn:hover { background: rgba(255,255,255,.2); border-color: rgba(255,255,255,.5); }
+
+/* --- Loyalty Widget --- */
+.loyalty-widget-trigger {
+  position: fixed; right: 20px; bottom: 140px; z-index: 80;
+  width: 48px; height: 48px; border-radius: 50%;
+  background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff;
+  border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(245,158,11,.3);
+  transition: all .2s; position: fixed;
+}
+.loyalty-widget-trigger:hover { transform: scale(1.1); box-shadow: 0 6px 24px rgba(245,158,11,.4); }
+.loyalty-badge-count {
+  position: absolute; top: -6px; right: -6px;
+  background: #ef4444; color: #fff; font-size: 0.65rem; font-weight: 700;
+  min-width: 20px; height: 20px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; padding: 0 4px;
+}
+.loyalty-widget-panel {
+  position: fixed; right: 20px; bottom: 200px; z-index: 81;
+  width: 300px; background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,.2);
+  overflow: hidden; animation: fadeSlideUp .25s ease;
+}
+.loyalty-widget-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff;
+}
+.loyalty-widget-header h4 { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 0.95rem; }
+.loyalty-close { background: transparent; border: none; color: rgba(255,255,255,.8); cursor: pointer; }
+.loyalty-close:hover { color: #fff; }
+.loyalty-widget-body { padding: 16px; }
+.loyalty-points-display { text-align: center; margin-bottom: 12px; }
+.loyalty-points-number { font-size: 2rem; font-weight: 800; color: var(--accent); }
+.loyalty-points-label { display: block; font-size: 0.8rem; color: var(--muted); }
+.loyalty-tier { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--text); margin-bottom: 12px; }
+.loyalty-progress-wrap { margin-bottom: 12px; }
+.loyalty-progress-bar { height: 8px; border-radius: 4px; background: var(--hover); overflow: hidden; }
+.loyalty-progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #f59e0b, #22c55e); transition: width .5s ease; }
+.loyalty-progress-text { display: flex; align-items: center; gap: 4px; font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+.loyalty-perks { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.loyalty-perk { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; color: var(--text); }
+.loyalty-cta {
+  width: 100%; padding: 10px; border: none; border-radius: 8px; cursor: pointer;
+  font-weight: 600; font-size: 0.85rem;
+  background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  transition: opacity .2s;
+}
+.loyalty-cta:hover { opacity: .9; }
+
+/* --- Brand Carousel --- */
+.brand-carousel-section { overflow: hidden; }
+.brand-carousel-track { overflow: hidden; position: relative; margin: 0 -20px; padding: 0 20px; }
+.brand-carousel-scroll {
+  display: flex; gap: 24px; animation: scrollBrands 25s linear infinite;
+  width: max-content;
+}
+@keyframes scrollBrands { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.brand-logo-card {
+  flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 20px 28px; background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; min-width: 120px; transition: all .2s;
+}
+.brand-logo-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+.brand-logo-emoji { font-size: 2rem; }
+.brand-logo-name { font-size: 0.82rem; font-weight: 600; color: var(--text); white-space: nowrap; }
+
+/* --- Engagement Banners --- */
+.engagement-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.engagement-card {
+  text-align: center; padding: 28px 20px; background: var(--card);
+  border: 1px solid var(--border); border-radius: 16px;
+  transition: all .25s;
+}
+.engagement-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+.engagement-emoji { font-size: 2.5rem; margin-bottom: 12px; }
+.engagement-title { font-size: 1.05rem; font-weight: 700; color: var(--text); margin: 0 0 6px; }
+.engagement-desc { font-size: 0.85rem; color: var(--muted); margin: 0 0 16px; }
+.engagement-cta {
+  padding: 10px 24px; border: 2px solid var(--accent); border-radius: 10px;
+  background: transparent; color: var(--accent); cursor: pointer;
+  font-weight: 600; font-size: 0.85rem; transition: all .2s;
+}
+.engagement-cta:hover { background: var(--accent); color: #fff; }
+
+/* --- Referral Banner --- */
+.referral-banner {
+  display: flex; align-items: center; gap: 24px;
+  padding: 28px 32px; background: linear-gradient(135deg, var(--card), var(--hover));
+  border: 2px solid var(--accent); border-radius: 16px;
+}
+.referral-icon {
+  flex-shrink: 0; width: 64px; height: 64px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+}
+.referral-content { flex: 1; }
+.referral-content h3 { font-size: 1.15rem; font-weight: 700; color: var(--text); margin: 0 0 4px; }
+.referral-content p { font-size: 0.88rem; color: var(--muted); margin: 0 0 12px; }
+.referral-code-row { display: flex; align-items: center; gap: 10px; }
+.referral-code {
+  padding: 8px 16px; background: var(--bg); border: 1px dashed var(--border);
+  border-radius: 8px; font-family: monospace; font-size: 0.9rem; font-weight: 700;
+  color: var(--accent); letter-spacing: 1px;
+}
+.referral-copy-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 8px 14px; border: none; border-radius: 8px; cursor: pointer;
+  font-size: 0.82rem; font-weight: 600;
+  background: var(--accent); color: #fff; transition: opacity .2s;
+}
+.referral-copy-btn:hover { opacity: .85; }
+.referral-reward {
+  flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 16px; background: rgba(245,158,11,.1); border-radius: 12px;
+  color: var(--accent); font-weight: 700; font-size: 0.9rem;
+}
+
+/* --- Responsive for new features --- */
+@media (max-width: 768px) {
+  .engagement-grid { grid-template-columns: 1fr; }
+  .referral-banner { flex-direction: column; text-align: center; }
+  .referral-code-row { justify-content: center; flex-wrap: wrap; }
+  .referral-reward { width: 100%; }
+  .app-download-inner { flex-wrap: wrap; justify-content: center; text-align: center; }
+  .app-download-buttons { width: 100%; justify-content: center; }
+  .app-download-close { top: -8px; right: 8px; }
+  .sticky-cart-inner { flex-wrap: wrap; }
+  .loyalty-widget-panel { right: 10px; left: 10px; width: auto; bottom: 200px; }
+  .pcard-btn-row { flex-direction: column; }
+  .pcard-buy-now-btn { width: 100%; justify-content: center; }
+}
+
+[dir="rtl"] .share-dropdown { right: auto; left: 0; }
+[dir="rtl"] .app-download-close { right: auto; left: 16px; }
+[dir="rtl"] .app-download-buttons { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .loyalty-widget-trigger { right: auto; left: 20px; }
+[dir="rtl"] .loyalty-widget-panel { right: auto; left: 20px; }
+[dir="rtl"] .brand-carousel-scroll { animation-name: scrollBrandsRtl; }
+@keyframes scrollBrandsRtl { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }

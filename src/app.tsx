@@ -34,6 +34,8 @@ import { PromoTicker } from './components/PromoTicker';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { NewsletterPopup } from './components/NewsletterPopup';
 import { Breadcrumbs } from './components/Breadcrumbs';
+import { AppDownloadBanner } from './components/AppDownloadBanner';
+import { LoyaltyWidget } from './components/LoyaltyWidget';
 
 
 // ═══════════════════════════════════════════════════════
@@ -267,6 +269,15 @@ const App: React.FC = () => {
     setPage('detail');
   }, []);
 
+  const buyNow = useCallback((p: Product, qty: number = 1) => {
+    setCart(prev => {
+      const existing = prev.find(i => i.id === p.id);
+      if (existing) return prev.map(i => i.id === p.id ? { ...i, qty: i.qty + qty } : i);
+      return [...prev, { ...p, qty }];
+    });
+    setPage('checkout');
+  }, []);
+
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
 
   const renderPage = () => {
@@ -287,6 +298,7 @@ const App: React.FC = () => {
       case 'detail':
         return selectedProduct ? (
           <ProductDetailPage tb={tb} tc={tc} lang={lang} product={selectedProduct} onAddToCart={addToCart}
+            onBuyNow={buyNow}
             onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
             wishlist={wishlist} compareList={compareList}
             onSelectProduct={selectProduct} setPage={setPage} t={t} formatPrice={formatPrice} isInWishlist={wishlist.includes(selectedProduct.id)} isInCompare={compareList.includes(selectedProduct.id)}
@@ -391,6 +403,16 @@ const App: React.FC = () => {
       )}
 
       {featureFlags.find(f => f.name === 'Newsletter')?.enabled && <NewsletterPopup t={t} lang={lang} />}
+
+      {/* Loyalty Widget */}
+      {featureFlags.find(f => f.id === 'ff_loyalty_widget')?.enabled !== false && (
+        <LoyaltyWidget t={t} lang={lang} />
+      )}
+
+      {/* App Download Banner */}
+      {featureFlags.find(f => f.id === 'ff_app_banner')?.enabled !== false && (
+        <AppDownloadBanner t={t} lang={lang} />
+      )}
 
       {showCookie && (
         <div className="cookie-banner">
