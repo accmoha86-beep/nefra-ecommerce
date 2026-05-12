@@ -79,6 +79,8 @@ export const Footer: React.FC<FooterProps> = ({ setPage, theme = 'elegant-dark',
           <button className="footer-link" onClick={() => setPage('shop')}>{t('shopAll')}</button>
           <button className="footer-link" onClick={() => setPage('giftcards')}>{t('giftCards')}</button>
           <button className="footer-link" onClick={() => setPage('account')}>{t('myAccount')}</button>
+          <button className="footer-link" onClick={() => setPage('wishlist')}>{t('wishlist')}</button>
+          <button className="footer-link" onClick={() => setPage('compare')}>{t('compare')}</button>
         </div>
         <div className="footer-col">
           <h4 className="footer-col-title">{t('customerService')}</h4>
