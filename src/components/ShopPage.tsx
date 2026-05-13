@@ -19,13 +19,12 @@ interface ShopPageProps {
   tb: (badge: string) => string;
   formatPrice?: (price: number, product?: any) => string;
   featureFlags?: FeatureFlag[];
-  onBuyNow?: (p: Product) => void;
 }
 
 export const ShopPage: React.FC<ShopPageProps> = ({
   filter, setFilter, onSelectProduct, onAddToCart,
   onToggleWishlist, onToggleCompare, wishlist, compareList,
-  t, tc, tb, lang, formatPrice, featureFlags, onBuyNow
+  t, tc, tb, lang, formatPrice, featureFlags
 }) => {
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('featured');
@@ -333,7 +332,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
       ) : (
         <div className="products-grid">
           {filtered.map(p => (
-            <ProductCard key={p.id} p={p} onSelect={onSelectProduct} onAddToCart={onAddToCart} onBuyNow={onBuyNow}
+            <ProductCard key={p.id} p={p} onSelect={onSelectProduct} onAddToCart={onAddToCart}
               onToggleWishlist={onToggleWishlist} onToggleCompare={onToggleCompare}
               isInWishlist={wishlist.includes(p.id)} isInCompare={compareList.includes(p.id)}
               t={t} tb={tb} lang={lang} formatPrice={formatPrice} featureFlags={featureFlags} />
