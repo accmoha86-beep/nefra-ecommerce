@@ -566,7 +566,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({lang, setPage, them
                           : [...siteSettings.featuredProductIds, p.id];
                         setSiteSettings({ ...siteSettings, featuredProductIds: updated });
                       }} />
-                      <span>{p.emoji} {getProductName(p)}</span>
+                      <span>{getProductName(p)}</span>
                     </label>
                   );
                 })}

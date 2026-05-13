@@ -26,13 +26,12 @@ interface HomePageProps {
   featureFlags?: FeatureFlag[];
   testimonials?: Testimonial[];
   featuredProductIds?: number[];
-  onBuyNow?: (p: Product) => void;
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
   theme, setPage, setFilter, onSelectProduct, onAddToCart,
   onToggleWishlist, onToggleCompare, wishlist, compareList, recentlyViewed, t, tc, tb, lang, formatPrice, featureFlags,
-  testimonials, featuredProductIds, onBuyNow
+  testimonials, featuredProductIds
 }) => {
   const ff = (id: string) => featureFlags?.find(f => f.id === id)?.enabled ?? true;
   const [email, setEmail] = useState('');
@@ -132,9 +131,9 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
           <div className="products-grid">
             {featured.slice(0, 8).map(p => (
-              <ProductCard lang={lang} key={p.id} p={p} onSelect={onSelectProduct} onAddToCart={onAddToCart} onBuyNow={onBuyNow}
+              <ProductCard lang={lang} key={p.id} p={p} onSelect={onSelectProduct} onAddToCart={onAddToCart}
                 onToggleWishlist={onToggleWishlist} onToggleCompare={onToggleCompare}
-                isInWishlist={wishlist.includes(p.id)} isInCompare={compareList.includes(p.id)} t={t} tb={tb} formatPrice={formatPrice} featureFlags={featureFlags} />
+                isInWishlist={wishlist.includes(p.id)} isInCompare={compareList.includes(p.id)} t={t} tb={tb} formatPrice={formatPrice} />
             ))}
           </div>
         </div>
@@ -155,9 +154,9 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
             <div className="products-scroll">
               {recentProducts.map(p => (
-                <ProductCard lang={lang} key={p.id} p={p} onSelect={onSelectProduct} onAddToCart={onAddToCart} onBuyNow={onBuyNow}
+                <ProductCard lang={lang} key={p.id} p={p} onSelect={onSelectProduct} onAddToCart={onAddToCart}
                   onToggleWishlist={onToggleWishlist} onToggleCompare={onToggleCompare}
-                  isInWishlist={wishlist.includes(p.id)} isInCompare={compareList.includes(p.id)} t={t} tb={tb} formatPrice={formatPrice} featureFlags={featureFlags} />
+                  isInWishlist={wishlist.includes(p.id)} isInCompare={compareList.includes(p.id)} t={t} tb={tb} formatPrice={formatPrice} />
               ))}
             </div>
           </div>

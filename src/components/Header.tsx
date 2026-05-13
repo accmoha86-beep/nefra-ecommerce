@@ -42,7 +42,7 @@ interface HeaderProps {
   onSearch: (query: string) => void;
   onSelectProduct: (p: Product) => void;
   formatPrice: (n: number) => string;
-  categories: { name: string; nameAr?: string; nameIt?: string; emoji: string; enabled?: boolean }[];
+  categories: { id: string; name: string; nameAr?: string; nameIt?: string; parentId: string | null; level: 1 | 2 | 3; enabled: boolean; order: number; count?: number; grad?: string }[];
   featureFlags: Record<string, boolean>;
   onCategoryClick: (cat: string) => void;
   isLoggedIn?: boolean;
@@ -80,7 +80,10 @@ export const Header: React.FC<HeaderProps> = ({
   const adminPages: Page[] = ['dash', 'flags', 'marketing', 'countries', 'tax', 'invoices', 'languages', 'admin-users', 'products-admin'];
   
   const getCatName = (c: any) => lang === 'ar' ? (c.nameAr || c.name) : lang === 'it' ? (c.nameIt || c.name) : c.name;
-  const enabledCats = catList.filter(c => c.enabled !== false);
+  // Hierarchical category helpers
+  const enabledL1 = catList.filter(c => c.level === 1 && c.enabled).sort((a, b) => a.order - b.order);
+  const getChildren = (parentId: string) => catList.filter(c => c.parentId === parentId && c.enabled).sort((a, b) => a.order - b.order);
+  const enabledL3 = catList.filter(c => c.level === 3 && c.enabled).sort((a, b) => a.order - b.order);
   const win = window as any;
 
   return (
@@ -240,16 +243,23 @@ export const Header: React.FC<HeaderProps> = ({
         <button onClick={() => {setPage('languages');setMobileMenuOpen(false);}}><Type size={16} style={{marginInlineEnd:'8px'}}/>{t('languages')}</button>
         <button onClick={() => {setPage('admin-users');setMobileMenuOpen(false);}}><Shield size={16} style={{marginInlineEnd:'8px'}}/>{t('adminUsers')}</button>
         <button onClick={() => {setPage('products-admin');setMobileMenuOpen(false);}}><Package size={16} style={{marginInlineEnd:'8px'}}/>{t('productsManagement') || 'Products Management'}</button>
-        {/* Beauty category in mobile */}
-        <div style={{padding:'0.75rem 1rem 0.25rem',fontSize:'0.7rem',color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:'0.1em'}}>💄 {t('catBeauty')}</div>
-        <button onClick={() => {onCategoryClick('All');setPage('shop');setMobileMenuOpen(false);}}>
-          <span style={{marginInlineEnd:'8px'}}>🛍️</span>{t('allProducts')}
-        </button>
-        {enabledCats.map(c => (
-          <button key={c.name} onClick={() => {onCategoryClick(c.name);setPage('shop');setMobileMenuOpen(false);}}>
-            <span style={{marginInlineEnd:'8px'}}>{c.emoji}</span>{getCatName(c)}
-          </button>
-        ))}
+        {/* Hierarchical categories in mobile */}
+        {enabledL1.map(l1 => {
+          const l2s = getChildren(l1.id);
+          return (<React.Fragment key={l1.id}>
+            <div style={{padding:'0.75rem 1rem 0.25rem',fontSize:'0.7rem',color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:'0.1em'}}>{getCatName(l1)}</div>
+            <button onClick={() => {onCategoryClick('All');setPage('shop');setMobileMenuOpen(false);}}>{t('allProducts')}</button>
+            {l2s.map(l2 => {
+              const l3s = getChildren(l2.id);
+              return (<React.Fragment key={l2.id}>
+                {l2s.length > 1 && <div style={{padding:'0.5rem 1rem 0.15rem',fontSize:'0.65rem',color:'var(--accent)',fontWeight:600,letterSpacing:'0.05em'}}>{getCatName(l2)}</div>}
+                {l3s.map(l3 => (
+                  <button key={l3.id} onClick={() => {onCategoryClick(l3.name);setPage('shop');setMobileMenuOpen(false);}} style={l2s.length > 1 ? {paddingInlineStart:'2rem'} : undefined}>{getCatName(l3)}</button>
+                ))}
+              </React.Fragment>);
+            })}
+          </React.Fragment>);
+        })}
       </div>
       <nav className="navbar">
         <div className="nav-inner">
@@ -257,29 +267,37 @@ export const Header: React.FC<HeaderProps> = ({
             <button key={n.label} className={`nav-link${n.page === page ? ' active' : ''}`}
               onClick={() => n.page && setPage(n.page)}>{n.label}</button>
           ))}
-          {/* Beauty category with subcategory dropdown */}
-          {ff.ff_category_nav !== false && enabledCats.length > 0 && (<>
-            <div className="nav-divider" />
-            <div className="nav-beauty-wrap">
-              <button className={`nav-link nav-beauty-link${page === 'shop' ? ' active' : ''}`}
-                onClick={() => { onCategoryClick('All'); setPage('shop'); }}>
-                <span className="nav-cat-emoji">💄</span>
-                {t('catBeauty')}
-                <ChevronDown size={12} style={{marginInlineStart:'4px',opacity:0.6}}/>
-              </button>
-              <div className="nav-beauty-dropdown">
-                <button className="nav-beauty-item" onClick={() => { onCategoryClick('All'); setPage('shop'); }}>
-                  <span className="nav-cat-emoji">🛍️</span> {t('allProducts')}
+          {/* Hierarchical category mega menu */}
+          {ff.ff_category_nav !== false && enabledL1.length > 0 && enabledL1.map(l1 => {
+            const l2s = getChildren(l1.id);
+            return (<React.Fragment key={l1.id}>
+              <div className="nav-divider" />
+              <div className="nav-beauty-wrap">
+                <button className={`nav-link nav-beauty-link${page === 'shop' ? ' active' : ''}`}
+                  onClick={() => { onCategoryClick('All'); setPage('shop'); }}>
+                  {getCatName(l1)}
+                  <ChevronDown size={12} style={{marginInlineStart:'4px',opacity:0.6}}/>
                 </button>
-                {enabledCats.map(c => (
-                  <button key={c.name} className={`nav-beauty-item${win.__activeCat === c.name ? ' active' : ''}`}
-                    onClick={() => { onCategoryClick(c.name); setPage('shop'); }}>
-                    <span className="nav-cat-emoji">{c.emoji}</span> {getCatName(c)}
+                <div className="nav-beauty-dropdown">
+                  <button className="nav-beauty-item" onClick={() => { onCategoryClick('All'); setPage('shop'); }}>
+                    {t('allProducts')}
                   </button>
-                ))}
+                  {l2s.map(l2 => {
+                    const l3s = getChildren(l2.id);
+                    return (<React.Fragment key={l2.id}>
+                      {l2s.length > 1 && <div className="nav-beauty-section">{getCatName(l2)}</div>}
+                      {l3s.map(l3 => (
+                        <button key={l3.id} className={`nav-beauty-item${win.__activeCat === l3.name ? ' active' : ''}`}
+                          onClick={() => { onCategoryClick(l3.name); setPage('shop'); }}>
+                          {getCatName(l3)}
+                        </button>
+                      ))}
+                    </React.Fragment>);
+                  })}
+                </div>
               </div>
-            </div>
-          </>)}
+            </React.Fragment>);
+          })}
           <div className="nav-divider" />
           <button className={`nav-link nav-admin${adminPages.includes(page) ? ' active' : ''}`}
             onClick={() => setPage('dash')}>
