@@ -223,7 +223,7 @@ export const ProductManagementPage: React.FC<ProductManagementPageProps> = ({
                 <div className={`product-mgmt-row ${(p as any).hidden ? 'hidden-product' : ''}`}>
                   <div style={{ width:60 }}>
                     <div className="product-mgmt-thumb">
-                      <img src={p.img} alt="" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                      <img src={p.img} alt="" loading="lazy" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
                         style={{ width:44, height:44, objectFit:'cover', borderRadius:6 }}/>
                     </div>
                   </div>

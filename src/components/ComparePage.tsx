@@ -56,7 +56,7 @@ export const ComparePage: React.FC<ComparePageProps> = ({ compareList, onToggleC
                   <th key={p.id} className="compare-product-col">
                     <div className="compare-product-header">
                       <button className="compare-remove" onClick={() => onToggleCompare(p.id)}><X size={14}/></button>
-                      <img src={p.img} alt={p.name} className="compare-img"
+                      <img src={p.img} alt={p.name} className="compare-img" loading="lazy"
                         onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
                       <h4>{lang === 'ar' ? (p.nameAr || p.name) : lang === 'it' ? (p.nameIt || p.name) : p.name}</h4>
                       <Stars rating={p.rating} size={12} />

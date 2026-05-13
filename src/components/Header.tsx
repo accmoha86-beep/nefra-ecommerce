@@ -106,7 +106,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <div className="search-results-header">{searchResults.length} {t('resultsFound')}</div>
                   {searchResults.slice(0, 5).map(p => (
                     <button key={p.id} className="search-result-item" onClick={() => { onSelectProduct(p); setSearchQuery(''); setShowSearchResults(false); }}>
-                      <img src={p.img} alt={p.name} className="search-result-img" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                      <img src={p.img} alt={p.name} className="search-result-img" loading="lazy" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                       <div className="search-result-info">
                         <span className="search-result-name">{lang === 'ar' ? (p.nameAr || p.name) : lang === 'it' ? (p.nameIt || p.name) : p.name}</span>
                         <span className="search-result-cat">{p.brand} · {p.cat}</span>

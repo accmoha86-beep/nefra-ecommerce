@@ -171,7 +171,7 @@ export const AccountPage: React.FC<AccountPageProps> = ({ setPage, t, formatPric
                     <div className="order-card-items-preview">
                       {(orderItemsMap[order.id] || []).slice(0, 3).map((item, i) => (
                         <div key={i} className="order-item-mini">
-                          {item.img && <img src={item.img} alt={item.name} className="order-item-mini-img"/>}
+                          {item.img && <img src={item.img} alt={item.name} className="order-item-mini-img" loading="lazy"/>}
                           <span className="order-item-mini-name">{item.name}</span>
                           <span className="order-item-mini-qty">×{item.qty}</span>
                         </div>
