@@ -92,7 +92,7 @@ const App: React.FC = () => {
 
   // Translation function
   // Category translation helper
-  const catMap: Record<string, string> = { 'Electronics': 'catElectronics', 'Fashion': 'catFashion', 'Beauty': 'catBeauty', 'Accessories': 'catAccessories', 'Technology': 'catTechnology', 'Lifestyle': 'catLifestyle', 'Brush Sets': 'catBrushSets', 'Lashes': 'catLashes', 'Face': 'catFace', 'Eyes': 'catEyes', 'Lips': 'catLips', 'Tools': 'catTools', 'All': 'all' };
+  const catMap: Record<string, string> = { 'Health & Beauty': 'catHealthBeauty', 'Fashion': 'catFashion', 'Electronics': 'catElectronics', 'Home & Furniture': 'catHomeFurniture', 'Sports': 'catSports', 'Groceries': 'catGrocery', 'Baby Products': 'catBaby', 'Appliances': 'catAppliances', 'Makeup': 'catMakeup', 'Skincare': 'catSkincare', 'Hair Care': 'catHaircare', 'Perfumes': 'catPerfumes', 'Personal Care': 'catPersonalCare', "Women's Fashion": 'catWomensFashion', "Men's Fashion": 'catMensFashion', "Kids' Fashion": 'catKidsFashion', 'Shoes': 'catShoes', 'Bags': 'catBags', 'Brush Sets': 'catBrushSets', 'Lashes': 'catLashes', 'Face': 'catFace', 'Eyes': 'catEyes', 'Lips': 'catLips', 'Tools & Accessories': 'catTools', 'Moisturizers': 'catMoisturizers', 'Cleansers': 'catCleansers', 'Serums': 'catSerums', 'Sunscreen': 'catSunscreen', 'Masks': 'catMasks', 'Beauty': 'catBeauty', 'All': 'all' };
   // Badge translation helper
   const badgeMap: Record<string, string> = { 'Best Seller': 'badgeBestSeller', 'New': 'badgeNew', 'Premium': 'badgePremium', 'Limited': 'badgeLimited', 'Popular': 'badgePopular', 'Pro': 'badgePro', 'Trending': 'badgeTrending', 'Luxury': 'badgeLuxury', 'Hot': 'badgeHot', 'Exclusive': 'badgeExclusive' };
   // Feature flag name map
@@ -349,7 +349,8 @@ const App: React.FC = () => {
       case 'products-admin':
         return <ProductManagementPage lang={lang} setPage={setPage} t={t} formatPrice={formatPrice}
           products={productsData} setProducts={setProductsData}
-          categories={categoriesData} setCategories={setCategoriesData} />;
+          categories={categoriesData} setCategories={setCategoriesData}
+          featureFlags={featureFlags} country={currentCountry} />;
       default:
         return null;
     }
@@ -361,7 +362,7 @@ const App: React.FC = () => {
         <PromoTicker messages={siteSettings.promoMessages} t={t} lang={lang} />
       )}
       <div className="site-header-wrapper">
-        <TopBar t={t} currentCountry={currentCountry} />
+        <TopBar t={t} currentCountry={currentCountry} getCountryName={getCountryName} />
         <Header getCountryName={getCountryName} theme={theme} cartCount={cartCount} wishlistCount={wishlist.length}
           compareCount={compareList.length} onCart={() => setShowCart(true)} page={page} setPage={setPage}
           t={t} currentCountry={currentCountry} countries={countriesData}

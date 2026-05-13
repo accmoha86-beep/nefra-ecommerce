@@ -3062,6 +3062,17 @@ ul, ol { list-style: none; }
   font-weight: 600;
 }
 .nav-cat-emoji { font-size: 1rem; line-height: 1; }
+.nav-beauty-section {
+  padding: 0.5rem 0.75rem 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-top: 1px solid var(--border);
+  margin-top: 0.25rem;
+}
+.nav-beauty-section:first-child { border-top: none; margin-top: 0; }
 
 /* ============ PRODUCT MANAGEMENT PAGE ============ */
 .product-mgmt { padding: 2rem; max-width: 1200px; margin: 0 auto; }
@@ -4415,7 +4426,7 @@ ul, ol { list-style: none; }
   border-radius: 12px; min-width: 120px; transition: all .2s;
 }
 .brand-logo-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
-.brand-logo-emoji { font-size: 2rem; }
+.brand-logo-letter { font-size: 2rem; }
 .brand-logo-name { font-size: 0.82rem; font-weight: 600; color: var(--text); white-space: nowrap; }
 
 /* --- Engagement Banners --- */
@@ -4491,3 +4502,26 @@ ul, ol { list-style: none; }
 [dir="rtl"] .loyalty-widget-panel { right: auto; left: 20px; }
 [dir="rtl"] .brand-carousel-scroll { animation-name: scrollBrandsRtl; }
 @keyframes scrollBrandsRtl { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }
+
+/* ======== Category Tree ======== */
+.cat-tree { display: flex; flex-direction: column; gap: 0.5rem; }
+.cat-tree-node { border-radius: 8px; overflow: hidden; }
+.cat-tree-node.level-1 { background: var(--card-bg); border: 1px solid var(--border); }
+.cat-tree-node.level-2 { margin-inline-start: 1.5rem; border-inline-start: 2px solid var(--accent); padding-inline-start: 0.75rem; margin-top: 0.25rem; }
+.cat-tree-node.level-3 { margin-inline-start: 1.5rem; margin-top: 0.15rem; }
+.cat-tree-node.disabled-cat { opacity: 0.5; }
+.cat-tree-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 0.75rem; transition: background 0.2s; }
+.cat-tree-node.level-1 > .cat-tree-row { padding: 0.75rem 1rem; }
+.cat-tree-row:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.cat-tree-name { font-weight: 600; font-size: 0.9rem; flex: 1; min-width: 0; }
+.cat-tree-node.level-3 .cat-tree-name { font-weight: 500; font-size: 0.85rem; }
+.cat-tree-badge { font-size: 0.6rem; padding: 0.1rem 0.35rem; border-radius: 4px; background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent); font-weight: 700; letter-spacing: 0.05em; flex-shrink: 0; }
+.cat-tree-count { font-size: 0.75rem; opacity: 0.5; flex-shrink: 0; }
+.cat-tree-actions { display: flex; gap: 0.25rem; align-items: center; flex-shrink: 0; margin-inline-start: auto; }
+.cat-tree-actions .icon-btn { padding: 0.25rem; }
+@media (max-width: 640px) {
+  .cat-tree-node.level-2 { margin-inline-start: 0.75rem; }
+  .cat-tree-node.level-3 { margin-inline-start: 0.75rem; }
+  .cat-tree-row { flex-wrap: wrap; gap: 0.3rem; }
+  .cat-tree-actions { width: 100%; justify-content: flex-end; }
+}

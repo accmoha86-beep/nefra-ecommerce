@@ -118,7 +118,6 @@ export interface Product {
   rating: number;
   reviews: number;
   badge?: string;
-  emoji: string;
   img: string;
   grad: string;
   desc: string;
@@ -131,6 +130,7 @@ export interface Product {
   countryStock?: { [countryCode: string]: number };
   countryPrices?: { [countryCode: string]: number };
   attributes?: Record<string, string>;
+  hidden?: boolean;
 }
 
 export interface CartItem extends Product {
@@ -201,13 +201,16 @@ export interface GiftCard {
 }
 
 export interface CategoryInfo {
+  id: string;
   name: string;
   nameAr?: string;
   nameIt?: string;
-  emoji: string;
+  parentId: string | null;
+  level: 1 | 2 | 3;
+  enabled: boolean;
+  order: number;
   count?: number;
   grad?: string;
-  enabled?: boolean;
 }
 
 export interface ChartDataPoint {
