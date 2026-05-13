@@ -3,7 +3,7 @@ import { TFunc } from '../types';
 
 interface BrandCarouselProps {
   t: TFunc;
-  brands: { name: string; emoji: string }[];
+  brands: { name: string; letter: string }[];
 }
 
 export const BrandCarousel: React.FC<BrandCarouselProps> = ({ t, brands }) => {
@@ -20,7 +20,7 @@ export const BrandCarousel: React.FC<BrandCarouselProps> = ({ t, brands }) => {
           <div className="brand-carousel-scroll">
             {[...brands, ...brands].map((b, i) => (
               <div key={i} className="brand-logo-card">
-                <span className="brand-logo-emoji">{b.emoji}</span>
+                <span className="brand-logo-emoji">{b.letter}</span>
                 <span className="brand-logo-name">{b.name}</span>
               </div>
             ))}

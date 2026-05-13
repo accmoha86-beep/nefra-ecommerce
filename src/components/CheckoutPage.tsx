@@ -298,7 +298,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ lang, cart, setPage,
               <div className="checkout-review-items">
                 {cart.map(item => (
                   <div key={item.id} className="checkout-review-item">
-                    <span>{item.emoji} {lang === 'ar' ? (item.nameAr || item.name) : lang === 'it' ? (item.nameIt || item.name) : item.name} x{item.qty}</span>
+                    <span>{lang === 'ar' ? (item.nameAr || item.name) : lang === 'it' ? (item.nameIt || item.name) : item.name} x{item.qty}</span>
                     <span>{formatPrice(item.price * item.qty)}</span>
                   </div>
                 ))}

@@ -48,7 +48,7 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({lang, cart, show, onClo
                 <div key={item.id} className="cart-item">
                   <div className="cart-item-img-wrap">
                     <img src={item.img} alt={lang === 'ar' ? (item.nameAr || item.name) : lang === 'it' ? (item.nameIt || item.name) : item.name} className="cart-item-img"
-                      onError={(e) => { (e.target as HTMLImageElement).outerHTML = `<div class="cart-item-emoji">${item.emoji}</div>`; }} />
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
                   </div>
                   <div className="cart-item-info">
                     <h4>{lang === 'ar' ? (item.nameAr || item.name) : lang === 'it' ? (item.nameIt || item.name) : item.name}</h4>
