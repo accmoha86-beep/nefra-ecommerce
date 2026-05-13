@@ -101,9 +101,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               onClick={() => setShowLightbox(true)}
               onError={() => setImgError(true)} />
           ) : (
-            <div className="detail-img-fallback" style={{ background: p.grad }}>
-              <span className="detail-emoji">{p.emoji}</span>
-            </div>
+            <div className="detail-img-fallback" style={{ background: p.grad }}>            </div>
           )}
           {p.badge && <span className={`detail-badge badge-${p.badge.toLowerCase().replace(/\s/g,'')}`}>{tb(p.badge)}</span>}
           {ff('ff_discount_badge') && d > 0 && <span className="detail-discount-badge">-{d}%</span>}

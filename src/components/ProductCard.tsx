@@ -75,9 +75,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ p, onSelect, onAddToCa
           <img src={p.img} alt={p.name} className="pcard-img" loading="lazy"
             onError={() => setImgError(true)} />
         ) : (
-          <div className="pcard-img-fallback" style={{ background: p.grad }}>
-            <span className="pcard-emoji">{p.emoji}</span>
-          </div>
+          <div className="pcard-img-fallback" style={{ background: p.grad }}>          </div>
         )}
         {showBadges && p.badge && tb && (p.badge !== 'Best Seller' || showBestSeller) && <span className={`pcard-badge badge-${p.badge.toLowerCase().replace(/\s/g,'')}`}>{tb(p.badge)}</span>}
         {showDiscount && d > 0 && <span className="pcard-discount">-{d}%</span>}

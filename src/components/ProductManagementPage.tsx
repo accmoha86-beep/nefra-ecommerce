@@ -35,9 +35,9 @@ export const ProductManagementPage: React.FC<ProductManagementPageProps> = ({
   const emptyProduct: Partial<Product> = {
     id: Math.max(0, ...products.map(p => p.id)) + 1,
     name: '', nameAr: '', nameIt: '',
-    cat: categories[0]?.name || 'Electronics',
+    cat: categories.find(c => c.level === 3 && c.enabled)?.name || 'Brush Sets',
     brand: '', price: 0, old: 0, rating: 0, reviews: 0,
-    badge: '', emoji: '📦', img: '',
+    badge: '', img: '',
     desc: '', descAr: '', descIt: '',
     stock: 0, specs: [], specsAr: [], specsIt: [],
     attributes: {},
@@ -48,7 +48,7 @@ export const ProductManagementPage: React.FC<ProductManagementPageProps> = ({
 
   const [formProduct, setFormProduct] = useState<Partial<Product>>(emptyProduct);
 
-  const emptyCategory: CategoryInfo = { name: '', nameAr: '', nameIt: '', emoji: '📦', enabled: true };
+  const emptyCategory: CategoryInfo = { id: '', name: '', nameAr: '', nameIt: '', parentId: 'makeup', level: 3, enabled: true, order: categories.length + 1 };
   const [formCategory, setFormCategory] = useState<CategoryInfo>(emptyCategory);
 
   const flash = () => { setSaved(true); setTimeout(() => setSaved(false), 2000); };
@@ -179,8 +179,8 @@ export const ProductManagementPage: React.FC<ProductManagementPageProps> = ({
             <select value={filterCat} onChange={e => setFilterCat(e.target.value)}
               className="form-input" style={{ minWidth:150 }}>
               <option value="all">{t('allCategories') || 'All Categories'}</option>
-              {categories.map(c => (
-                <option key={c.name} value={c.name}>{c.emoji} {lang === 'ar' ? (c.nameAr || c.name) : lang === 'it' ? (c.nameIt || c.name) : c.name}</option>
+              {categories.filter(c => c.level === 3).map(c => (
+                <option key={c.id} value={c.name}>{lang === 'ar' ? (c.nameAr || c.name) : lang === 'it' ? (c.nameIt || c.name) : c.name}</option>
               ))}
             </select>
             <button className="btn-primary" onClick={() => { setFormProduct(emptyProduct); setEditingProduct(null); setShowAddProduct(true); }}>
@@ -225,7 +225,6 @@ export const ProductManagementPage: React.FC<ProductManagementPageProps> = ({
                     <div className="product-mgmt-thumb">
                       <img src={p.img} alt="" onError={e => { (e.target as HTMLImageElement).style.display = 'none'; }}
                         style={{ width:44, height:44, objectFit:'cover', borderRadius:6 }}/>
-                      <span className="product-mgmt-emoji">{p.emoji}</span>
                     </div>
                   </div>
                   <div style={{ flex:2, minWidth:0 }}>
@@ -235,7 +234,7 @@ export const ProductManagementPage: React.FC<ProductManagementPageProps> = ({
                     <div style={{ fontSize:'0.75rem', opacity:0.6 }}>{p.brand}</div>
                   </div>
                   <div style={{ flex:1 }}>
-                    <span className="category-pill">{categories.find(c => c.name === p.cat)?.emoji || '📦'} {p.cat}</span>
+                    <span className="category-pill">{p.cat}</span>
                   </div>
                   <div style={{ width:100, textAlign:'right' }}>
                     <div style={{ fontWeight:600 }}>{formatPrice(p.price)}</div>
@@ -337,47 +336,71 @@ export const ProductManagementPage: React.FC<ProductManagementPageProps> = ({
             </button>
           </div>
 
-          <div className="categories-grid">
-            {categories.map(c => (
-              <div key={c.name} className={`category-mgmt-card ${!c.enabled ? 'disabled-cat' : ''}`}>
-                <div className="cat-card-header">
-                  <span className="cat-emoji">{c.emoji}</span>
-                  <div className="cat-card-info">
-                    <div style={{ fontWeight:700, fontSize:'1rem' }}>{lang === 'ar' ? (c.nameAr || c.name) : lang === 'it' ? (c.nameIt || c.name) : c.name}</div>
-                    <div style={{ fontSize:'0.75rem', opacity:0.6 }}>
-                      {products.filter(p => p.cat === c.name).length} {t('products') || 'products'}
+          {/* Hierarchical Category Tree */}
+          <div className="cat-tree">
+            {categories.filter(c => c.level === 1).sort((a,b) => a.order - b.order).map(l1 => {
+              const l2s = categories.filter(c => c.parentId === l1.id && c.level === 2).sort((a,b) => a.order - b.order);
+              const getCName = (c: CategoryInfo) => lang === 'ar' ? (c.nameAr || c.name) : lang === 'it' ? (c.nameIt || c.name) : c.name;
+              return (
+                <div key={l1.id} className={`cat-tree-node level-1 ${!l1.enabled ? 'disabled-cat' : ''}`}>
+                  <div className="cat-tree-row">
+                    <FolderOpen size={16} style={{color:'var(--accent)', flexShrink:0}}/>
+                    <span className="cat-tree-name">{getCName(l1)}</span>
+                    <span className="cat-tree-badge">L1</span>
+                    <span className="cat-tree-count">{l2s.length} {t('catLevel2')}</span>
+                    <div className="cat-tree-actions">
+                      <button className="icon-btn" onClick={() => toggleCategoryVisibility(l1.name)} title={l1.enabled ? 'Disable' : 'Enable'}>
+                        {l1.enabled ? <ToggleRight size={18} style={{color:'var(--clr-accent)'}}/> : <ToggleLeft size={18} style={{opacity:0.4}}/>}
+                      </button>
+                      <button className="icon-btn edit" onClick={() => handleEditCategory(l1)} title="Edit"><Pencil size={14}/></button>
                     </div>
                   </div>
+                  {l1.enabled && l2s.map(l2 => {
+                    const l3s = categories.filter(c => c.parentId === l2.id && c.level === 3).sort((a,b) => a.order - b.order);
+                    return (
+                      <div key={l2.id} className={`cat-tree-node level-2 ${!l2.enabled ? 'disabled-cat' : ''}`}>
+                        <div className="cat-tree-row">
+                          <FolderOpen size={14} style={{color:'var(--accent)', flexShrink:0, opacity:0.7}}/>
+                          <span className="cat-tree-name">{getCName(l2)}</span>
+                          <span className="cat-tree-badge">L2</span>
+                          <span className="cat-tree-count">{l3s.filter(c=>c.enabled).length}/{l3s.length}</span>
+                          <div className="cat-tree-actions">
+                            <button className="icon-btn" onClick={() => toggleCategoryVisibility(l2.name)} title={l2.enabled ? 'Disable' : 'Enable'}>
+                              {l2.enabled ? <ToggleRight size={18} style={{color:'var(--clr-accent)'}}/> : <ToggleLeft size={18} style={{opacity:0.4}}/>}
+                            </button>
+                            <button className="icon-btn edit" onClick={() => handleEditCategory(l2)} title="Edit"><Pencil size={14}/></button>
+                          </div>
+                        </div>
+                        {l2.enabled && l3s.map(l3 => (
+                          <div key={l3.id} className={`cat-tree-node level-3 ${!l3.enabled ? 'disabled-cat' : ''}`}>
+                            <div className="cat-tree-row">
+                              <Tag size={13} style={{flexShrink:0, opacity:0.5}}/>
+                              <span className="cat-tree-name">{getCName(l3)}</span>
+                              <span className="cat-tree-badge">L3</span>
+                              <span className="cat-tree-count">{products.filter(p => p.cat === l3.name).length} {t('products') || 'products'}</span>
+                              <div className="cat-tree-actions">
+                                <button className="icon-btn" onClick={() => toggleCategoryVisibility(l3.name)} title={l3.enabled ? 'Disable' : 'Enable'}>
+                                  {l3.enabled ? <ToggleRight size={18} style={{color:'var(--clr-accent)'}}/> : <ToggleLeft size={18} style={{opacity:0.4}}/>}
+                                </button>
+                                <button className="icon-btn edit" onClick={() => handleEditCategory(l3)} title="Edit"><Pencil size={14}/></button>
+                                {confirmDelete === l3.name ? (
+                                  <>
+                                    <button className="icon-btn danger" onClick={() => handleDeleteCategory(l3.name)} title="Confirm"><Check size={14}/></button>
+                                    <button className="icon-btn" onClick={() => setConfirmDelete(null)} title="Cancel"><X size={14}/></button>
+                                  </>
+                                ) : (
+                                  <button className="icon-btn danger" onClick={() => setConfirmDelete(l3.name)} title="Delete"><Trash2 size={14}/></button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })}
                 </div>
-                <div className="cat-card-names">
-                  <div>🇬🇧 {c.name}</div>
-                  <div>🇸🇦 {c.nameAr || '—'}</div>
-                  <div>🇮🇹 {c.nameIt || '—'}</div>
-                </div>
-                <div className="cat-card-actions">
-                  <button className="icon-btn" onClick={() => toggleCategoryVisibility(c.name)} title={c.enabled ? 'Disable' : 'Enable'}>
-                    {c.enabled ? <ToggleRight size={20} style={{ color:'var(--clr-accent)' }}/> : <ToggleLeft size={20} style={{ opacity:0.4 }}/>}
-                  </button>
-                  <button className="icon-btn edit" onClick={() => handleEditCategory(c)} title="Edit">
-                    <Pencil size={16}/>
-                  </button>
-                  {confirmDelete === c.name ? (
-                    <>
-                      <button className="icon-btn danger" onClick={() => handleDeleteCategory(c.name)} title="Confirm">
-                        <Check size={16}/>
-                      </button>
-                      <button className="icon-btn" onClick={() => setConfirmDelete(null)} title="Cancel">
-                        <X size={16}/>
-                      </button>
-                    </>
-                  ) : (
-                    <button className="icon-btn danger" onClick={() => setConfirmDelete(c.name)} title="Delete">
-                      <Trash2 size={16}/>
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
@@ -431,7 +454,7 @@ export const ProductManagementPage: React.FC<ProductManagementPageProps> = ({
                   <div className="form-group">
                     <label>{t('category') || 'Category'}</label>
                     <select className="form-input" value={formProduct.cat || ''} onChange={e => setFormProduct({...formProduct, cat: e.target.value})}>
-                      {categories.map(c => <option key={c.name} value={c.name}>{c.emoji} {c.name}</option>)}
+                      {categories.filter(c => c.level === 3).map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
                     </select>
                   </div>
                   <div className="form-group">
@@ -455,8 +478,6 @@ export const ProductManagementPage: React.FC<ProductManagementPageProps> = ({
                     </select>
                   </div>
                   <div className="form-group">
-                    <label>{t('emoji') || 'Emoji'}</label>
-                    <input className="form-input" value={formProduct.emoji || ''} onChange={e => setFormProduct({...formProduct, emoji: e.target.value})} style={{ fontSize:'1.2rem' }}/>
                   </div>
                   <div className="form-group">
                     <label>{t('stock') || 'Stock'}</label>
@@ -546,10 +567,25 @@ export const ProductManagementPage: React.FC<ProductManagementPageProps> = ({
                   <input className="form-input" value={formCategory.nameIt || ''} onChange={e => setFormCategory({...formCategory, nameIt: e.target.value})} placeholder="Nome della categoria..."/>
                 </div>
               </div>
-              <div className="form-grid-2">
+              <div className="form-grid-3">
                 <div className="form-group">
-                  <label>{t('emoji') || 'Emoji/Icon'}</label>
-                  <input className="form-input" value={formCategory.emoji} onChange={e => setFormCategory({...formCategory, emoji: e.target.value})} style={{ fontSize:'1.5rem', textAlign:'center' }}/>
+                  <label>{t('catLevel1') || 'Level'}</label>
+                  <select className="form-select" value={formCategory.level} onChange={e => {
+                    const lv = Number(e.target.value) as 1|2|3;
+                    setFormCategory({...formCategory, level: lv, parentId: lv === 1 ? null : lv === 2 ? 'health-beauty' : 'makeup'});
+                  }}>
+                    <option value={1}>Level 1 — {t('catLevel1')}</option>
+                    <option value={2}>Level 2 — {t('catLevel2')}</option>
+                    <option value={3}>Level 3 — {t('catLevel3')}</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>{t('parentCategory') || 'Parent Category'}</label>
+                  <select className="form-select" value={formCategory.parentId || ''} onChange={e => setFormCategory({...formCategory, parentId: e.target.value || null})}>
+                    {formCategory.level === 1 && <option value="">— {t('none') || 'None (Root)'} —</option>}
+                    {formCategory.level === 2 && categories.filter(c => c.level === 1).map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    {formCategory.level === 3 && categories.filter(c => c.level === 2).map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  </select>
                 </div>
                 <div className="form-group">
                   <label>{t('status') || 'Status'}</label>
