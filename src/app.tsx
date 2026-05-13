@@ -69,7 +69,15 @@ const App: React.FC = () => {
   const [showCart, setShowCart] = useState(false);
   const [filter, setFilter] = useState('All');
   const [activeCat, setActiveCat] = useState('');
-  const [categoriesData, setCategoriesData] = useState(() => loadState('categoriesData', categories));
+  const [categoriesData, setCategoriesData] = useState(() => {
+    const saved = loadState('categoriesData', categories);
+    // Migration: if old flat categories (no level), replace with new hierarchical ones
+    if (saved.length > 0 && saved[0].level === undefined) {
+      saveState('categoriesData', categories);
+      return categories;
+    }
+    return saved;
+  });
   const [productsData, setProductsData] = useState(() => loadState('productsData', products));
   const [showCookie, setShowCookie] = useState(() => loadState('cookieAccepted', false) ? false : true);
   const [showBackToTop, setShowBackToTop] = useState(false);
