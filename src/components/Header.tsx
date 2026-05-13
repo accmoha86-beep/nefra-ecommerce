@@ -270,6 +270,12 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Hierarchical category mega menu */}
           {ff.ff_category_nav !== false && enabledL1.length > 0 && enabledL1.map(l1 => {
             const l2s = getChildren(l1.id);
+            // Count products per L3 category
+            const countProds = (catName: string) => products.filter(p => p.cat === catName).length;
+            // Category icons map
+            const catIcons: Record<string, string> = {
+              'brush-sets': '🖌️', 'lashes': '👁️', 'face': '✨', 'eyes': '🎨', 'lips': '💋', 'tools': '🧰'
+            };
             return (<React.Fragment key={l1.id}>
               <div className="nav-divider" />
               <div className="nav-beauty-wrap">
@@ -278,22 +284,26 @@ export const Header: React.FC<HeaderProps> = ({
                   {getCatName(l1)}
                   <ChevronDown size={12} style={{marginInlineStart:'4px',opacity:0.6}}/>
                 </button>
-                <div className="nav-beauty-dropdown">
-                  <button className="nav-beauty-item" onClick={() => { onCategoryClick('All'); setPage('shop'); }}>
-                    {t('allProducts')}
-                  </button>
-                  {l2s.map(l2 => {
-                    const l3s = getChildren(l2.id);
-                    return (<React.Fragment key={l2.id}>
-                      {l2s.length > 1 && <div className="nav-beauty-section">{getCatName(l2)}</div>}
-                      {l3s.map(l3 => (
-                        <button key={l3.id} className={`nav-beauty-item${win.__activeCat === l3.name ? ' active' : ''}`}
+                <div className="mega-dropdown">
+                  <div className="mega-header">
+                    <span className="mega-title">{getCatName(l1)}</span>
+                    <button className="mega-view-all" onClick={() => { onCategoryClick('All'); setPage('shop'); }}>
+                      {t('allProducts')} ({products.length}) <ChevronRight size={14}/>
+                    </button>
+                  </div>
+                  <div className="mega-grid">
+                    {l2s.map(l2 => {
+                      const l3s = getChildren(l2.id);
+                      return l3s.map(l3 => (
+                        <button key={l3.id} className={`mega-cat-card${win.__activeCat === l3.name ? ' active' : ''}`}
                           onClick={() => { onCategoryClick(l3.name); setPage('shop'); }}>
-                          {getCatName(l3)}
+                          <span className="mega-cat-icon">{catIcons[l3.id] || '📦'}</span>
+                          <span className="mega-cat-name">{getCatName(l3)}</span>
+                          <span className="mega-cat-count">{countProds(l3.name)} {t('products') || 'منتج'}</span>
                         </button>
-                      ))}
-                    </React.Fragment>);
-                  })}
+                      ));
+                    })}
+                  </div>
                 </div>
               </div>
             </React.Fragment>);
