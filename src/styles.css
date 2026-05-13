@@ -4536,10 +4536,11 @@ ul, ol { list-style: none; }
   top: 100%;
   right: 0;
   min-width: 220px;
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border: 1px solid var(--accent-gold);
-  border-radius: 8px;
-  padding: 8px 0;
+  border-radius: 10px;
+  padding: 10px 0;
+  backdrop-filter: blur(10px);
   z-index: 1000;
   box-shadow: 0 8px 24px rgba(0,0,0,0.3);
   flex-direction: column;
@@ -4552,18 +4553,21 @@ ul, ol { list-style: none; }
 .mega-list-item {
   background: none;
   border: none;
-  padding: 10px 20px;
-  color: var(--text-primary);
-  font-size: 0.95rem;
+  padding: 11px 24px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
   text-align: inherit;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.2s, color 0.2s, padding 0.2s;
   white-space: nowrap;
+  letter-spacing: 0.3px;
 }
 
 .mega-list-item:hover {
   background: var(--accent-gold);
   color: var(--bg-primary);
+  padding-inline-end: 30px;
 }
 
 .mega-list-item.active {
@@ -4573,8 +4577,8 @@ ul, ol { list-style: none; }
 
 .mega-list-item.view-all {
   color: var(--accent-gold);
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-weight: 700;
+  font-size: 0.95rem;
 }
 
 .mega-list-item.view-all:hover {
