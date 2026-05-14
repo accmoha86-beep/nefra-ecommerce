@@ -54,6 +54,84 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     if (lang === 'it' && p.specsIt && p.specsIt.length > 0) return p.specsIt;
     return p.specs;
   };
+
+  // Attribute label translations
+  const attrLabels: Record<string, Record<string, string>> = {
+    en: {
+      type:'Type', size:'Size', concentration:'Concentration', gender:'For',
+      pieces:'Pieces', material:'Material', handleColor:'Handle Color',
+      volume:'Volume', finish:'Finish', shade:'Shade', shades:'Shades',
+      coverage:'Coverage', color:'Color', waterproof:'Waterproof',
+      wearTime:'Wear Time', style:'Style', styles:'Styles', reusable:'Reusable',
+      dualEnded:'Dual Ended', pairs:'Pairs', format:'Format',
+      hydrating:'Hydrating', oilControl:'Oil Control', caseType:'Case'
+    },
+    ar: {
+      type:'النوع', size:'الحجم', concentration:'التركيز', gender:'الفئة',
+      pieces:'القطع', material:'الخامة', handleColor:'لون المقبض',
+      volume:'الحجم', finish:'اللمسة', shade:'الدرجة', shades:'الدرجات',
+      coverage:'التغطية', color:'اللون', waterproof:'مقاوم للماء',
+      wearTime:'مدة الثبات', style:'الستايل', styles:'الستايلات', reusable:'إعادة الاستخدام',
+      dualEnded:'ثنائي الرأس', pairs:'الأزواج', format:'الشكل',
+      hydrating:'مرطب', oilControl:'التحكم بالزيوت', caseType:'الحقيبة'
+    },
+    it: {
+      type:'Tipo', size:'Dimensione', concentration:'Concentrazione', gender:'Per',
+      pieces:'Pezzi', material:'Materiale', handleColor:'Colore Manico',
+      volume:'Volume', finish:'Finitura', shade:'Tonalità', shades:'Tonalità',
+      coverage:'Copertura', color:'Colore', waterproof:'Waterproof',
+      wearTime:'Durata', style:'Stile', styles:'Stili', reusable:'Riutilizzabile',
+      dualEnded:'Doppia Punta', pairs:'Paia', format:'Formato',
+      hydrating:'Idratante', oilControl:'Controllo Sebo', caseType:'Custodia'
+    }
+  };
+
+  const getAttrLabel = (key: string) => {
+    return attrLabels[lang]?.[key] || attrLabels['en']?.[key] || key;
+  };
+
+  const getAttrValue = (key: string, val: string) => {
+    // Translate common values
+    const valMap: Record<string, Record<string, string>> = {
+      ar: {
+        'Unisex':'للجنسين', 'Men':'رجالي', 'Women':'نسائي',
+        'Yes':'نعم', 'No':'لا',
+        'Eau de Parfum':'او دو بارفان', 'Parfum':'بارفان', 'EDP':'او دو بارفان',
+        'Gift Set':'طقم هدايا',
+        'Synthetic':'صناعي', 'Premium Synthetic':'صناعي فاخر',
+        'Mink':'مينك', 'Fox Mink':'فوكس مينك',
+        'Latex-Free Sponge':'إسفنج خالي من اللاتكس', 'Satin':'ساتان',
+        'Full':'كاملة', 'Medium-Full':'متوسطة-كاملة', 'Natural':'طبيعي',
+        'Matte':'مات', 'Dewy':'ندي', 'Satin':'ساتان', 'Glossy':'لامع',
+        'Natural HD':'طبيعي HD', 'Dewy Glass Skin':'ندي زجاجي',
+        'Rose Gold':'روز جولد',
+        'Natural-Dramatic':'طبيعي-درامي', 'Dramatic-Volume':'درامي-فوليوم',
+        'Shimmer + Matte':'شيمر + مات', 'Matte + Shimmer + Glitter':'مات + شيمر + جليتر',
+        'Warm Tones':'درجات دافئة', 'Mixed':'متنوع',
+        'Eye Brushes':'فرش عيون', 'Eye Essentials':'أساسيات العيون',
+        'Eyebrow':'حواجب', 'Foundation':'فاونديشن',
+        'Double-Ended':'ثنائي الرأس', 'Complete Kit':'طقم كامل',
+        'Multi-Shape':'متعدد الأشكال', 'Fingerless':'بدون أصابع',
+        'One Size':'مقاس واحد', 'Hard Case':'حقيبة صلبة',
+        'Setting Spray':'سبراي تثبيت', 'Pressed Powder':'بودرة مضغوطة',
+        'Illuminating Filter':'فلتر مضيء', 'Bullet Lipstick':'ليب ستيك',
+        'Retractable':'قابل للسحب', 'Book':'كتاب',
+        'Charming Red':'أحمر تشارمينج', 'Golden':'ذهبي', 'Black':'أسود',
+      },
+      it: {
+        'Unisex':'Unisex', 'Men':'Uomo', 'Women':'Donna',
+        'Yes':'Sì', 'No':'No',
+        'Eau de Parfum':'Eau de Parfum', 'Parfum':'Parfum', 'EDP':'EDP',
+        'Gift Set':'Set Regalo',
+        'Synthetic':'Sintetico', 'Premium Synthetic':'Sintetico Premium',
+        'Full':'Totale', 'Medium-Full':'Medio-Alta',
+        'Matte':'Matte', 'Dewy':'Luminoso', 'Satin':'Satinato',
+      }
+    };
+    if (lang === 'en') return val;
+    return valMap[lang]?.[val] || val;
+  };
+
   const getCat = () => tc ? tc(p.cat) : p.cat;
 
   const sampleReviews = [
@@ -258,12 +336,21 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           )}
           {activeTab === 'specs' && (
             <div className="tab-specs">
-              {getSpecs().map((s, i) => (
-                <div key={i} className="spec-row">
-                  <span className="spec-label">{t('feature')} {i + 1}</span>
-                  <span className="spec-value">{s}</span>
-                </div>
-              ))}
+              {p.attributes && Object.keys(p.attributes).length > 0 ? (
+                Object.entries(p.attributes).map(([key, val], i) => (
+                  <div key={i} className="spec-row">
+                    <span className="spec-label">{getAttrLabel(key)}</span>
+                    <span className="spec-value">{getAttrValue(key, String(val))}</span>
+                  </div>
+                ))
+              ) : (
+                getSpecs().map((s, i) => (
+                  <div key={i} className="spec-row">
+                    <span className="spec-label">{t('feature')} {i + 1}</span>
+                    <span className="spec-value">{s}</span>
+                  </div>
+                ))
+              )}
             </div>
           )}
           {activeTab === 'reviews' && (
