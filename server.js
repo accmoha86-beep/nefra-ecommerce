@@ -1,4 +1,4 @@
-// NEFRA Build v8 - Image contain fix + Lightbox modal
+// NEFRA Build v9 - Fixed cache headers for index.html
 import express from 'express';
 import compression from 'compression';
 import { fileURLToPath } from 'url';
@@ -12,19 +12,30 @@ const PORT = process.env.PORT || 3000;
 // Gzip compression
 app.use(compression());
 
-// Cache static assets for 1 year
+// Cache static assets for 1 year (filenames are hashed, safe to cache)
 app.use('/assets', express.static(join(__dirname, 'dist/assets'), {
   maxAge: '1y',
   immutable: true
 }));
 
-// Serve built files
-app.use(express.static(join(__dirname, 'dist'), {
-  maxAge: '1h'
+// Product images — cache for 1 week
+app.use('/products', express.static(join(__dirname, 'dist/products'), {
+  maxAge: '7d'
 }));
 
-// SPA fallback — all routes serve index.html
+// Serve built files BUT not index.html (handle separately)
+app.use(express.static(join(__dirname, 'dist'), {
+  maxAge: '1h',
+  index: false  // Don't serve index.html from here
+}));
+
+// SPA fallback — all routes serve index.html with NO CACHE
 app.get('*', (req, res) => {
+  res.set({
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  });
   res.sendFile(join(__dirname, 'dist', 'index.html'));
 });
 
