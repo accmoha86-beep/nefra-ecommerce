@@ -294,7 +294,11 @@ export const Header: React.FC<HeaderProps> = ({
                   <div className="mega-list-divider" />
                   <button className="mega-list-item view-all"
                     onClick={() => { onCategoryClick('All'); setPage('shop'); }}>
-                    {t('allProducts')} ({products.length})
+                    {t('allProducts')} ({(() => {
+                      let count = 0;
+                      l2s.forEach(l2 => { getChildren(l2.id).forEach(l3 => { count += countProds(l3.name); }); });
+                      return count;
+                    })()})
                   </button>
                 </div>
               </div>
