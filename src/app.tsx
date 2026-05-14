@@ -71,14 +71,22 @@ const App: React.FC = () => {
   const [activeCat, setActiveCat] = useState('');
   const [categoriesData, setCategoriesData] = useState(() => {
     const saved = loadState('categoriesData', categories);
-    // Migration: if old flat categories (no level), replace with new hierarchical ones
-    if (saved.length > 0 && saved[0].level === undefined) {
+    // Migration: if old flat categories (no level) OR missing perfumes category, replace
+    if (saved.length > 0 && (saved[0].level === undefined || !saved.some((c: any) => c.id === 'perfumes-main'))) {
       saveState('categoriesData', categories);
       return categories;
     }
     return saved;
   });
-  const [productsData, setProductsData] = useState(() => loadState('productsData', products));
+  const [productsData, setProductsData] = useState(() => {
+    const saved = loadState('productsData', products);
+    // Migration: if products don't include perfumes (id >= 26), reset
+    if (!saved.some((p: any) => p.id >= 26)) {
+      saveState('productsData', products);
+      return products;
+    }
+    return saved;
+  });
   const [showCookie, setShowCookie] = useState(() => loadState('cookieAccepted', false) ? false : true);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
