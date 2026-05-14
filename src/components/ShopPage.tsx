@@ -79,8 +79,21 @@ export const ShopPage: React.FC<ShopPageProps> = ({
     setSelectedAttrs(prev => ({ ...prev, [key]: prev[key] === val ? '' : val }));
   };
 
+  // Resolve L1 filter to list of L3 category names under that L1
+  const resolveFilter = (f: string): string[] | null => {
+    if (!f.startsWith('L1:')) return null;
+    const l1Id = f.substring(3);
+    const l2s = categories.filter(c => c.parentId === l1Id && c.level === 2);
+    const l3Names: string[] = [];
+    l2s.forEach(l2 => {
+      categories.filter(c => c.parentId === l2.id && c.level === 3).forEach(l3 => l3Names.push(l3.name));
+    });
+    return l3Names;
+  };
+
   const filtered = useMemo(() => {
-    let result = filter === 'All' ? [...products] : products.filter(p => p.cat === filter);
+    const l1Cats = resolveFilter(filter);
+    let result = filter === 'All' ? [...products] : l1Cats ? products.filter(p => l1Cats.includes(p.cat)) : products.filter(p => p.cat === filter);
     if (search) {
       const s = search.toLowerCase();
       result = result.filter(p => p.name.toLowerCase().includes(s) || p.brand?.toLowerCase().includes(s) ||
@@ -122,7 +135,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
       {/* Top Bar: Title + Search + Sort */}
       <div className="shop-topbar">
         <div className="shop-topbar-left">
-          <h1 className="shop-title">{filter === 'All' ? t('allProducts') : tc(filter)}</h1>
+          <h1 className="shop-title">{filter === 'All' ? t('allProducts') : filter.startsWith('L1:') ? (() => { const l1 = categories.find(c => c.id === filter.substring(3)); return l1 ? (lang === 'ar' ? l1.nameAr : lang === 'it' ? (l1.nameIt || l1.name) : l1.name) : tc(filter); })() : tc(filter)}</h1>
           <span className="shop-count">{filtered.length} {t('heroStatProducts')}</span>
         </div>
         <div className="shop-topbar-right">
@@ -150,7 +163,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
               onClick={() => setFilter(c)}>
               {c === 'All' ? t('allItems') : tc(c)}
               <span className="filter-chip-count">
-                {c === 'All' ? products.length : products.filter(p => p.cat === c).length}
+                {c === 'All' ? products.length : c.startsWith('L1:') ? (() => { const ns = resolveFilter(c); return ns ? products.filter(p => ns.includes(p.cat)).length : 0; })() : products.filter(p => p.cat === c).length}
               </span>
             </button>
           ))}
