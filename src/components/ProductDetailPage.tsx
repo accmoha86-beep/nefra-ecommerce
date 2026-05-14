@@ -118,8 +118,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           </div>
 
           <div className="detail-price-row">
-            <span className="detail-price">{formatPrice ? formatPrice(p.price) : p.price}</span>
-            {ff('ff_strikethrough') && p.old && <span className="detail-old">{formatPrice ? formatPrice(p.old) : p.old}</span>}
+            <span className="detail-price">{formatPrice ? formatPrice(p.price, p) : p.price}</span>
+            {ff('ff_strikethrough') && p.old && <span className="detail-old">{formatPrice ? formatPrice(p.old || 0, p) : p.old}</span>}
             {d > 0 && <span className="detail-save">{t('save')} {d}%</span>}
           </div>
 
@@ -152,7 +152,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
           <div className="detail-actions">
             <button className="btn-add-to-cart" onClick={() => { for(let i = 0; i < qty; i++) onAddToCart(p); }}>
-              <ShoppingBag size={18}/> {t('addToCart')} — {formatPrice ? formatPrice(p.price * qty) : p.price * qty}
+              <ShoppingBag size={18}/> {t('addToCart')} — {formatPrice ? formatPrice(p.price * qty, p) : p.price * qty}
             </button>
             {ff('ff_buy_now') && onBuyNow && (
               <button className="btn-buy-now" onClick={() => onBuyNow(p, qty)}>
@@ -350,7 +350,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           <div className="sticky-cart-inner">
             <div className="sticky-cart-info">
               <span className="sticky-cart-name">{getName().length > 30 ? getName().slice(0, 30) + '…' : getName()}</span>
-              <span className="sticky-cart-price">{formatPrice ? formatPrice(p.price) : p.price}</span>
+              <span className="sticky-cart-price">{formatPrice ? formatPrice(p.price, p) : p.price}</span>
             </div>
             <button className="sticky-cart-btn" onClick={() => { for(let i = 0; i < qty; i++) onAddToCart(p); }}>
               <ShoppingBag size={16}/> {t('stickyCart.addToCart')}

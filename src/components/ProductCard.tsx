@@ -15,7 +15,7 @@ interface ProductCardProps {
   t: TFunc;
   tb?: (badge: string) => string;
   lang?: string;
-  formatPrice: (n: number) => string;
+  formatPrice: (n: number, product?: any) => string;
   featureFlags?: FeatureFlag[];
 }
 
@@ -110,8 +110,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ p, onSelect, onAddToCa
         )}
         {showPrice && (
           <div className="pcard-price-row">
-            <span className="pcard-price">{formatPrice(p.price)}</span>
-            {showStrikethrough && p.old && <span className="pcard-old">{formatPrice(p.old)}</span>}
+            <span className="pcard-price">{formatPrice(p.price, p)}</span>
+            {showStrikethrough && p.old && <span className="pcard-old">{formatPrice(p.old || 0, p)}</span>}
             {showStrikethrough && d > 0 && <span className="pcard-save">{t('product.save')} {d}%</span>}
           </div>
         )}

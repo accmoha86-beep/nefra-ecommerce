@@ -111,7 +111,7 @@ export const Header: React.FC<HeaderProps> = ({
                         <span className="search-result-name">{lang === 'ar' ? (p.nameAr || p.name) : lang === 'it' ? (p.nameIt || p.name) : p.name}</span>
                         <span className="search-result-cat">{p.brand} · {p.cat}</span>
                       </div>
-                      <span className="search-result-price">{formatPrice(p.price)}</span>
+                      <span className="search-result-price">{formatPrice(p.price, p)}</span>
                     </button>
                   ))}
                   {searchResults.length > 5 && (

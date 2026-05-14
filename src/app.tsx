@@ -80,8 +80,9 @@ const App: React.FC = () => {
   });
   const [productsData, setProductsData] = useState(() => {
     const saved = loadState('productsData', products);
-    // Migration: if products don't include perfumes (id >= 26), reset
-    if (!saved.some((p: any) => p.id >= 26)) {
+    // Migration v4: force refresh if perfumes have wrong prices (old price:125 instead of 500)
+    const perfumeSample = saved.find((p: any) => p.id === 26);
+    if (!saved.some((p: any) => p.id >= 26) || (perfumeSample && perfumeSample.price < 200)) {
       saveState('productsData', products);
       return products;
     }

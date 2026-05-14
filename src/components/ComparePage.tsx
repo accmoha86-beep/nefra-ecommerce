@@ -20,7 +20,7 @@ export const ComparePage: React.FC<ComparePageProps> = ({ compareList, onToggleC
 
   const rows: { label: string; getValue: (p: Product) => string }[] = [
     { label: t('category'), getValue: p => p.cat },
-    { label: t('price'), getValue: p => formatPrice(p.price) },
+    { label: t('price'), getValue: p => formatPrice(p.price, p) },
     { label: t('rating'), getValue: p => `${p.rating} / 5` },
     { label: t('reviews'), getValue: p => p.reviews.toLocaleString() },
     { label: t('stock'), getValue: p => p.stock > 0 ? `${p.stock} ${t('available')}` : t('outOfStock') },
@@ -60,7 +60,7 @@ export const ComparePage: React.FC<ComparePageProps> = ({ compareList, onToggleC
                         onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
                       <h4>{lang === 'ar' ? (p.nameAr || p.name) : lang === 'it' ? (p.nameIt || p.name) : p.name}</h4>
                       <Stars rating={p.rating} size={12} />
-                      <span className="compare-price">{formatPrice(p.price)}</span>
+                      <span className="compare-price">{formatPrice(p.price, p)}</span>
                       <button className="btn-sm-primary" onClick={() => onAddToCart(p)}>
                         <ShoppingBag size={12}/> {t('addToCart')}
                       </button>
