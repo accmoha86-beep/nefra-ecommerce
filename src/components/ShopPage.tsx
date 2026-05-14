@@ -308,7 +308,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
         {activeFilterCount > 0 && (
           <div className="active-tags-row">
             {filter !== 'All' && (
-              <span className="active-tag" onClick={() => setFilter('All')}>{tc(filter)} <X size={11}/></span>
+              <span className="active-tag" onClick={() => setFilter('All')}>{filter.startsWith('L1:') ? (() => { const l1 = categories.find(c => c.id === filter.substring(3)); return l1 ? (lang === 'ar' ? l1.nameAr : lang === 'it' ? (l1.nameIt || l1.name) : l1.name) : filter; })() : tc(filter)} <X size={11}/></span>
             )}
             {selectedBrand !== 'All' && (
               <span className="active-tag" onClick={() => setSelectedBrand('All')}>{selectedBrand} <X size={11}/></span>
