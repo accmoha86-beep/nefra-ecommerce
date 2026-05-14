@@ -800,14 +800,14 @@ ul, ol { list-style: none; }
 .tab-desc p { margin-bottom: 1rem; }
 
 /* Specs table — premium */
-.tab-specs { max-width: 500px; }
+.tab-specs { width: fit-content; min-width: 220px; max-width: 100%; }
 [dir="rtl"] .tab-specs { margin-right: 0; margin-left: auto; }
 [dir="ltr"] .tab-specs { margin-left: 0; margin-right: auto; }
-.spec-row { display: flex; padding: 0.65rem 0.8rem; border-bottom: 1px solid var(--border-light); border-radius: 6px; transition: background 0.2s; gap: 1rem; }
+.spec-row { display: flex; padding: 0.55rem 0.6rem; border-bottom: 1px solid var(--border-light); border-radius: 6px; transition: background 0.2s; gap: 2rem; }
 .spec-row:hover { background: var(--bg-secondary); }
 .spec-row:last-child { border-bottom: none; }
-.spec-label { width: 120px; flex-shrink: 0; font-weight: 600; color: var(--text-primary); font-size: 0.9rem; }
-.spec-value { flex: 1; color: var(--text-secondary); font-size: 0.9rem; }
+.spec-label { white-space: nowrap; flex-shrink: 0; font-weight: 600; color: var(--text-primary); font-size: 0.9rem; }
+.spec-value { white-space: nowrap; color: var(--text-secondary); font-size: 0.9rem; }
 
 /* Reviews — premium cards */
 .tab-reviews { }
@@ -4593,6 +4593,4 @@ ul, ol { list-style: none; }
 
 .mega-list-divider {
   height: 1px;
-  background: var(--border-color);
-  margin: 4px 12px;
-}
+ 
