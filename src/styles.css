@@ -800,11 +800,13 @@ ul, ol { list-style: none; }
 .tab-desc p { margin-bottom: 1rem; }
 
 /* Specs table — premium */
-.tab-specs { }
-.spec-row { display: flex; padding: 0.85rem 1rem; border-bottom: 1px solid var(--border-light); border-radius: 6px; transition: background 0.2s; }
+.tab-specs { max-width: 500px; }
+[dir="rtl"] .tab-specs { margin-right: 0; margin-left: auto; }
+[dir="ltr"] .tab-specs { margin-left: 0; margin-right: auto; }
+.spec-row { display: flex; padding: 0.65rem 0.8rem; border-bottom: 1px solid var(--border-light); border-radius: 6px; transition: background 0.2s; gap: 1rem; }
 .spec-row:hover { background: var(--bg-secondary); }
 .spec-row:last-child { border-bottom: none; }
-.spec-label { width: 40%; font-weight: 600; color: var(--text-primary); font-size: 0.9rem; }
+.spec-label { width: 120px; flex-shrink: 0; font-weight: 600; color: var(--text-primary); font-size: 0.9rem; }
 .spec-value { flex: 1; color: var(--text-secondary); font-size: 0.9rem; }
 
 /* Reviews — premium cards */
