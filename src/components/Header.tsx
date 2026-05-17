@@ -284,19 +284,31 @@ export const Header: React.FC<HeaderProps> = ({
                 <div className="mega-dropdown simple-list">
                   {l2s.map(l2 => {
                     const l3s = getChildren(l2.id);
-                    return l3s.map(l3 => (
-                      <button key={l3.id} className={`mega-list-item${win.__activeCat === l3.name ? ' active' : ''}`}
+                    if (l3s.length > 0) {
+                      return l3s.map(l3 => (
+                        <button key={l3.id} className={`mega-list-item${win.__activeCat === l3.name ? ' active' : ''}`}
                         onClick={() => { onCategoryClick(l3.name); setPage('shop'); }}>
                         {getCatName(l3)}
+                        </button>
+                      ));
+                    }
+                    return (
+                      <button key={l2.id} className={'mega-list-item' + (win.__activeCat === l2.name ? ' active' : '')}
+                        onClick={() => { onCategoryClick(l2.name); setPage('shop'); }}>
+                        {getCatName(l2)}
                       </button>
-                    ));
+                    );
                   })}
                   <div className="mega-list-divider" />
                   <button className="mega-list-item view-all"
                     onClick={() => { onCategoryClick('L1:' + l1.id); setPage('shop'); }}>
                     {t('allProducts')} ({(() => {
                       let count = 0;
-                      l2s.forEach(l2 => { getChildren(l2.id).forEach(l3 => { count += countProds(l3.name); }); });
+                      l2s.forEach(l2 => {
+                        const l3s = getChildren(l2.id);
+                        if (l3s.length > 0) { l3s.forEach(l3 => { count += countProds(l3.name); }); }
+                        else { count += countProds(l2.name); }
+                      });
                       return count;
                     })()})
                   </button>
