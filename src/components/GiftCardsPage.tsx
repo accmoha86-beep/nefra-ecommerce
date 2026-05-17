@@ -48,7 +48,7 @@ export const GiftCardsPage: React.FC<GiftCardsPageProps> = ({ setPage, t, format
                   <button key={d.id} className={`gift-design-card${selectedDesign === i ? ' active' : ''}`}
                     onClick={() => setSelectedDesign(i)}>
                     <span className="gift-design-emoji">{d.emoji}</span>
-                    <span>{d.design}</span>
+                    <span>{t('giftDesign.' + d.design)}</span>
                   </button>
                 ))}
               </div>
@@ -106,7 +106,7 @@ export const GiftCardsPage: React.FC<GiftCardsPageProps> = ({ setPage, t, format
                 <span className="gift-card-logo">● NEFRA</span>
                 <span className="gift-card-emoji-big">{giftCardDesigns[selectedDesign]?.emoji || '🎁'}</span>
                 <span className="gift-card-amount">{finalValue ? formatPrice(finalValue) : '—'}</span>
-                <span className="gift-card-type">{giftCardDesigns[selectedDesign]?.design || t('giftCard')}</span>
+                <span className="gift-card-type">{t('giftDesign.' + (giftCardDesigns[selectedDesign]?.design || 'premium'))}</span>
               </div>
               {recipientName && <p className="gift-card-to">{t('to')}: {recipientName}</p>}
               {message && <p className="gift-card-message">"{message}"</p>}
