@@ -67,7 +67,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       hydrating:'Hydrating', oilControl:'Oil Control', caseType:'Case',
       sole:'Sole', closure:'Closure', heel:'Heel', cardSlots:'Card Slots',
       laptop:'Laptop', capacity:'Capacity', antiTheft:'Anti-Theft',
-      season:'Season', occasion:'Occasion', chainStrap:'Chain Strap'
+      season:'Season', occasion:'Occasion', chainStrap:'Chain Strap',
+      compatibility:'Compatibility', connectivity:'Connectivity', battery:'Battery', power:'Power', ports:'Ports', technology:'Technology', length:'Length', connector:'Connector', hardness:'Hardness', standard:'Standard', rotation:'Rotation', mount:'Mount', foldable:'Foldable', protection:'Protection', kickstand:'Kickstand', driver:'Driver'
     },
     ar: {
       type:'النوع', size:'الحجم', concentration:'التركيز', gender:'الفئة',
@@ -79,7 +80,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       hydrating:'مرطب', oilControl:'التحكم بالزيوت', caseType:'الحقيبة',
       sole:'النعل', closure:'الإغلاق', heel:'الكعب', cardSlots:'فتحات البطاقات',
       laptop:'اللابتوب', capacity:'السعة', antiTheft:'مضاد للسرقة',
-      season:'الموسم', occasion:'المناسبة', chainStrap:'سلسلة الحمل'
+      season:'الموسم', occasion:'المناسبة', chainStrap:'سلسلة الحمل',
+      compatibility:'التوافق', connectivity:'الاتصال', battery:'البطارية', power:'القوة', ports:'المنافذ', technology:'التقنية', length:'الطول', connector:'الموصل', hardness:'الصلابة', standard:'المعيار', rotation:'الدوران', mount:'التثبيت', foldable:'قابل للطي', protection:'الحماية', kickstand:'المسند', driver:'السماعة'
     },
     it: {
       type:'Tipo', size:'Dimensione', concentration:'Concentrazione', gender:'Per',
@@ -91,7 +93,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       hydrating:'Idratante', oilControl:'Controllo Sebo', caseType:'Custodia',
       sole:'Suola', closure:'Chiusura', heel:'Tacco', cardSlots:'Slot Carte',
       laptop:'Laptop', capacity:'Capacit\u00e0', antiTheft:'Antifurto',
-      season:'Stagione', occasion:'Occasione', chainStrap:'Catena'
+      season:'Stagione', occasion:'Occasione', chainStrap:'Catena',
+      compatibility:'Compatibilit\u00e0', connectivity:'Connettivit\u00e0', battery:'Batteria', power:'Potenza', ports:'Porte', technology:'Tecnologia', length:'Lunghezza', connector:'Connettore', hardness:'Durezza', standard:'Standard', rotation:'Rotazione', mount:'Montaggio', foldable:'Pieghevole', protection:'Protezione', kickstand:'Supporto', driver:'Driver'
     }
   };
 
