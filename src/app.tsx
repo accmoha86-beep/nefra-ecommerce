@@ -86,6 +86,11 @@ const App: React.FC = () => {
       saveState('productsData', products);
       return products;
     }
+    // Migration v5: force refresh if shoes/bags products don't exist
+    if (!saved.some((p: any) => p.id >= 50)) {
+      saveState('productsData', products);
+      return products;
+    }
     return saved;
   });
   const [showCookie, setShowCookie] = useState(() => loadState('cookieAccepted', false) ? false : true);
