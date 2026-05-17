@@ -64,7 +64,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       coverage:'Coverage', color:'Color', waterproof:'Waterproof',
       wearTime:'Wear Time', style:'Style', styles:'Styles', reusable:'Reusable',
       dualEnded:'Dual Ended', pairs:'Pairs', format:'Format',
-      hydrating:'Hydrating', oilControl:'Oil Control', caseType:'Case'
+      hydrating:'Hydrating', oilControl:'Oil Control', caseType:'Case',
+      sole:'Sole', closure:'Closure', heel:'Heel', cardSlots:'Card Slots',
+      laptop:'Laptop', capacity:'Capacity', antiTheft:'Anti-Theft',
+      season:'Season', occasion:'Occasion', chainStrap:'Chain Strap'
     },
     ar: {
       type:'النوع', size:'الحجم', concentration:'التركيز', gender:'الفئة',
@@ -73,7 +76,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       coverage:'التغطية', color:'اللون', waterproof:'مقاوم للماء',
       wearTime:'مدة الثبات', style:'الستايل', styles:'الستايلات', reusable:'إعادة الاستخدام',
       dualEnded:'ثنائي الرأس', pairs:'الأزواج', format:'الشكل',
-      hydrating:'مرطب', oilControl:'التحكم بالزيوت', caseType:'الحقيبة'
+      hydrating:'مرطب', oilControl:'التحكم بالزيوت', caseType:'الحقيبة',
+      sole:'النعل', closure:'الإغلاق', heel:'الكعب', cardSlots:'فتحات البطاقات',
+      laptop:'اللابتوب', capacity:'السعة', antiTheft:'مضاد للسرقة',
+      season:'الموسم', occasion:'المناسبة', chainStrap:'سلسلة الحمل'
     },
     it: {
       type:'Tipo', size:'Dimensione', concentration:'Concentrazione', gender:'Per',
@@ -82,7 +88,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       coverage:'Copertura', color:'Colore', waterproof:'Waterproof',
       wearTime:'Durata', style:'Stile', styles:'Stili', reusable:'Riutilizzabile',
       dualEnded:'Doppia Punta', pairs:'Paia', format:'Formato',
-      hydrating:'Idratante', oilControl:'Controllo Sebo', caseType:'Custodia'
+      hydrating:'Idratante', oilControl:'Controllo Sebo', caseType:'Custodia',
+      sole:'Suola', closure:'Chiusura', heel:'Tacco', cardSlots:'Slot Carte',
+      laptop:'Laptop', capacity:'Capacit\u00e0', antiTheft:'Antifurto',
+      season:'Stagione', occasion:'Occasione', chainStrap:'Catena'
     }
   };
 
@@ -117,6 +126,32 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         'Illuminating Filter':'فلتر مضيء', 'Bullet Lipstick':'ليب ستيك',
         'Retractable':'قابل للسحب', 'Book':'كتاب',
         'Charming Red':'أحمر تشارمينج', 'Golden':'ذهبي', 'Black':'أسود',
+        'Sneaker':'رياضي', 'Running':'جري', 'Formal':'رسمي', 'Sandal':'صندل',
+        'Boot':'بوت', 'Training':'تمارين', 'Loafer':'سليب أون', 'Walking':'مشي', 'Pump':'كعب',
+        'Casual':'كاجوال',
+        'Handbag':'شنطة يد', 'Backpack':'حقيبة ظهر', 'Crossbody':'كروس بودي',
+        'Wallet':'محفظة', 'Travel Duffle':'شنطة سفر', 'Laptop Bag':'شنطة لابتوب',
+        'Clutch':'كلاتش', 'Tote':'توت', 'Duffle':'حقيبة رياضية',
+        'Shoulder Bag':'شنطة كتف', 'Mini Backpack':'حقيبة ظهر صغيرة',
+        'Mesh + Rubber':'شبكة + مطاط', 'Flyknit':'فلاي نيت',
+        'Genuine Leather':'جلد طبيعي', 'Suede':'شمواه',
+        'Leather + Fur':'جلد + فرو', 'Synthetic Mesh':'شبكة صناعية',
+        'Premium Textile':'نسيج فاخر', 'Canvas + Leather':'قماش + جلد',
+        'Breathable Mesh':'شبكة تهوية', 'Synthetic Leather':'جلد صناعي',
+        'Cushioned':'مبطن', 'Responsive Foam':'فوم متجاوب',
+        'Leather':'جلدي', 'Flexible Rubber':'مطاط مرن',
+        'Grip Rubber':'مطاط محكم', 'Air Cushion':'وسادة هوائية',
+        'Memory Foam':'ميموري فوم',
+        'Zipper':'سحاب', 'Slip-On':'سليب أون', 'Zipper + Magnetic':'سحاب + مغناطيسي',
+        'Summer':'صيف', 'Evening':'سهرة',
+        'PU Leather':'جلد صناعي PU', 'Nylon':'نايلون',
+        'Oxford Fabric':'قماش أكسفورد', 'Satin + Crystal':'ساتان + كريستال',
+        'Vegan Leather':'جلد نباتي', 'Polyester':'بوليستر',
+        'Quilted Leather':'جلد مبطن', 'Nylon + Leather':'نايلون + جلد',
+        'Flat':'مسطح', 'Medium 7cm':'متوسط 7 سم',
+        'Up to 15.6"':'حتى 15.6 بوصة', '15.6"':'15.6 بوصة',
+        'Gold':'ذهبية', '45L':'45 لتر', '35L':'35 لتر',
+        '8':'8', '12':'12',
       },
       it: {
         'Unisex':'Unisex', 'Men':'Uomo', 'Women':'Donna',
@@ -125,6 +160,19 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         'Gift Set':'Set Regalo',
         'Synthetic':'Sintetico', 'Premium Synthetic':'Sintetico Premium',
         'Full':'Totale', 'Medium-Full':'Medio-Alta',
+        'Sneaker':'Sneaker', 'Running':'Corsa', 'Formal':'Formale', 'Sandal':'Sandalo',
+        'Boot':'Stivale', 'Training':'Allenamento', 'Loafer':'Mocassino', 'Walking':'Passeggio', 'Pump':'Pump',
+        'Casual':'Casual',
+        'Handbag':'Borsa a Mano', 'Backpack':'Zaino', 'Crossbody':'Tracolla',
+        'Wallet':'Portafoglio', 'Travel Duffle':'Borsa Viaggio', 'Laptop Bag':'Borsa Laptop',
+        'Clutch':'Pochette', 'Tote':'Tote', 'Duffle':'Borsone',
+        'Shoulder Bag':'Borsa a Spalla', 'Mini Backpack':'Mini Zaino',
+        'Genuine Leather':'Vera Pelle', 'Suede':'Camoscio',
+        'Cushioned':'Ammortizzata', 'Memory Foam':'Memory Foam',
+        'Zipper':'Cerniera', 'Slip-On':'Slip-On',
+        'Summer':'Estate', 'Evening':'Sera',
+        'Flat':'Piatto', 'Medium 7cm':'Medio 7cm',
+        'Gold':'Dorata',
         'Matte':'Matte', 'Dewy':'Luminoso', 'Satin':'Satinato',
       }
     };
