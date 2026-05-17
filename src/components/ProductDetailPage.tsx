@@ -39,6 +39,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [shareCopied, setShareCopied] = useState(false);
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [showLightbox, setShowLightbox] = useState(false);
+  const [selectedSize, setSelectedSize] = useState<string>('');
   const p = product;
   const d = disc(p.price, p.old);
   const related = products.filter(r => r.cat === p.cat && r.id !== p.id).slice(0, 4);
@@ -270,6 +271,19 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             )}
           </div>
 
+
+          {/* SIZE SELECTOR - for shoes */}
+          {ff('ff_size_selector') && (p.cat === 'Shoes') && (
+            <div className="detail-size-selector">
+              <span className="size-label">{t('selectSize')}:</span>
+              <div className="size-buttons">
+                {['38','39','40','41','42','43','44','45'].map(s => (
+                  <button key={s} className={`size-btn${selectedSize === s ? ' active' : ''}`}
+                    onClick={() => setSelectedSize(s)}>{s}</button>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="detail-qty">
             <span>{t('quantity')}:</span>
             <div className="qty-control">
@@ -321,6 +335,44 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             )}
           </div>
 
+
+          {/* TRUST BADGES */}
+          {ff('ff_trust_badges') && (
+            <div className="trust-badges">
+              <div className="trust-badge">
+                <Truck size={20}/>
+                <div className="trust-text">
+                  <span className="trust-title">{t('trust.fastShipping')}</span>
+                  <span className="trust-desc">{t('trust.fastShippingDesc')}</span>
+                </div>
+              </div>
+              <div className="trust-badge">
+                <Shield size={20}/>
+                <div className="trust-text">
+                  <span className="trust-title">{t('trust.quality')}</span>
+                  <span className="trust-desc">{t('trust.qualityDesc')}</span>
+                </div>
+              </div>
+              <div className="trust-badge">
+                <RotateCcw size={20}/>
+                <div className="trust-text">
+                  <span className="trust-title">{t('trust.easyReturns')}</span>
+                  <span className="trust-desc">{t('trust.easyReturnsDesc')}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ASK A QUESTION */}
+          {ff('ff_ask_question') && (
+            <div className="ask-question">
+              <MessageCircle size={16}/>
+              <span>{t('askQuestion')}</span>
+              <a href={`https://wa.me/201234567890?text=${encodeURIComponent(getName())}`} target="_blank" rel="noopener noreferrer" className="ask-question-btn">
+                {t('askQuestionCta')}
+              </a>
+            </div>
+          )}
           {/* DELIVERY & RETURNS ACCORDION */}
           {ff('ff_delivery_accordion') && (
             <div className="delivery-accordion">

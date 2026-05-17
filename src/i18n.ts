@@ -1475,6 +1475,15 @@ const en: Translations = {
   'totalProducts': 'Total Products',
   'trackingTimeline': 'Tracking Timeline',
   'verifiedBuyer': 'Verified Buyer',
+  'trust.fastShipping': 'Fast Shipping',
+  'trust.quality': 'Premium Quality',
+  'trust.easyReturns': 'Easy Returns',
+  'trust.fastShippingDesc': 'Express delivery available',
+  'trust.qualityDesc': '100% Authentic products',
+  'trust.easyReturnsDesc': 'Hassle-free returns',
+  'selectSize': 'Select Size',
+  'askQuestion': 'Have a Question?',
+  'askQuestionCta': 'Ask on WhatsApp',
 };
 
 const ar: Translations = {
@@ -2946,6 +2955,15 @@ const ar: Translations = {
   'totalProducts': 'إجمالي المنتجات',
   'trackingTimeline': 'تتبع الشحنة',
   'verifiedBuyer': 'مشتري موثق',
+  'trust.fastShipping': '\u0634\u062d\u0646 \u0633\u0631\u064a\u0639',
+  'trust.quality': '\u062c\u0648\u062f\u0629 \u0639\u0627\u0644\u064a\u0629',
+  'trust.easyReturns': '\u0625\u0631\u062c\u0627\u0639 \u0633\u0647\u0644',
+  'trust.fastShippingDesc': '\u062a\u0648\u0635\u064a\u0644 \u0633\u0631\u064a\u0639 \u0645\u062a\u0627\u062d',
+  'trust.qualityDesc': '\u0645\u0646\u062a\u062c\u0627\u062a \u0623\u0635\u0644\u064a\u0629 100%',
+  'trust.easyReturnsDesc': '\u0625\u0631\u062c\u0627\u0639 \u0628\u062f\u0648\u0646 \u062a\u0639\u0642\u064a\u062f',
+  'selectSize': '\u0627\u062e\u062a\u0631 \u0627\u0644\u0645\u0642\u0627\u0633',
+  'askQuestion': '\u0639\u0646\u062f\u0643 \u0633\u0624\u0627\u0644\u061f',
+  'askQuestionCta': '\u0627\u0633\u0623\u0644 \u0639\u0644\u0649 \u0648\u0627\u062a\u0633\u0627\u0628',
 };
 
 const it: Translations = {
@@ -4421,6 +4439,15 @@ const it: Translations = {
   'totalProducts': 'Totale Prodotti',
   'trackingTimeline': 'Cronologia Spedizione',
   'verifiedBuyer': 'Acquirente Verificato',
+  'trust.fastShipping': 'Spedizione Veloce',
+  'trust.quality': 'Qualit\u00e0 Premium',
+  'trust.easyReturns': 'Resi Facili',
+  'trust.fastShippingDesc': 'Consegna express disponibile',
+  'trust.qualityDesc': 'Prodotti 100% autentici',
+  'trust.easyReturnsDesc': 'Resi senza problemi',
+  'selectSize': 'Seleziona Taglia',
+  'askQuestion': 'Hai una Domanda?',
+  'askQuestionCta': 'Chiedi su WhatsApp',
 };
 
 export const allTranslations: Record<string, Translations> = { en, ar, it };

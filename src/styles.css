@@ -4596,3 +4596,141 @@ ul, ol { list-style: none; }
   background: var(--border, #333);
   margin: 4px 12px;
 }
+
+/* ========================================
+   TRUST BADGES (LebsyMarka-inspired)
+   ======================================== */
+.trust-badges {
+  display: flex;
+  gap: 8px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin: 12px 0;
+}
+.trust-badge {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  transition: background 0.2s;
+}
+.trust-badge:hover {
+  background: var(--bg-hover, var(--bg-secondary));
+}
+.trust-badge svg {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.trust-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.trust-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.trust-desc {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+/* ========================================
+   SIZE SELECTOR BUTTONS
+   ======================================== */
+.detail-size-selector {
+  margin: 8px 0;
+}
+.size-label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.size-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.size-btn {
+  min-width: 44px;
+  height: 38px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.size-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.size-btn.active {
+  background: var(--accent);
+  color: var(--bg-primary);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+/* ========================================
+   ASK A QUESTION (WhatsApp link)
+   ======================================== */
+.ask-question {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.ask-question svg {
+  color: #25D366;
+}
+.ask-question-btn {
+  color: #25D366;
+  font-weight: 600;
+  text-decoration: none;
+  margin-inline-start: auto;
+  padding: 4px 12px;
+  border: 1px solid #25D366;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+.ask-question-btn:hover {
+  background: #25D366;
+  color: #fff;
+}
+
+/* ========================================
+   MOBILE RESPONSIVE for new features
+   ======================================== */
+@media (max-width: 768px) {
+  .trust-badges {
+    flex-direction: column;
+    gap: 6px;
+  }
+  .trust-badge {
+    padding: 6px 8px;
+  }
+  .size-buttons {
+    gap: 4px;
+  }
+  .size-btn {
+    min-width: 40px;
+    height: 34px;
+    font-size: 0.8rem;
+  }
+}

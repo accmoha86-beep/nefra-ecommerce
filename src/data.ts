@@ -421,6 +421,10 @@ export const featureFlags: FeatureFlag[] = [
   { id:'ff_referral', name:'Referral Program', category:'Marketing', enabled:true, description:'Invite friends and earn rewards' },
   { id:'ff_engagement_banners', name:'Engagement Banners', category:'Marketing', enabled:true, description:'Loyalty, Gift Cards, Spin & Win cards' },
   { id:'ff_brand_carousel', name:'Brand Carousel', category:'UI', enabled:true, description:'Auto-scrolling brand logos strip' },
+  { id:'ff_trust_badges', name:'Trust Badges', category:'UI', enabled:true, description:'Trust badges below Add to Cart (Fast Shipping, Quality, Easy Returns)' },
+  { id:'ff_size_selector', name:'Size Selector Buttons', category:'UI', enabled:true, description:'Show size buttons for shoes/fashion on product detail page' },
+  { id:'ff_ask_question', name:'Ask a Question', category:'UI', enabled:true, description:'WhatsApp ask-a-question link on product detail page' },
+  { id:'ff_grid_view_switcher', name:'Grid View Switcher', category:'UI', enabled:false, description:'Allow users to switch between grid layouts on shop page' },
 ];
 
 // ============ PROMO MESSAGES (Admin-controlled) ============
