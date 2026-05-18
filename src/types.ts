@@ -209,6 +209,7 @@ export interface CategoryInfo {
   level: 1 | 2 | 3;
   enabled: boolean;
   order: number;
+  filterType?: string;
   count?: number;
   grad?: string;
 }

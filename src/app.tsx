@@ -86,6 +86,18 @@ const App: React.FC = () => {
       saveState('productsData', products);
       return products;
     }
+
+    // Migration v7: force refresh for new mega menu categories restructure
+    if (savedCategories && savedCategories.length > 0) {
+      const hasNewStructure = savedCategories.some((c: any) => c.id === 'fragrances' || c.id === 'makeup-main');
+      if (!hasNewStructure) {
+        console.log('Migration v7: new category structure — refreshing');
+        localStorage.removeItem(STORAGE_PREFIX + 'categories');
+        localStorage.removeItem(STORAGE_PREFIX + 'products');
+        window.location.reload();
+        return;
+      }
+    }
     return saved;
   });
   const [showCookie, setShowCookie] = useState(() => loadState('cookieAccepted', false) ? false : true);
@@ -109,7 +121,7 @@ const App: React.FC = () => {
 
   // Translation function
   // Category translation helper
-  const catMap: Record<string, string> = { 'Health & Beauty': 'catHealthBeauty', 'Fashion': 'catFashion', 'Electronics': 'catElectronics', 'Home & Furniture': 'catHomeFurniture', 'Sports': 'catSports', 'Groceries': 'catGrocery', 'Baby Products': 'catBaby', 'Appliances': 'catAppliances', 'Makeup': 'catMakeup', 'Skincare': 'catSkincare', 'Hair Care': 'catHaircare', 'Perfumes': 'catPerfumes', 'Personal Care': 'catPersonalCare', "Women's Fashion": 'catWomensFashion', "Men's Fashion": 'catMensFashion', "Kids' Fashion": 'catKidsFashion', 'Shoes': 'catShoes', 'Bags': 'catBags', 'Brush Sets': 'catBrushSets', 'Lashes': 'catLashes', 'Face': 'catFace', 'Eyes': 'catEyes', 'Lips': 'catLips', 'Tools & Accessories': 'catTools', 'Moisturizers': 'catMoisturizers', 'Cleansers': 'catCleansers', 'Serums': 'catSerums', 'Sunscreen': 'catSunscreen', 'Masks': 'catMasks', 'Beauty': 'catBeauty', 'Al Jazeera Perfumes': 'catAlJazeeraPerfumes', 'Luxury Perfumes': 'catLuxuryPerfumes', 'Mobile Accessories': 'catMobileAccessories', 'All': 'all' };
+  const catMap: Record<string, string> = { 'Fragrances': 'catFragrances', 'Womens Perfumes': 'catWomensPerfumes', 'Mens Perfumes': 'catMensPerfumes', 'Unisex Perfumes': 'catUnisexPerfumes', 'Incense': 'catIncense', 'Air Fresheners': 'catAirFresheners', 'Shoes': 'catShoes', 'Womens Shoes': 'catWomensShoes', 'Mens Shoes': 'catMensShoes', 'Kids Shoes': 'catKidsShoes', 'Sports Shoes': 'catSportsShoes', 'Bags': 'catBags', 'Womens Bags': 'catWomensBags', 'Mens Bags': 'catMensBags', 'Wallets': 'catWallets', 'Travel Bags': 'catTravelBags', 'Mobile Accessories': 'catMobileAccessories', 'Phone Cases': 'catPhoneCases', 'Chargers': 'catChargers', 'Headphones': 'catHeadphones', 'Screen Protectors': 'catScreenProtectors', 'Cables': 'catCables', 'Power Banks': 'catPowerBanks', 'Phone Holders': 'catPhoneHolders', 'Makeup': 'catMakeupCat', 'Face': 'catFace', 'Eyes': 'catEyes', 'Lips': 'catLips', 'Nails': 'catNails', 'Makeup Tools': 'catMakeupTools', 'Offers': 'catOffers', 'Discounts': 'catDiscounts', 'Clearance': 'catClearance', 'Seasonal Offers': 'catSeasonalOffers', 'New Arrivals': 'catNewArrivals', 'Newest Products': 'catNewestProducts', 'Best Sellers': 'catBestSellers', 'Home & Furniture': 'catHomeFurniture', 'Sports': 'catSports', 'All': 'all' }
   // Badge translation helper
   const badgeMap: Record<string, string> = { 'Best Seller': 'badgeBestSeller', 'New': 'badgeNew', 'Premium': 'badgePremium', 'Limited': 'badgeLimited', 'Popular': 'badgePopular', 'Pro': 'badgePro', 'Trending': 'badgeTrending', 'Luxury': 'badgeLuxury', 'Hot': 'badgeHot', 'Exclusive': 'badgeExclusive' };
   // Feature flag name map
