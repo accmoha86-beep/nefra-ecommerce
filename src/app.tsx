@@ -72,7 +72,7 @@ const App: React.FC = () => {
   const [categoriesData, setCategoriesData] = useState(() => {
     const saved = loadState('categoriesData', categories);
     // Migration: if old flat categories (no level) OR missing perfumes category, replace
-    if (saved.length > 0 && (saved[0].level === undefined || !saved.some((c: any) => c.id === 'perfumes-main'))) {
+    if (saved.length > 0 && (saved[0].level === undefined || !saved.some((c: any) => c.id === 'fragrances' || c.id === 'makeup-main'))) {
       saveState('categoriesData', categories);
       return categories;
     }
@@ -88,8 +88,9 @@ const App: React.FC = () => {
     }
 
     // Migration v7: force refresh for new mega menu categories restructure
-    if (savedCategories && savedCategories.length > 0) {
-      const hasNewStructure = savedCategories.some((c: any) => c.id === 'fragrances' || c.id === 'makeup-main');
+    const savedCats = loadState('categoriesData', categories);
+    if (savedCats && savedCats.length > 0) {
+      const hasNewStructure = savedCats.some((c: any) => c.id === 'fragrances' || c.id === 'makeup-main');
       if (!hasNewStructure) {
         console.log('Migration v7: new category structure — refreshing');
         localStorage.removeItem(STORAGE_PREFIX + 'categories');
