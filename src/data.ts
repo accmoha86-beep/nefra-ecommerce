@@ -570,56 +570,6 @@ export const categories: CategoryInfo[] = [
   // ═══ Level 2 — وصل حديثًا (Dynamic Filter) ═══
   { id:'newest-products', name:'Newest Products', nameAr:'أحدث المنتجات', nameIt:'Ultimi Arrivi', parentId:'new-arrivals', level:2, enabled:true, order:1, grad:'from-green-400 to-emerald-500', filterType:'newest' },
   { id:'best-sellers-cat', name:'Best Sellers', nameAr:'الأكثر مبيعًا', nameIt:'Pi\u00f9 Venduti', parentId:'new-arrivals', level:2, enabled:true, order:2, grad:'from-amber-400 to-orange-500', filterType:'best-sellers' },
-];= [
-  // ═══ Level 1 — Main Categories ═══
-  { id:'health-beauty', name:'Health & Beauty', nameAr:'الصحة والجمال', nameIt:'Salute e Bellezza', parentId:null, level:1, enabled:true, order:1, grad:'from-pink-400 to-rose-600' },
-  { id:'fashion', name:'Fashion', nameAr:'الأزياء', nameIt:'Moda', parentId:null, level:1, enabled:true, order:2, grad:'from-purple-400 to-indigo-600' },
-  { id:'electronics', name:'Electronics', nameAr:'الإلكترونيات', nameIt:'Elettronica', parentId:null, level:1, enabled:true, order:3, grad:'from-blue-400 to-cyan-600' },
-  { id:'home-furniture', name:'Home & Furniture', nameAr:'المنزل والأثاث', nameIt:'Casa e Arredamento', parentId:null, level:1, enabled:false, order:4, grad:'from-amber-400 to-orange-600' },
-  { id:'sports', name:'Sports', nameAr:'الرياضة', nameIt:'Sport', parentId:null, level:1, enabled:false, order:5, grad:'from-green-400 to-emerald-600' },
-  { id:'grocery', name:'Groceries', nameAr:'البقالة', nameIt:'Alimentari', parentId:null, level:1, enabled:false, order:6, grad:'from-yellow-400 to-amber-500' },
-  { id:'baby', name:'Baby Products', nameAr:'منتجات الأطفال', nameIt:'Prodotti per Bambini', parentId:null, level:1, enabled:false, order:7, grad:'from-sky-300 to-blue-500' },
-  { id:'appliances', name:'Appliances', nameAr:'أجهزة منزلية', nameIt:'Elettrodomestici', parentId:null, level:1, enabled:false, order:8, grad:'from-slate-400 to-gray-600' },
-  // === عطور (Perfumes) - Level 1 ===
-  { id:'perfumes-main', name:'Perfumes', nameAr:'عطور', nameIt:'Profumi', parentId:null, level:1, enabled:true, order:2, grad:'from-purple-400 to-violet-600' },
-
-
-  // ═══ Level 2 — Under Health & Beauty ═══
-  { id:'makeup', name:'Makeup', nameAr:'مكياج', nameIt:'Trucco', parentId:'health-beauty', level:2, enabled:true, order:1, grad:'from-pink-400 to-rose-600' },
-  { id:'skincare', name:'Skincare', nameAr:'العناية بالبشرة', nameIt:'Cura della Pelle', parentId:'health-beauty', level:2, enabled:false, order:2, grad:'from-green-300 to-teal-500' },
-  { id:'haircare', name:'Hair Care', nameAr:'العناية بالشعر', nameIt:'Cura dei Capelli', parentId:'health-beauty', level:2, enabled:false, order:3, grad:'from-amber-300 to-yellow-500' },
-  { id:'perfumes', name:'Perfumes', nameAr:'العطور', nameIt:'Profumi', parentId:'health-beauty', level:2, enabled:false, order:4, grad:'from-purple-300 to-violet-500' },
-  { id:'personal-care', name:'Personal Care', nameAr:'العناية الشخصية', nameIt:'Cura Personale', parentId:'health-beauty', level:2, enabled:false, order:5, grad:'from-blue-300 to-sky-500' },
-  // === Perfumes Level 2 & 3 ===
-  { id:'luxury-perfumes', name:'Luxury Perfumes', nameAr:'عطور فاخرة', nameIt:'Profumi di Lusso', parentId:'perfumes-main', level:2, enabled:true, order:1, grad:'from-purple-400 to-violet-600' },
-  { id:'aj-perfumes', name:'Al Jazeera Perfumes', nameAr:'عطور الجزيرة', nameIt:'Profumi Al Jazeera', parentId:'luxury-perfumes', level:3, enabled:true, order:1, count:24, grad:'from-purple-400 to-violet-600' },
-
-
-
-  // ═══ Level 2 — Under Electronics ═══
-  { id:'mobile-accessories', name:'Mobile Accessories', nameAr:'إكسسوارات الموبايل', nameIt:'Accessori Cellulare', parentId:'electronics', level:2, enabled:true, order:1, grad:'from-blue-400 to-cyan-600' },
-
-  // ═══ Level 2 — Under Fashion (disabled but ready) ═══
-  { id:'womens-fashion', name:"Women's Fashion", nameAr:'أزياء نسائية', nameIt:'Moda Donna', parentId:'fashion', level:2, enabled:false, order:1, grad:'from-pink-300 to-fuchsia-500' },
-  { id:'mens-fashion', name:"Men's Fashion", nameAr:'أزياء رجالية', nameIt:'Moda Uomo', parentId:'fashion', level:2, enabled:false, order:2, grad:'from-blue-400 to-indigo-600' },
-  { id:'kids-fashion', name:"Kids' Fashion", nameAr:'أزياء أطفال', nameIt:'Moda Bambini', parentId:'fashion', level:2, enabled:false, order:3, grad:'from-yellow-300 to-orange-400' },
-  { id:'shoes', name:'Shoes', nameAr:'أحذية', nameIt:'Scarpe', parentId:'fashion', level:2, enabled:true, order:4, grad:'from-stone-400 to-stone-600' },
-  { id:'bags', name:'Bags', nameAr:'حقائب', nameIt:'Borse', parentId:'fashion', level:2, enabled:true, order:5, grad:'from-amber-400 to-brown-500' },
-
-  // ═══ Level 3 — Under Makeup (active products) ═══
-  { id:'brush-sets', name:'Brush Sets', nameAr:'أطقم فرش', nameIt:'Set Pennelli', parentId:'makeup', level:3, enabled:true, order:1, count:6, grad:'from-pink-400 to-rose-600' },
-  { id:'lashes', name:'Lashes', nameAr:'رموش', nameIt:'Ciglia', parentId:'makeup', level:3, enabled:true, order:2, count:2, grad:'from-gray-500 to-gray-700' },
-  { id:'face', name:'Face', nameAr:'الوجه', nameIt:'Viso', parentId:'makeup', level:3, enabled:true, order:3, count:3, grad:'from-amber-400 to-yellow-500' },
-  { id:'eyes', name:'Eyes', nameAr:'العيون', nameIt:'Occhi', parentId:'makeup', level:3, enabled:true, order:4, count:2, grad:'from-purple-400 to-pink-600' },
-  { id:'lips', name:'Lips', nameAr:'الشفاه', nameIt:'Labbra', parentId:'makeup', level:3, enabled:true, order:5, count:2, grad:'from-red-400 to-rose-600' },
-  { id:'tools-accessories', name:'Tools & Accessories', nameAr:'أدوات وإكسسوارات', nameIt:'Strumenti e Accessori', parentId:'makeup', level:3, enabled:true, order:6, count:2, grad:'from-pink-300 to-pink-500' },
-
-  // ═══ Level 3 — Under Skincare (ready for expansion) ═══
-  { id:'moisturizers', name:'Moisturizers', nameAr:'مرطبات', nameIt:'Idratanti', parentId:'skincare', level:3, enabled:false, order:1, grad:'from-green-300 to-teal-400' },
-  { id:'cleansers', name:'Cleansers', nameAr:'غسول ومنظفات', nameIt:'Detergenti', parentId:'skincare', level:3, enabled:false, order:2, grad:'from-blue-200 to-sky-400' },
-  { id:'serums', name:'Serums', nameAr:'سيروم', nameIt:'Sieri', parentId:'skincare', level:3, enabled:false, order:3, grad:'from-violet-300 to-purple-500' },
-  { id:'sunscreen', name:'Sunscreen', nameAr:'واقي شمس', nameIt:'Protezione Solare', parentId:'skincare', level:3, enabled:false, order:4, grad:'from-yellow-300 to-orange-400' },
-  { id:'masks', name:'Masks', nameAr:'ماسكات', nameIt:'Maschere', parentId:'skincare', level:3, enabled:false, order:5, grad:'from-emerald-300 to-green-500' },
 ];
 
 // ============ CHART DATA ============
