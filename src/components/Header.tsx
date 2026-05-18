@@ -277,7 +277,7 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="nav-divider" />
               <div className="nav-beauty-wrap">
                 <button className={`nav-link nav-beauty-link${page === 'shop' ? ' active' : ''}`}
-                  onClick={() => { onCategoryClick('All'); setPage('shop'); }}>
+                  onClick={() => { onCategoryClick('L1:' + l1.id); setPage('shop'); }}>
                   {getCatName(l1)}
                   <ChevronDown size={12} style={{marginInlineStart:'4px',opacity:0.6}}/>
                 </button>
