@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Search, ChevronDown, X, RotateCcw, SlidersHorizontal } from 'lucide-react';
 import { Product, Page, TFunc, FeatureFlag } from '../types';
-import { products, cats, brands, categories } from '../data';
+import { products, brands, categories } from '../data';
 import { ProductCard } from './ProductCard';
 
 interface ShopPageProps {
@@ -19,6 +19,7 @@ interface ShopPageProps {
   tb: (badge: string) => string;
   formatPrice?: (price: number, product?: any) => string;
   featureFlags?: FeatureFlag[];
+  [key: string]: any; // Allow extra props
 }
 
 export const ShopPage: React.FC<ShopPageProps> = ({
@@ -37,6 +38,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
   const [showMoreFilters, setShowMoreFilters] = useState(false);
   const filtersRef = useRef<HTMLDivElement>(null);
 
+  // Close dropdown on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (filtersRef.current && !filtersRef.current.contains(e.target as Node)) {
@@ -47,12 +49,76 @@ export const ShopPage: React.FC<ShopPageProps> = ({
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  // Reset attribute filters when category changes
   useEffect(() => {
     setSelectedAttrs({});
   }, [filter]);
 
+  // ═══ Category Helpers ═══
+  const getCatName = (cat: any) => lang === 'ar' ? cat.nameAr : lang === 'it' ? (cat.nameIt || cat.name) : cat.name;
+
+  // Get enabled L1 categories (exclude filterType-based like offers/new-arrivals)
+  const l1Categories = useMemo(() => {
+    return categories
+      .filter(c => c.level === 1 && c.enabled && !(c as any).filterType)
+      .sort((a, b) => a.order - b.order);
+  }, []);
+
+  // Special categories (offers, new arrivals)
+  const specialL1 = useMemo(() => {
+    return categories
+      .filter(c => c.level === 1 && c.enabled && (c as any).filterType)
+      .sort((a, b) => a.order - b.order);
+  }, []);
+
+  // Get current selected L1 ID
+  const currentL1Id = useMemo(() => {
+    if (filter.startsWith('L1:')) return filter.substring(3);
+    if (filter.startsWith('L2:')) {
+      const l2 = categories.find(c => c.id === filter.substring(3));
+      return l2?.parentId || null;
+    }
+    // If filter is a direct cat name, find its L2 parent's L1
+    const l2 = categories.find(c => c.level === 2 && c.name === filter);
+    return l2?.parentId || null;
+  }, [filter]);
+
+  // Get L2 subcategories for current L1
+  const l2Categories = useMemo(() => {
+    if (!currentL1Id) return [];
+    return categories
+      .filter(c => c.parentId === currentL1Id && c.level === 2 && c.enabled)
+      .sort((a, b) => a.order - b.order);
+  }, [currentL1Id]);
+
+  // ═══ Resolve filter to product cat names ═══
+  const resolveFilter = (f: string): string[] | null => {
+    if (f === 'All') return null;
+    if (f.startsWith('L1:')) {
+      const l1Id = f.substring(3);
+      const l2s = categories.filter(c => c.parentId === l1Id && c.level === 2);
+      return l2s.map(l2 => l2.name);
+    }
+    if (f.startsWith('L2:')) {
+      const l2 = categories.find(c => c.id === f.substring(3));
+      return l2 ? [l2.name] : null;
+    }
+    // Direct cat name
+    return [f];
+  };
+
+  // Count products for a filter value
+  const countProducts = (f: string): number => {
+    if (f === 'All') return products.length;
+    const resolved = resolveFilter(f);
+    if (!resolved) return products.length;
+    return products.filter(p => resolved.includes(p.cat)).length;
+  };
+
+  // ═══ Dynamic Attributes ═══
   const dynamicAttributes = useMemo(() => {
-    const base = filter === 'All' ? products : products.filter(p => p.cat === filter);
+    const resolved = resolveFilter(filter);
+    const base = resolved ? products.filter(p => resolved.includes(p.cat)) : products;
     const attrMap: Record<string, string[]> = {};
     base.forEach(p => {
       if (p.attributes) {
@@ -79,21 +145,18 @@ export const ShopPage: React.FC<ShopPageProps> = ({
     setSelectedAttrs(prev => ({ ...prev, [key]: prev[key] === val ? '' : val }));
   };
 
-  // Resolve L1 filter to list of L3 category names under that L1
-  const resolveFilter = (f: string): string[] | null => {
-    if (!f.startsWith('L1:')) return null;
-    const l1Id = f.substring(3);
-    const l2s = categories.filter(c => c.parentId === l1Id && c.level === 2);
-    const l3Names: string[] = [];
-    l2s.forEach(l2 => {
-      categories.filter(c => c.parentId === l2.id && c.level === 3).forEach(l3 => l3Names.push(l3.name));
-    });
-    return l3Names;
-  };
+  // ═══ Dynamic Brands (based on current L1) ═══
+  const filteredBrands = useMemo(() => {
+    const resolved = resolveFilter(filter);
+    const base = resolved ? products.filter(p => resolved.includes(p.cat)) : products;
+    const brandSet = new Set(base.map(p => p.brand).filter(Boolean));
+    return ['All', ...Array.from(brandSet).sort()];
+  }, [filter]);
 
+  // ═══ Filtered Products ═══
   const filtered = useMemo(() => {
-    const l1Cats = resolveFilter(filter);
-    let result = filter === 'All' ? [...products] : l1Cats ? products.filter(p => l1Cats.includes(p.cat)) : products.filter(p => p.cat === filter);
+    const resolved = resolveFilter(filter);
+    let result = resolved ? products.filter(p => resolved.includes(p.cat)) : [...products];
     if (search) {
       const s = search.toLowerCase();
       result = result.filter(p => p.name.toLowerCase().includes(s) || p.brand?.toLowerCase().includes(s) ||
@@ -117,6 +180,20 @@ export const ShopPage: React.FC<ShopPageProps> = ({
     }
   }, [filter, search, sort, selectedBrand, priceRange, minRating, stockFilter, selectedAttrs]);
 
+  // ═══ Filter Title ═══
+  const filterTitle = useMemo(() => {
+    if (filter === 'All') return t('allProducts');
+    if (filter.startsWith('L1:')) {
+      const l1 = categories.find(c => c.id === filter.substring(3));
+      return l1 ? getCatName(l1) : t('allProducts');
+    }
+    if (filter.startsWith('L2:')) {
+      const l2 = categories.find(c => c.id === filter.substring(3));
+      return l2 ? getCatName(l2) : tc(filter);
+    }
+    return tc(filter);
+  }, [filter, lang]);
+
   const resetAll = () => {
     setFilter('All'); setSelectedBrand('All'); setPriceRange([0, 20000]);
     setMinRating(0); setStockFilter('all'); setSelectedAttrs({}); setSearch('');
@@ -127,15 +204,14 @@ export const ShopPage: React.FC<ShopPageProps> = ({
     Object.values(selectedAttrs).filter(Boolean).length;
 
   const toggleDropdown = (id: string) => setOpenDropdown(prev => prev === id ? null : id);
-
   const dynamicAttrKeys = Object.keys(dynamicAttributes);
 
   return (
     <div className="shop-page">
-      {/* Top Bar: Title + Search + Sort */}
+      {/* Top Bar */}
       <div className="shop-topbar">
         <div className="shop-topbar-left">
-          <h1 className="shop-title">{filter === 'All' ? t('allProducts') : filter.startsWith('L1:') ? (() => { const l1 = categories.find(c => c.id === filter.substring(3)); return l1 ? (lang === 'ar' ? l1.nameAr : lang === 'it' ? (l1.nameIt || l1.name) : l1.name) : tc(filter); })() : tc(filter)}</h1>
+          <h1 className="shop-title">{filterTitle}</h1>
           <span className="shop-count">{filtered.length} {t('heroStatProducts')}</span>
         </div>
         <div className="shop-topbar-right">
@@ -154,22 +230,62 @@ export const ShopPage: React.FC<ShopPageProps> = ({
         </div>
       </div>
 
-      {/* Filters Row */}
+      {/* Filters Area */}
       <div className="shop-filters-bar" ref={filtersRef}>
-        {/* Category chips */}
+
+        {/* ═══ Row 1: L1 Category Chips ═══ */}
         <div className="filter-chips-row">
-          {cats.map(c => (
-            <button key={c} className={`filter-chip ${filter === c ? 'active' : ''}`}
-              onClick={() => setFilter(c)}>
-              {c === 'All' ? t('allItems') : tc(c)}
-              <span className="filter-chip-count">
-                {c === 'All' ? products.length : c.startsWith('L1:') ? (() => { const ns = resolveFilter(c); return ns ? products.filter(p => ns.includes(p.cat)).length : 0; })() : products.filter(p => p.cat === c).length}
-              </span>
-            </button>
-          ))}
+          <button className={`filter-chip ${filter === 'All' ? 'active' : ''}`}
+            onClick={() => setFilter('All')}>
+            {t('allItems')}
+            <span className="filter-chip-count">{products.length}</span>
+          </button>
+          {l1Categories.map(l1 => {
+            const isActive = currentL1Id === l1.id;
+            const cnt = countProducts('L1:' + l1.id);
+            return (
+              <button key={l1.id} className={`filter-chip ${isActive ? 'active' : ''}`}
+                onClick={() => setFilter(isActive && filter === 'L1:' + l1.id ? 'All' : 'L1:' + l1.id)}>
+                {getCatName(l1)}
+                <span className="filter-chip-count">{cnt}</span>
+              </button>
+            );
+          })}
+          {specialL1.map(l1 => {
+            const isActive = currentL1Id === l1.id;
+            return (
+              <button key={l1.id} className={`filter-chip filter-chip-special ${isActive ? 'active' : ''}`}
+                onClick={() => setFilter(isActive ? 'All' : 'L1:' + l1.id)}>
+                {(l1 as any).filterType === 'offers' ? '🔥' : '🆕'} {getCatName(l1)}
+              </button>
+            );
+          })}
         </div>
 
-        {/* Dropdown filters: Brand, Price, Rating, Stock + More */}
+        {/* ═══ Row 2: L2 Sub-category Chips (appears when L1 selected) ═══ */}
+        {l2Categories.length > 0 && currentL1Id && (
+          <div className="filter-chips-row filter-l2-row">
+            <button className={`filter-chip filter-chip-sm ${filter === 'L1:' + currentL1Id ? 'active' : ''}`}
+              onClick={() => setFilter('L1:' + currentL1Id)}>
+              {t('allItems')}
+              <span className="filter-chip-count">{countProducts('L1:' + currentL1Id)}</span>
+            </button>
+            {l2Categories.map(l2 => {
+              const cnt = products.filter(p => p.cat === l2.name).length;
+              const isActive = filter === l2.name || filter === 'L2:' + l2.id;
+              return (
+                <button key={l2.id} className={`filter-chip filter-chip-sm ${isActive ? 'active' : ''} ${cnt === 0 ? 'filter-chip-empty' : ''}`}
+                  onClick={() => cnt > 0 ? setFilter(l2.name) : null}>
+                  {getCatName(l2)}
+                  <span className="filter-chip-count">{cnt}</span>
+                  {cnt === 0 && <span className="coming-soon-tag">{lang === 'ar' ? 'قريبًا' : lang === 'it' ? 'Presto' : 'Soon'}</span>}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* ═══ Row 3: Dropdown Filters ═══ */}
         <div className="filter-dropdowns-row">
           {/* Brand */}
           <div className={`fdrop ${openDropdown === 'brand' ? 'open' : ''} ${selectedBrand !== 'All' ? 'active' : ''}`}>
@@ -184,11 +300,11 @@ export const ShopPage: React.FC<ShopPageProps> = ({
             </button>
             {openDropdown === 'brand' && (
               <div className="fdrop-panel">
-                {brands.map(b => (
+                {filteredBrands.map(b => (
                   <button key={b} className={`fdrop-opt ${selectedBrand === b ? 'sel' : ''}`}
                     onClick={() => { setSelectedBrand(b); setOpenDropdown(null); }}>
                     <span>{b === 'All' ? t('allBrands') : b}</span>
-                    <span className="fdrop-cnt">{b === 'All' ? products.length : products.filter(p => p.brand === b).length}</span>
+                    <span className="fdrop-cnt">{b === 'All' ? filtered.length : products.filter(p => p.brand === b).length}</span>
                   </button>
                 ))}
               </div>
@@ -264,7 +380,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
             )}
           </div>
 
-          {/* More Filters Button — shows dynamic attributes */}
+          {/* More Filters */}
           {dynamicAttrKeys.length > 0 && (
             <button className={`fdrop-btn fdrop-more ${showMoreFilters ? 'open' : ''} ${Object.values(selectedAttrs).some(Boolean) ? 'active' : ''}`}
               onClick={() => setShowMoreFilters(!showMoreFilters)}>
@@ -304,11 +420,13 @@ export const ShopPage: React.FC<ShopPageProps> = ({
           </div>
         )}
 
-        {/* Active Filters Tags */}
+        {/* Active Filter Tags */}
         {activeFilterCount > 0 && (
           <div className="active-tags-row">
             {filter !== 'All' && (
-              <span className="active-tag" onClick={() => setFilter('All')}>{filter.startsWith('L1:') ? (() => { const l1 = categories.find(c => c.id === filter.substring(3)); return l1 ? (lang === 'ar' ? l1.nameAr : lang === 'it' ? (l1.nameIt || l1.name) : l1.name) : filter; })() : tc(filter)} <X size={11}/></span>
+              <span className="active-tag" onClick={() => setFilter('All')}>
+                {filterTitle} <X size={11}/>
+              </span>
             )}
             {selectedBrand !== 'All' && (
               <span className="active-tag" onClick={() => setSelectedBrand('All')}>{selectedBrand} <X size={11}/></span>
@@ -335,7 +453,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
         )}
       </div>
 
-      {/* Products Grid — Full Width */}
+      {/* Products Grid */}
       {filtered.length === 0 ? (
         <div className="shop-empty">
           <h3>{t('noProductsFound')}</h3>
@@ -353,7 +471,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
         </div>
       )}
 
-      {/* SEO Text Block */}
+      {/* SEO Block */}
       <div className="shop-seo-block">
         <h2 className="shop-seo-title">{t('shop.seo.title')}</h2>
         <p className="shop-seo-text">{t('shop.seo.text')}</p>

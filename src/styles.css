@@ -4734,3 +4734,41 @@ ul, ol { list-style: none; }
     font-size: 0.8rem;
   }
 }
+
+/* ═══ Dynamic Hierarchical Filters ═══ */
+.filter-l2-row {
+  padding-top: 6px !important;
+  border-top: 1px solid var(--border-color, rgba(255,255,255,0.1));
+  margin-top: 4px;
+}
+.filter-chip-sm {
+  font-size: 0.78rem !important;
+  padding: 4px 10px !important;
+  min-height: 28px !important;
+}
+.filter-chip-special {
+  border-color: var(--accent, #d4a855) !important;
+  color: var(--accent, #d4a855) !important;
+}
+.filter-chip-special.active {
+  background: var(--accent, #d4a855) !important;
+  color: var(--bg-primary, #000) !important;
+}
+.filter-chip-empty {
+  opacity: 0.45;
+  cursor: default !important;
+  position: relative;
+}
+.filter-chip-empty:hover {
+  background: transparent !important;
+  border-color: var(--border-color, rgba(255,255,255,0.15)) !important;
+}
+.coming-soon-tag {
+  font-size: 0.6rem;
+  background: var(--accent, #d4a855);
+  color: var(--bg-primary, #000);
+  padding: 1px 5px;
+  border-radius: 6px;
+  margin-inline-start: 4px;
+  font-weight: 600;
+}
