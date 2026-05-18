@@ -662,14 +662,16 @@ ul, ol { list-style: none; }
 /* Filters Bar */
 .shop-filters-bar { margin-bottom: 0.75rem; }
 
-/* Category Chips Row */
-.filter-chips-row { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
-.filter-chip { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem; border-radius: 50px; border: 1px solid var(--border); font-size: 0.8rem; color: var(--text-secondary); cursor: pointer; background: var(--bg-primary); transition: var(--transition-fast); white-space: nowrap; }
+/* Category Chips Row — single scrollable row */
+.filter-chips-row { display: flex; align-items: center; gap: 0.4rem; flex-wrap: nowrap; overflow-x: auto; margin-bottom: 0.5rem; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.filter-chips-row::-webkit-scrollbar { display: none; }
+.filter-chip { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.35rem 0.75rem; border-radius: 50px; border: 1px solid var(--border); font-size: 0.8rem; color: var(--text-secondary); cursor: pointer; background: var(--bg-primary); transition: var(--transition-fast); white-space: nowrap; flex-shrink: 0; }
 .filter-chip:hover { border-color: var(--accent); color: var(--accent); }
 .filter-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
 
-/* Filter Dropdowns Row */
-.filter-dropdowns-row { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+/* Filter Dropdowns Row — single scrollable row */
+.filter-dropdowns-row { display: flex; align-items: center; gap: 0.35rem; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.filter-dropdowns-row::-webkit-scrollbar { display: none; }
 
 /* Individual dropdown */
 .fdrop { position: relative; }
