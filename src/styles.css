@@ -517,7 +517,8 @@ ul, ol { list-style: none; }
 
 /* ===== NAVBAR ===== */
 .navbar { background: var(--nav-bg); border-top: 1px solid var(--border-light); padding: 0.35rem 0; }
-.nav-inner { max-width: var(--max-width); margin: 0 auto; padding: 0 0.75rem; display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+.nav-inner { max-width: var(--max-width); margin: 0 auto; padding: 0 0.75rem; display: flex; align-items: center; gap: 0.35rem; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
+.nav-inner::-webkit-scrollbar { display: none; }
 .nav-link { padding: 0.7rem 1.2rem; font-size: 1.05rem; font-weight: 500; color: var(--text-secondary); white-space: nowrap; transition: all 0.25s ease; border: 1.5px solid transparent; border-radius: var(--radius-sm); position: relative; letter-spacing: 0.01em; }
 .nav-link:hover { color: var(--text-primary); border-color: var(--border-light); background: var(--bg-hover); }
 .nav-link.active { color: var(--accent); border-color: var(--accent); font-weight: 700; background: var(--accent-light); border-radius: var(--radius-sm); }
