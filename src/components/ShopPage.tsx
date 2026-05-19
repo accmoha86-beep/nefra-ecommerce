@@ -121,8 +121,8 @@ export const ShopPage: React.FC<ShopPageProps> = ({
   const countProducts = (f: string): number => {
     if (f === 'All') return products.length;
     const ft = getFilterType(f);
-    if (ft === 'on-sale') return products.filter(p => (p as any).isOnSale).length;
-    if (ft === 'new') return products.filter(p => (p as any).isNew || (p as any).isBestSeller).length;
+    if (ft === 'offers' || ft === 'on-sale' || ft === 'discounts' || ft === 'clearance' || ft === 'seasonal') return products.filter(p => (p as any).isOnSale).length;
+    if (ft === 'new' || ft === 'newest' || ft === 'best-sellers') return products.filter(p => (p as any).isNew || (p as any).isBestSeller).length;
     const resolved = resolveFilter(f);
     if (!resolved) return products.length;
     return products.filter(p => resolved.includes(p.cat)).length;
@@ -170,9 +170,9 @@ export const ShopPage: React.FC<ShopPageProps> = ({
   const filtered = useMemo(() => {
     const ft = getFilterType(filter);
     let result: typeof products;
-    if (ft === 'on-sale') {
+    if (ft === 'offers' || ft === 'on-sale' || ft === 'discounts' || ft === 'clearance' || ft === 'seasonal') {
       result = products.filter(p => (p as any).isOnSale);
-    } else if (ft === 'new') {
+    } else if (ft === 'new' || ft === 'newest' || ft === 'best-sellers') {
       result = products.filter(p => (p as any).isNew || (p as any).isBestSeller);
     } else {
       const resolved = resolveFilter(filter);
