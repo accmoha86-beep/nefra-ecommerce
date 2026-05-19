@@ -3072,13 +3072,8 @@ ul, ol { list-style: none; }
 
 /* ============ MEGA DROPDOWN MENU ============ */
 
-/* RTL handled by inset-inline */
-.nav-beauty-wrap:hover 
-
 /* Mega menu responsive */
 @media (max-width: 768px) {
-  
-  /* RTL handled by inset-inline */
   
   
   
@@ -4540,16 +4535,14 @@ ul, ol { list-style: none; }
 /* === Simple Dropdown Menu === */
 .mega-dropdown.simple-list {
   display: none;
-  position: absolute;
-  top: 100%;
-  right: 0;
+  position: fixed;
   min-width: 220px;
   background: var(--bg-primary);
   border: 1px solid var(--accent);
   border-radius: 10px;
   padding: 10px 0;
   backdrop-filter: blur(10px);
-  z-index: 1000;
+  z-index: 9999;
   box-shadow: 0 8px 24px rgba(0,0,0,0.3);
   flex-direction: column;
 }

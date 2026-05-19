@@ -275,7 +275,21 @@ export const Header: React.FC<HeaderProps> = ({
 
             return (<React.Fragment key={l1.id}>
               <div className="nav-divider" />
-              <div className="nav-beauty-wrap">
+              <div className="nav-beauty-wrap" onMouseEnter={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const dd = e.currentTarget.querySelector('.mega-dropdown') as HTMLElement;
+                  if (dd) {
+                    dd.style.top = rect.bottom + 'px';
+                    const isRTL = document.documentElement.dir === 'rtl';
+                    if (isRTL) {
+                      dd.style.right = (window.innerWidth - rect.right) + 'px';
+                      dd.style.left = 'auto';
+                    } else {
+                      dd.style.left = rect.left + 'px';
+                      dd.style.right = 'auto';
+                    }
+                  }
+                }}>
                 <button className={`nav-link nav-beauty-link${page === 'shop' ? ' active' : ''}`}
                   onClick={() => { onCategoryClick('L1:' + l1.id); setPage('shop'); }}>
                   {getCatName(l1)}
