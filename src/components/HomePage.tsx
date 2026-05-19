@@ -122,7 +122,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       {/* CATEGORIES — removed: now merged into main navbar */}
 
       {/* FLASH SALE BANNER — controlled by ff_flash_sales */}
-      {ff('ff_flash_sales') && <section className="flash-sale-banner">
+      {ff('ff_flash_sale') && <section className="flash-sale-banner">
         <div className="flash-sale-inner">
           <div className="flash-sale-text">
             <span className="flash-sale-badge">{t('flashSale')}</span>
