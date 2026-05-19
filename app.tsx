@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ArrowUp, MessageCircle, X, Cookie } from 'lucide-react';
-import { Theme, Page, Product, CartItem, Country, Language, TaxConfig, Invoice, Translations, TFunc } from './types';
-import { products, countries as countriesInitial, languages as languagesInitial, translations as translationsInitial, taxConfigs as taxConfigsInitial, sampleInvoices, orders, featureFlags as ffInit, categories, revenueData, countryRevenueData, giftCards, promoMessages, socialLinks } from './data';
+import { Theme, Page, Product, CartItem, Country, Language, TaxConfig, Invoice, Translations, TFunc, Testimonial, FooterLink, SeoMeta, SiteSettings } from './types';
+import { products, countries as countriesInitial, languages as languagesInitial, translations as translationsInitial, taxConfigs as taxConfigsInitial, sampleInvoices, orders, featureFlags as ffInit, categories, revenueData, countryRevenueData, giftCards, promoMessages, socialLinks, defaultTestimonials, defaultFooterLinks, defaultSeoMeta, defaultSiteSettings } from './data';
 import { TopBar, Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { HomePage } from './components/HomePage';
@@ -32,7 +32,10 @@ import { ContactPage } from './components/ContactPage';
 import { ProductManagementPage } from './components/ProductManagementPage';
 import { PromoTicker } from './components/PromoTicker';
 import { WhatsAppButton } from './components/WhatsAppButton';
+import { NewsletterPopup } from './components/NewsletterPopup';
 import { Breadcrumbs } from './components/Breadcrumbs';
+import { AppDownloadBanner } from './components/AppDownloadBanner';
+import { LoyaltyWidget } from './components/LoyaltyWidget';
 
 
 // ═══════════════════════════════════════════════════════
@@ -66,8 +69,38 @@ const App: React.FC = () => {
   const [showCart, setShowCart] = useState(false);
   const [filter, setFilter] = useState('All');
   const [activeCat, setActiveCat] = useState('');
-  const [categoriesData, setCategoriesData] = useState(() => loadState('categoriesData', categories));
-  const [productsData, setProductsData] = useState(() => loadState('productsData', products));
+  const [categoriesData, setCategoriesData] = useState(() => {
+    const saved = loadState('categoriesData', categories);
+    // Migration: if old flat categories (no level) OR missing perfumes category, replace
+    if (saved.length > 0 && (saved[0].level === undefined || !saved.some((c: any) => c.id === 'fragrances' || c.id === 'makeup-main'))) {
+      saveState('categoriesData', categories);
+      return categories;
+    }
+    return saved;
+  });
+  const [productsData, setProductsData] = useState(() => {
+    const saved = loadState('productsData', products);
+    // Migration v4: force refresh if perfumes have wrong prices (old price:125 instead of 500)
+    const perfumeSample = saved.find((p: any) => p.id === 26);
+    if (!saved.some((p: any) => p.id >= 26) || (perfumeSample && perfumeSample.price < 200)) {
+      saveState('productsData', products);
+      return products;
+    }
+
+    // Migration v7: force refresh for new mega menu categories restructure
+    const savedCats = loadState('categoriesData', categories);
+    if (savedCats && savedCats.length > 0) {
+      const hasNewStructure = savedCats.some((c: any) => c.id === 'fragrances' || c.id === 'makeup-main');
+      if (!hasNewStructure) {
+        console.log('Migration v7: new category structure — refreshing');
+        localStorage.removeItem(STORAGE_PREFIX + 'categories');
+        localStorage.removeItem(STORAGE_PREFIX + 'products');
+        window.location.reload();
+        return;
+      }
+    }
+    return saved;
+  });
   const [showCookie, setShowCookie] = useState(() => loadState('cookieAccepted', false) ? false : true);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
@@ -82,13 +115,14 @@ const App: React.FC = () => {
   const [translationsData, setTranslationsData] = useState<Record<string, Translations>>(translationsInitial);
   const [taxData, setTaxData] = useState<TaxConfig[]>(() => loadState('taxData', taxConfigsInitial));
   const [featureFlags, setFeatureFlags] = useState(() => loadState('featureFlags', ffInit));
+  const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => loadState('siteSettings', defaultSiteSettings));
   
-  const [currentCountry, setCurrentCountry] = useState<Country>(() => { const saved = loadState<Country|null>('currentCountry', null); return saved || countriesInitial.find(c => c.isDefault) || countriesInitial[0]; });
+  const [currentCountry, setCurrentCountry] = useState<Country>(() => { const saved = loadState<Country|null>('currentCountry', null); const enabledCountries = countriesInitial.filter(c => c.enabled); if (saved && enabledCountries.find(c => c.code === saved.code)) return saved; return enabledCountries.find(c => c.isDefault) || enabledCountries[0] || countriesInitial[0]; });
   const [currentLang, setCurrentLang] = useState<Language>(() => { const saved = loadState<Language|null>('currentLang', null); return saved || languagesInitial.find(l => l.isDefault) || languagesInitial[0]; });
 
   // Translation function
   // Category translation helper
-  const catMap: Record<string, string> = { 'Electronics': 'catElectronics', 'Fashion': 'catFashion', 'Beauty': 'catBeauty', 'Accessories': 'catAccessories', 'Technology': 'catTechnology', 'Lifestyle': 'catLifestyle', 'All': 'all' };
+  const catMap: Record<string, string> = { 'Fragrances': 'catFragrances', 'Womens Perfumes': 'catWomensPerfumes', 'Mens Perfumes': 'catMensPerfumes', 'Unisex Perfumes': 'catUnisexPerfumes', 'Incense': 'catIncense', 'Air Fresheners': 'catAirFresheners', 'Shoes': 'catShoes', 'Womens Shoes': 'catWomensShoes', 'Mens Shoes': 'catMensShoes', 'Kids Shoes': 'catKidsShoes', 'Sports Shoes': 'catSportsShoes', 'Bags': 'catBags', 'Womens Bags': 'catWomensBags', 'Mens Bags': 'catMensBags', 'Wallets': 'catWallets', 'Travel Bags': 'catTravelBags', 'Mobile Accessories': 'catMobileAccessories', 'Phone Cases': 'catPhoneCases', 'Chargers': 'catChargers', 'Headphones': 'catHeadphones', 'Screen Protectors': 'catScreenProtectors', 'Cables': 'catCables', 'Power Banks': 'catPowerBanks', 'Phone Holders': 'catPhoneHolders', 'Makeup': 'catMakeupCat', 'Face': 'catFace', 'Eyes': 'catEyes', 'Lips': 'catLips', 'Nails': 'catNails', 'Makeup Tools': 'catMakeupTools', 'Offers': 'catOffers', 'Discounts': 'catDiscounts', 'Clearance': 'catClearance', 'Seasonal Offers': 'catSeasonalOffers', 'New Arrivals': 'catNewArrivals', 'Newest Products': 'catNewestProducts', 'Best Sellers': 'catBestSellers', 'Kids Toys': 'catKidsToys', 'Educational Toys': 'catEducationalToys', 'Dolls & Plush': 'catDollsPlush', 'RC Cars & Vehicles': 'catRcCars', 'Baby Toys': 'catBabyToys', 'Building Blocks': 'catBuildingBlocks', 'Outdoor Toys': 'catOutdoorToys', 'Home & Furniture': 'catHomeFurniture', 'Sports': 'catSports', 'All': 'all' }
   // Badge translation helper
   const badgeMap: Record<string, string> = { 'Best Seller': 'badgeBestSeller', 'New': 'badgeNew', 'Premium': 'badgePremium', 'Limited': 'badgeLimited', 'Popular': 'badgePopular', 'Pro': 'badgePro', 'Trending': 'badgeTrending', 'Luxury': 'badgeLuxury', 'Hot': 'badgeHot', 'Exclusive': 'badgeExclusive' };
   // Feature flag name map
@@ -175,6 +209,7 @@ const App: React.FC = () => {
   useEffect(() => { saveState('currentUser', currentUser); }, [currentUser]);
   useEffect(() => { saveState('currentCountry', currentCountry); }, [currentCountry]);
   useEffect(() => { saveState('currentLang', currentLang); }, [currentLang]);
+  useEffect(() => { saveState('siteSettings', siteSettings); }, [siteSettings]);
 
   // Price formatting based on current country
   const formatPrice = useCallback((price: number, product?: Product) => {
@@ -264,6 +299,15 @@ const App: React.FC = () => {
     setPage('detail');
   }, []);
 
+  const buyNow = useCallback((p: Product, qty: number = 1) => {
+    setCart(prev => {
+      const existing = prev.find(i => i.id === p.id);
+      if (existing) return prev.map(i => i.id === p.id ? { ...i, qty: i.qty + qty } : i);
+      return [...prev, { ...p, qty }];
+    });
+    setPage('checkout');
+  }, []);
+
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
 
   const renderPage = () => {
@@ -275,7 +319,8 @@ const App: React.FC = () => {
         return <HomePage lang={lang} tc={tc} tb={tb} theme={theme} setPage={setPage} setFilter={setFilter} onSelectProduct={selectProduct}
           onAddToCart={addToCart} onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
           wishlist={wishlist} compareList={compareList} recentlyViewed={recentlyViewed}
-          t={t} formatPrice={formatPrice} featureFlags={featureFlags} />;
+          t={t} formatPrice={formatPrice} featureFlags={featureFlags}
+          testimonials={siteSettings.testimonials} featuredProductIds={siteSettings.featuredProductIds} />;
       case 'shop':
         return <ShopPage lang={lang} getProductName={getProductName} getProductDesc={getProductDesc} tb={tb} filter={filter} setFilter={setFilter} tc={tc} setPage={setPage} onSelectProduct={selectProduct}
           onAddToCart={addToCart} onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
@@ -283,6 +328,7 @@ const App: React.FC = () => {
       case 'detail':
         return selectedProduct ? (
           <ProductDetailPage tb={tb} tc={tc} lang={lang} product={selectedProduct} onAddToCart={addToCart}
+            onBuyNow={buyNow}
             onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
             wishlist={wishlist} compareList={compareList}
             onSelectProduct={selectProduct} setPage={setPage} t={t} formatPrice={formatPrice} isInWishlist={wishlist.includes(selectedProduct.id)} isInCompare={compareList.includes(selectedProduct.id)}
@@ -304,7 +350,7 @@ const App: React.FC = () => {
       case 'giftcards':
         return <GiftCardsPage lang={lang} setPage={setPage} t={t} formatPrice={formatPrice} />;
       case 'dash':
-        return <DashboardPage lang={lang} setPage={setPage} theme={theme} setTheme={setTheme} t={t} getProductName={getProductName} formatPrice={(n: number) => formatPrice(n)} />;
+        return <DashboardPage lang={lang} setPage={setPage} theme={theme} setTheme={setTheme} t={t} getProductName={getProductName} formatPrice={(n: number) => formatPrice(n)} siteSettings={siteSettings} setSiteSettings={setSiteSettings} />;
       case 'flags':
         return <FeatureFlagsPage lang={lang} featureFlags={featureFlags} setFeatureFlags={setFeatureFlags} setPage={setPage} t={t} />;
       case 'marketing':
@@ -333,7 +379,8 @@ const App: React.FC = () => {
       case 'products-admin':
         return <ProductManagementPage lang={lang} setPage={setPage} t={t} formatPrice={formatPrice}
           products={productsData} setProducts={setProductsData}
-          categories={categoriesData} setCategories={setCategoriesData} />;
+          categories={categoriesData} setCategories={setCategoriesData}
+          featureFlags={featureFlags} country={currentCountry} />;
       default:
         return null;
     }
@@ -342,10 +389,10 @@ const App: React.FC = () => {
   return (
     <div className={`app theme-${theme}`} dir={currentLang.direction}>
       {featureFlags.find(f => f.id === 'ff_promo_ticker')?.enabled !== false && (
-        <PromoTicker messages={promoMessages} t={t} lang={lang} />
+        <PromoTicker messages={siteSettings.promoMessages} t={t} lang={lang} />
       )}
       <div className="site-header-wrapper">
-        <TopBar t={t} currentCountry={currentCountry} />
+        <TopBar t={t} currentCountry={currentCountry} getCountryName={getCountryName} />
         <Header getCountryName={getCountryName} theme={theme} cartCount={cartCount} wishlistCount={wishlist.length}
           compareCount={compareList.length} onCart={() => setShowCart(true)} page={page} setPage={setPage}
           t={t} currentCountry={currentCountry} countries={countriesData}
@@ -364,7 +411,7 @@ const App: React.FC = () => {
         <Breadcrumbs page={page} product={selectedProduct} t={t} tc={tc} lang={lang} setPage={setPage} getProductName={getProductName} />
       )}
       <main className="main">{renderPage()}</main>
-      <Footer setPage={setPage} theme={theme} t={t} country={currentCountry} socialLinks={socialLinks} featureFlags={featureFlags} />
+      <Footer setPage={setPage} theme={theme} t={t} lang={lang} country={currentCountry} socialLinks={siteSettings.socialLinks} featureFlags={featureFlags} footerLinks={siteSettings.footerLinks} />
 
       {/* Cart Sidebar */}
       {showCart && <CartSidebar lang={lang} cart={cart} show={showCart}
@@ -374,11 +421,6 @@ const App: React.FC = () => {
           onClose={() => setShowCart(false)} setPage={(p: Page) => { setPage(p); setShowCart(false); }}
           t={t} formatPrice={formatPrice} />}
 
-      {/* WhatsApp */}
-      <a className="whatsapp-fab" href="#" onClick={e => e.preventDefault()} title="WhatsApp">
-        <MessageCircle size={24}/>
-      </a>
-
       {/* Back to Top */}
       {showBackToTop && (
         <button className="back-to-top" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
@@ -386,10 +428,24 @@ const App: React.FC = () => {
         </button>
       )}
 
-      {/* Cookie Consent */}
-      <WhatsAppButton t={t} currentCountry={currentCountry} lang={lang} />
+      {/* WhatsApp Floating Button */}
+      {featureFlags.find(f => f.name === 'WhatsApp Chat')?.enabled && (
+        <WhatsAppButton t={t} currentCountry={currentCountry} lang={lang} siteSettings={siteSettings} />
+      )}
 
-      {showCookie && (
+      {featureFlags.find(f => f.name === 'Newsletter')?.enabled && <NewsletterPopup t={t} lang={lang} />}
+
+      {/* Loyalty Widget */}
+      {featureFlags.find(f => f.id === 'ff_loyalty_widget')?.enabled !== false && (
+        <LoyaltyWidget t={t} lang={lang} />
+      )}
+
+      {/* App Download Banner */}
+      {featureFlags.find(f => f.id === 'ff_app_banner')?.enabled !== false && (
+        <AppDownloadBanner t={t} lang={lang} />
+      )}
+
+      {showCookie && featureFlags.find(f => f.id === 'ff_cookies')?.enabled !== false && (
         <div className="cookie-banner">
           <Cookie size={20}/>
           <p>{t('cookieMessage')}</p>
