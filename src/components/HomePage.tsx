@@ -2,6 +2,23 @@ import React, { useState } from 'react';
 import { ChevronRight, Truck, RotateCcw, Shield, Headphones, Zap, ArrowRight, Mail, Star, Quote } from 'lucide-react';
 import { Theme, Page, Product, TFunc, FeatureFlag, Testimonial } from '../types';
 import { products, categories, brandLogos } from '../data';
+
+// Dynamic brands: auto-generated from actual products
+const getDynamicBrands = () => {
+  const brandCounts = new Map<string, number>();
+  products.forEach(p => { if(p.brand) brandCounts.set(p.brand, (brandCounts.get(p.brand) || 0) + 1); });
+  return Array.from(brandCounts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .map(([name, count]) => {
+      const static_ = brandLogos.find(b => b.name === name);
+      return {
+        name,
+        letter: static_?.letter || name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2),
+        nameAr: static_?.nameAr || name,
+        count,
+      };
+    });
+};
 import { ProductCard } from './ProductCard';
 import { BrandCarousel } from './BrandCarousel';
 import { EngagementBanners } from './EngagementBanners';
@@ -140,7 +157,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       </section>
 
       {/* BRAND CAROUSEL */}
-      {ff('ff_brand_carousel') && <BrandCarousel t={t} brands={brandLogos} />}
+      {ff('ff_brand_carousel') && <BrandCarousel t={t} brands={getDynamicBrands()} lang={lang} />}
 
       {/* RECENTLY VIEWED */}
       {recentProducts.length > 0 && (

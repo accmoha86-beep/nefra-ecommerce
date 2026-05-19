@@ -619,17 +619,14 @@ export const brands: string[] = ['All', ...new Set(products.map(p => p.brand).fi
 
 // ============ HELPER FUNCTIONS ============
 // ============ BRAND LOGOS DATA ============
-export const brandLogos: { name: string; letter: string }[] = [
-  { name: 'Brushia', letter: 'B' },
-  { name: 'MAC', letter: 'M' },
-  { name: 'NYX', letter: 'N' },
-  { name: 'Maybelline', letter: 'M' },
-  { name: "L'Oréal", letter: 'L' },
-  { name: 'Huda Beauty', letter: 'H' },
-  { name: 'Fenty Beauty', letter: 'F' },
-  { name: 'Charlotte Tilbury', letter: 'CT' },
-  { name: 'Too Faced', letter: 'TF' },
-  { name: 'Urban Decay', letter: 'UD' },
+export const brandLogos: { name: string; letter: string; nameAr?: string }[] = [
+  { name: 'NEFRA', letter: 'N', nameAr: 'نفرا' },
+  { name: 'Brushia', letter: 'B', nameAr: 'براشيا' },
+  { name: 'Al Jazeera', letter: 'AJ', nameAr: 'الجزيرة' },
+  { name: 'Smart Kids', letter: 'SK', nameAr: 'سمارت كيدز' },
+  { name: 'PlayTime', letter: 'PT', nameAr: 'بلاي تايم' },
+  { name: 'Baby Joy', letter: 'BJ', nameAr: 'بيبي جوي' },
+  { name: 'ToyWorld', letter: 'TW', nameAr: 'توي وورلد' },
 ];
 
 export const fmt = (n: number, symbol: string = 'ر.س'): string => `${n.toLocaleString()} ${symbol}`;
