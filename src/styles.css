@@ -569,6 +569,9 @@ ul, ol { list-style: none; }
 .hero-desc { font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.7; letter-spacing: 0.01em; }
 .hero-product-showcase { position: relative; width: 100%; max-width: 400px; aspect-ratio: 1/1; border-radius: var(--radius-lg); overflow: hidden; background: var(--bg-secondary); }
 .hero-showcase-img { width: 100%; height: 100%; object-fit: cover; }
+.hero-brand-visual { display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--accent-light) 0%, transparent 60%); border: 2px solid var(--accent); }
+.hero-brand-icon { font-size: 5rem; color: var(--accent); opacity: 0.9; animation: heroPulse 3s ease-in-out infinite; }
+@keyframes heroPulse { 0%,100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } }
 .hero-stat { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; }
 .hero-stat strong { font-size: 1.5rem; font-weight: 700; color: var(--accent); letter-spacing: 0.03em; }
 .hero-stat span { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }

@@ -89,15 +89,14 @@ export const HomePage: React.FC<HomePageProps> = ({
               <button className="btn-hero-secondary" onClick={() => setPage('shop')}>{t('viewAll')}</button>
             </div>
             <div className="hero-stats">
-              <div className="hero-stat"><strong>12K+</strong><span>{t('heroStatProducts')}</span></div>
-              <div className="hero-stat"><strong>50K+</strong><span>{t('heroStatCustomers')}</span></div>
+              <div className="hero-stat"><strong>97+</strong><span>{t('heroStatProducts')}</span></div>
+              <div className="hero-stat"><strong>7</strong><span>{t('heroStatBrands')}</span></div>
               <div className="hero-stat"><strong>4.9</strong><span>{t('heroStatRating')}</span></div>
             </div>
           </div>
           <div className="hero-visual">
-            <div className="hero-product-showcase">
-              <img src="./assets/iphone.jpg" alt="Featured" className="hero-showcase-img"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+            <div className="hero-product-showcase hero-brand-visual">
+              <div className="hero-brand-icon">✦</div>
             </div>
           </div>
         </div>
@@ -122,19 +121,19 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* CATEGORIES — removed: now merged into main navbar */}
 
-      {/* FLASH SALE BANNER */}
-      <section className="flash-sale-banner">
+      {/* FLASH SALE BANNER — controlled by ff_flash_sales */}
+      {ff('ff_flash_sales') && <section className="flash-sale-banner">
         <div className="flash-sale-inner">
           <div className="flash-sale-text">
             <span className="flash-sale-badge">{t('flashSale')}</span>
             <h2>{t('upTo40Off')}</h2>
             <p>{t('flashSaleDesc')}</p>
           </div>
-          <button className="btn-hero-primary" onClick={() => { setFilter('Electronics'); setPage('shop'); }}>
+          <button className="btn-hero-primary" onClick={() => { setFilter('All'); setPage('shop'); }}>
             {t('shop')} {t('sale')} <ArrowRight size={16}/>
           </button>
         </div>
-      </section>
+      </section>}
 
       {/* FEATURED PRODUCTS */}
       <section className="section">

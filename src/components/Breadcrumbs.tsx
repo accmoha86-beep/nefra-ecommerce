@@ -37,6 +37,7 @@ const pageNames: Record<string, string> = {
   'returns-policy': 'returnsPolicy',
   'size-guide': 'sizeGuide',
   contact: 'contactUs',
+  login: 'auth.login',
 };
 
 export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ page, product, t, tc, lang, setPage, getProductName }) => {

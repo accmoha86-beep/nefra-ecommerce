@@ -108,9 +108,21 @@ export const ShopPage: React.FC<ShopPageProps> = ({
     return [f];
   };
 
+  // Check if a filter targets a special filterType category
+  const getFilterType = (f: string): string | null => {
+    if (f.startsWith('L1:')) {
+      const l1 = categories.find(c => c.id === f.substring(3));
+      return l1 ? (l1 as any).filterType || null : null;
+    }
+    return null;
+  };
+
   // Count products for a filter value
   const countProducts = (f: string): number => {
     if (f === 'All') return products.length;
+    const ft = getFilterType(f);
+    if (ft === 'on-sale') return products.filter(p => (p as any).isOnSale).length;
+    if (ft === 'new') return products.filter(p => (p as any).isNew || (p as any).isBestSeller).length;
     const resolved = resolveFilter(f);
     if (!resolved) return products.length;
     return products.filter(p => resolved.includes(p.cat)).length;
@@ -156,8 +168,16 @@ export const ShopPage: React.FC<ShopPageProps> = ({
 
   // ═══ Filtered Products ═══
   const filtered = useMemo(() => {
-    const resolved = resolveFilter(filter);
-    let result = resolved ? products.filter(p => resolved.includes(p.cat)) : [...products];
+    const ft = getFilterType(filter);
+    let result: typeof products;
+    if (ft === 'on-sale') {
+      result = products.filter(p => (p as any).isOnSale);
+    } else if (ft === 'new') {
+      result = products.filter(p => (p as any).isNew || (p as any).isBestSeller);
+    } else {
+      const resolved = resolveFilter(filter);
+      result = resolved ? products.filter(p => resolved.includes(p.cat)) : [...products];
+    }
     if (search) {
       const s = search.toLowerCase();
       result = result.filter(p => p.name.toLowerCase().includes(s) || p.brand?.toLowerCase().includes(s) ||
