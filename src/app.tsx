@@ -5,6 +5,8 @@ import { Theme, Page, Product, CartItem, Country, Language, TaxConfig, Invoice, 
 import { products, countries as countriesInitial, languages as languagesInitial, translations as translationsInitial, taxConfigs as taxConfigsInitial, sampleInvoices, orders, featureFlags as ffInit, categories, revenueData, countryRevenueData, giftCards, promoMessages, socialLinks, defaultTestimonials, defaultFooterLinks, defaultSeoMeta, defaultSiteSettings } from './data';
 import { TopBar, Header } from './components/Header';
 import { Footer } from './components/Footer';
+import { AdminLayout } from './components/AdminLayout';
+import { CategoryPage } from './components/CategoryPage';
 import { HomePage } from './components/HomePage';
 import { ShopPage } from './components/ShopPage';
 import { ProductDetailPage } from './components/ProductDetailPage';
@@ -53,24 +55,29 @@ const pageToRoute: Record<string, string> = {
   'products-admin': '/dashboard/products', 'faq': '/faq',
   'shipping-info': '/shipping', 'returns-policy': '/returns',
   'size-guide': '/size-guide', 'contact': '/contact',
+  'category': '/category',
 };
 
 const routeToPage: Record<string, string> = Object.fromEntries(
   Object.entries(pageToRoute).filter(([k]) => k !== 'detail').map(([k, v]) => [v, k])
 );
 
-function parseHash(): { page: string; productId?: number } {
+function parseHash(): { page: string; productId?: number; categoryId?: string } {
   const hash = window.location.hash.replace('#', '') || '/';
   // Product detail: /product/42
   const productMatch = hash.match(/^\/product\/(\d+)/);
   if (productMatch) return { page: 'detail', productId: parseInt(productMatch[1]) };
+  // Category page: /category/fragrances
+  const catMatch = hash.match(/^\/category\/([\w-]+)/);
+  if (catMatch) return { page: 'category', categoryId: catMatch[1] };
   // Shop with filter: /shop/category-name
   if (hash.startsWith('/shop/')) return { page: 'shop' };
   return { page: routeToPage[hash] || 'home' };
 }
 
-function buildHash(page: string, productId?: number): string {
+function buildHash(page: string, productId?: number, categoryId?: string): string {
   if (page === 'detail' && productId) return `#/product/${productId}`;
+  if (page === 'category' && categoryId) return `#/category/${categoryId}`;
   return `#${pageToRoute[page] || '/'}`;
 }
 
@@ -107,6 +114,7 @@ const App: React.FC = () => {
   const [showCart, setShowCart] = useState(false);
   const [filter, setFilter] = useState('All');
   const [activeCat, setActiveCat] = useState('');
+  const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [categoriesData, setCategoriesData] = useState(() => {
     const saved = loadState('categoriesData', categories);
     // Migration: if old flat categories (no level) OR missing perfumes category, replace
@@ -223,11 +231,11 @@ const App: React.FC = () => {
   useEffect(() => {
     if (skipHashSync.current) { skipHashSync.current = false; return; }
     const productId = selectedProduct?.id;
-    const newHash = buildHash(page, productId);
+    const newHash = buildHash(page, productId, selectedCategoryId);
     if (window.location.hash !== newHash) {
       window.location.hash = newHash;
     }
-  }, [page, selectedProduct?.id]);
+  }, [page, selectedProduct?.id, selectedCategoryId]);
 
   // Listen for back/forward browser navigation
   useEffect(() => {
@@ -239,6 +247,7 @@ const App: React.FC = () => {
         const prod = productsData.find(p => p.id === parsed.productId);
         if (prod) setSelectedProduct(prod);
       }
+      if (parsed.categoryId) setSelectedCategoryId(parsed.categoryId);
     };
     window.addEventListener('hashchange', onHashChange);
     // Handle initial product from URL
@@ -247,6 +256,7 @@ const App: React.FC = () => {
       const prod = productsData.find(p => p.id === initial.productId);
       if (prod) setSelectedProduct(prod);
     }
+    if (initial.categoryId) setSelectedCategoryId(initial.categoryId);
     return () => window.removeEventListener('hashchange', onHashChange);
   }, [productsData]);
 
@@ -299,9 +309,18 @@ const App: React.FC = () => {
   const handleCategoryClick = useCallback((cat: string) => {
     setActiveCat(cat);
     (window as any).__activeCat = cat;
-    if (cat) setFilter(cat);
-    else setFilter('All');
-  }, []);
+    // Find L1 category by name — navigate to dedicated category page
+    const catInfo = categoriesData.find(c => c.name === cat && c.level === 1);
+    if (catInfo) {
+      setSelectedCategoryId(catInfo.id);
+      setPage('category');
+    } else {
+      // L2/L3 subcategory — filter in shop
+      if (cat) setFilter(cat);
+      else setFilter('All');
+      setPage('shop');
+    }
+  }, [categoriesData]);
 
   // Auth handlers
   const handleLogin = useCallback((user: { name: string; email: string; phone?: string }) => {
@@ -419,6 +438,13 @@ const App: React.FC = () => {
 
       case 'giftcards':
         return <GiftCardsPage lang={lang} setPage={setPage} t={t} formatPrice={formatPrice} />;
+      case 'category':
+        return <CategoryPage categoryId={selectedCategoryId} lang={lang} t={t} tc={tc} tb={tb}
+          formatPrice={formatPrice} getProductName={getProductName} getProductDesc={getProductDesc}
+          setPage={setPage} onSelectProduct={selectProduct} onAddToCart={addToCart}
+          onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
+          wishlist={wishlist} compareList={compareList} featureFlags={featureFlags}
+          productsData={productsData} />;
       case 'dash':
         return <DashboardPage lang={lang} setPage={setPage} theme={theme} setTheme={setTheme} t={t} getProductName={getProductName} formatPrice={(n: number) => formatPrice(n)} siteSettings={siteSettings} setSiteSettings={setSiteSettings} />;
       case 'flags':

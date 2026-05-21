@@ -8,7 +8,7 @@ export type Page =
   | 'dash' | 'flags' | 'marketing' | 'countries'
   | 'tax' | 'invoices' | 'languages' | 'admin-users'
   | 'faq' | 'shipping-info' | 'returns-policy' | 'size-guide' | 'contact'
-  | 'products-admin';
+  | 'products-admin' | 'category';
 
 export interface Language {
   code: string;

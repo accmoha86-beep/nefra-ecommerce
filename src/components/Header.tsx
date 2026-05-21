@@ -291,7 +291,7 @@ export const Header: React.FC<HeaderProps> = ({
                   }
                 }}>
                 <button className={`nav-link nav-beauty-link${page === 'shop' ? ' active' : ''}`}
-                  onClick={() => { onCategoryClick('L1:' + l1.id); setPage('shop'); }}>
+                  onClick={() => { onCategoryClick(l1.name); }}>
                   {getCatName(l1)}
                   <ChevronDown size={12} style={{marginInlineStart:'4px',opacity:0.6}}/>
                 </button>
@@ -315,7 +315,7 @@ export const Header: React.FC<HeaderProps> = ({
                   })}
                   <div className="mega-list-divider" />
                   <button className="mega-list-item view-all"
-                    onClick={() => { onCategoryClick('L1:' + l1.id); setPage('shop'); }}>
+                    onClick={() => { onCategoryClick(l1.name); }}>
                     {t('allProducts')} ({(() => {
                       let count = 0;
                       l2s.forEach(l2 => {
