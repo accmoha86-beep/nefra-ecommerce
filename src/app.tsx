@@ -114,7 +114,7 @@ const App: React.FC = () => {
   const [showCart, setShowCart] = useState(false);
   const [filter, setFilter] = useState('All');
   const [activeCat, setActiveCat] = useState('');
-  const [selectedCategoryId, setSelectedCategoryId] = useState('');
+  const [selectedCategoryId, setSelectedCategoryId] = useState(() => { const parsed = parseHash(); return parsed.categoryId || ''; });
   const [categoriesData, setCategoriesData] = useState(() => {
     const saved = loadState('categoriesData', categories);
     // Migration: if old flat categories (no level) OR missing perfumes category, replace
