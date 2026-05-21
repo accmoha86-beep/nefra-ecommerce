@@ -149,7 +149,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             {featured.slice(0, 8).map(p => (
               <ProductCard lang={lang} key={p.id} p={p} onSelect={onSelectProduct} onAddToCart={onAddToCart}
                 onToggleWishlist={onToggleWishlist} onToggleCompare={onToggleCompare}
-                isInWishlist={wishlist.includes(p.id)} isInCompare={compareList.includes(p.id)} t={t} tb={tb} formatPrice={formatPrice} />
+                isInWishlist={wishlist.includes(p.id)} isInCompare={compareList.includes(p.id)} t={t} tb={tb} formatPrice={formatPrice} featureFlags={featureFlags} />
             ))}
           </div>
         </div>
@@ -172,7 +172,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               {recentProducts.map(p => (
                 <ProductCard lang={lang} key={p.id} p={p} onSelect={onSelectProduct} onAddToCart={onAddToCart}
                   onToggleWishlist={onToggleWishlist} onToggleCompare={onToggleCompare}
-                  isInWishlist={wishlist.includes(p.id)} isInCompare={compareList.includes(p.id)} t={t} tb={tb} formatPrice={formatPrice} />
+                  isInWishlist={wishlist.includes(p.id)} isInCompare={compareList.includes(p.id)} t={t} tb={tb} formatPrice={formatPrice} featureFlags={featureFlags} />
               ))}
             </div>
           </div>

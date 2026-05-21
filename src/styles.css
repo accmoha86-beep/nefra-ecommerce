@@ -4582,6 +4582,9 @@ ul, ol { list-style: none; }
 .nav-beauty-wrap:hover .mega-dropdown.simple-list {
   display: flex;
 }
+.nav-beauty-wrap.mega-force-closed:hover .mega-dropdown.simple-list {
+  display: none !important;
+}
 
 .mega-list-item {
   background: none;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search, ShoppingBag, Heart, User, Truck, RotateCcw, Shield, Phone, BarChart3, ChevronDown, ChevronRight, Scale, Globe, Menu, X, Home, Package, Gift, Settings, Flag, Zap, Globe2, Receipt, FileText, Type } from 'lucide-react';
 import { Theme, Page, Country, Language, Translations, Product } from '../types';
 import { products } from '../data';
@@ -61,6 +61,15 @@ export const Header: React.FC<HeaderProps> = ({
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [showLangPicker, setShowLangPicker] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [megaHidden, setMegaHidden] = useState(false);
+
+  // Close mega dropdown on page navigation
+  useEffect(() => {
+    setMegaHidden(true);
+    setMobileMenuOpen(false);
+    const timer = setTimeout(() => setMegaHidden(false), 150);
+    return () => clearTimeout(timer);
+  }, [page]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
 
@@ -275,7 +284,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             return (<React.Fragment key={l1.id}>
               <div className="nav-divider" />
-              <div className="nav-beauty-wrap" onMouseEnter={(e) => {
+              <div className={`nav-beauty-wrap${megaHidden ? ' mega-force-closed' : ''}`} onMouseEnter={(e) => {
                   const rect = e.currentTarget.getBoundingClientRect();
                   const dd = e.currentTarget.querySelector('.mega-dropdown') as HTMLElement;
                   if (dd) {
