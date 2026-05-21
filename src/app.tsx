@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ArrowUp, MessageCircle, X, Cookie } from 'lucide-react';
 import { Theme, Page, Product, CartItem, Country, Language, TaxConfig, Invoice, Translations, TFunc, Testimonial, FooterLink, SeoMeta, SiteSettings } from './types';
@@ -38,6 +38,42 @@ import { AppDownloadBanner } from './components/AppDownloadBanner';
 import { LoyaltyWidget } from './components/LoyaltyWidget';
 
 
+
+// ═══════════════════════════════════════════════════════
+// Hash-based URL Routing
+// ═══════════════════════════════════════════════════════
+const pageToRoute: Record<string, string> = {
+  'home': '/', 'shop': '/shop', 'detail': '/product',
+  'checkout': '/checkout', 'wishlist': '/wishlist', 'compare': '/compare',
+  'account': '/account', 'login': '/login', 'giftcards': '/gift-cards',
+  'dash': '/dashboard', 'flags': '/dashboard/flags',
+  'marketing': '/dashboard/marketing', 'countries': '/dashboard/countries',
+  'tax': '/dashboard/tax', 'invoices': '/dashboard/invoices',
+  'languages': '/dashboard/languages', 'admin-users': '/dashboard/users',
+  'products-admin': '/dashboard/products', 'faq': '/faq',
+  'shipping-info': '/shipping', 'returns-policy': '/returns',
+  'size-guide': '/size-guide', 'contact': '/contact',
+};
+
+const routeToPage: Record<string, string> = Object.fromEntries(
+  Object.entries(pageToRoute).filter(([k]) => k !== 'detail').map(([k, v]) => [v, k])
+);
+
+function parseHash(): { page: string; productId?: number } {
+  const hash = window.location.hash.replace('#', '') || '/';
+  // Product detail: /product/42
+  const productMatch = hash.match(/^\/product\/(\d+)/);
+  if (productMatch) return { page: 'detail', productId: parseInt(productMatch[1]) };
+  // Shop with filter: /shop/category-name
+  if (hash.startsWith('/shop/')) return { page: 'shop' };
+  return { page: routeToPage[hash] || 'home' };
+}
+
+function buildHash(page: string, productId?: number): string {
+  if (page === 'detail' && productId) return `#/product/${productId}`;
+  return `#${pageToRoute[page] || '/'}`;
+}
+
 // ═══════════════════════════════════════════════════════
 // LocalStorage Persistence — all admin changes saved permanently
 // ═══════════════════════════════════════════════════════
@@ -60,7 +96,9 @@ function saveState(key: string, value: any): void {
 const App: React.FC = () => {
   // Core state
   const [theme, setTheme] = useState<Theme>(() => loadState('theme', 'elegant-dark'));
-  const [page, setPage] = useState<Page>('home');
+  const [page, setPageRaw] = useState<Page>(() => { const parsed = parseHash(); return parsed.page as Page; });
+  const skipHashSync = useRef(false);
+  const setPage = useCallback((p: Page) => { setPageRaw(p); }, []);
   const [cart, setCart] = useState<CartItem[]>(() => loadState('cart', []));
   const [wishlist, setWishlist] = useState<number[]>(() => loadState('wishlist', []));
   const [compareList, setCompareList] = useState<number[]>([]);
@@ -179,6 +217,38 @@ const App: React.FC = () => {
     document.documentElement.dir = currentLang.direction;
     document.documentElement.lang = currentLang.code;
   }, [currentLang.code]);
+
+  // ═══ URL Hash Routing ═══
+  // Sync page state → URL hash
+  useEffect(() => {
+    if (skipHashSync.current) { skipHashSync.current = false; return; }
+    const productId = selectedProduct?.id;
+    const newHash = buildHash(page, productId);
+    if (window.location.hash !== newHash) {
+      window.location.hash = newHash;
+    }
+  }, [page, selectedProduct?.id]);
+
+  // Listen for back/forward browser navigation
+  useEffect(() => {
+    const onHashChange = () => {
+      const parsed = parseHash();
+      skipHashSync.current = true;
+      setPageRaw(parsed.page as Page);
+      if (parsed.productId) {
+        const prod = productsData.find(p => p.id === parsed.productId);
+        if (prod) setSelectedProduct(prod);
+      }
+    };
+    window.addEventListener('hashchange', onHashChange);
+    // Handle initial product from URL
+    const initial = parseHash();
+    if (initial.productId) {
+      const prod = productsData.find(p => p.id === initial.productId);
+      if (prod) setSelectedProduct(prod);
+    }
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, [productsData]);
 
   // Scroll to top on page change
   useEffect(() => {
@@ -445,7 +515,7 @@ const App: React.FC = () => {
         <AppDownloadBanner t={t} lang={lang} />
       )}
 
-      {showCookie && (
+      {showCookie && featureFlags.find(f => f.id === 'ff_cookies')?.enabled !== false && (
         <div className="cookie-banner">
           <Cookie size={20}/>
           <p>{t('cookieMessage')}</p>
