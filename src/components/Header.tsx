@@ -289,12 +289,27 @@ export const Header: React.FC<HeaderProps> = ({
                   const dd = e.currentTarget.querySelector('.mega-dropdown') as HTMLElement;
                   if (dd) {
                     dd.style.top = rect.bottom + 'px';
+                    const vw = window.innerWidth;
+                    const ddW = Math.max(dd.offsetWidth || 220, 220);
                     const isRTL = document.documentElement.dir === 'rtl';
                     if (isRTL) {
-                      dd.style.right = (window.innerWidth - rect.right) + 'px';
+                      // Align right edge with button right, but clamp within viewport
+                      let rightVal = vw - Math.min(rect.right, vw);
+                      // Check left overflow: dropdown left edge = vw - rightVal - ddW
+                      if (vw - rightVal - ddW < 8) {
+                        rightVal = vw - ddW - 8;
+                      }
+                      // Check right overflow
+                      if (rightVal < 8) rightVal = 8;
+                      dd.style.right = rightVal + 'px';
                       dd.style.left = 'auto';
                     } else {
-                      dd.style.left = rect.left + 'px';
+                      let leftVal = Math.max(rect.left, 0);
+                      if (leftVal + ddW > vw - 8) {
+                        leftVal = vw - ddW - 8;
+                      }
+                      if (leftVal < 8) leftVal = 8;
+                      dd.style.left = leftVal + 'px';
                       dd.style.right = 'auto';
                     }
                   }
