@@ -28,7 +28,7 @@ interface ProductDetailPageProps {
 }
 
 export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
-  product, setPage, onAddToCart, onToggleWishlist, onToggleCompare,
+  product, setPage, onAddToCart, onQuickView, onToggleWishlist, onToggleCompare,
   isInWishlist, isInCompare, onSelectProduct, wishlist, compareList, t, tc, tb, lang, formatPrice,
   onBuyNow, recentlyViewed, featureFlags
 }) => {
