@@ -38,6 +38,7 @@ import { NewsletterPopup } from './components/NewsletterPopup';
 import { Breadcrumbs } from './components/Breadcrumbs';
 import { AppDownloadBanner } from './components/AppDownloadBanner';
 import { LoyaltyWidget } from './components/LoyaltyWidget';
+import { QuickViewModal } from './components/QuickViewModal';
 
 
 
@@ -147,6 +148,7 @@ const App: React.FC = () => {
     }
     return saved;
   });
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [showCookie, setShowCookie] = useState(() => loadState('cookieAccepted', false) ? false : true);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
@@ -172,8 +174,8 @@ const App: React.FC = () => {
   // Badge translation helper
   const badgeMap: Record<string, string> = { 'Best Seller': 'badgeBestSeller', 'New': 'badgeNew', 'Premium': 'badgePremium', 'Limited': 'badgeLimited', 'Popular': 'badgePopular', 'Pro': 'badgePro', 'Trending': 'badgeTrending', 'Luxury': 'badgeLuxury', 'Hot': 'badgeHot', 'Exclusive': 'badgeExclusive' };
   // Feature flag name map
-  const ffNameMap: Record<string, string> = { 'Product Reviews': 'ffProductReviews', 'Wishlist': 'ffWishlist', 'Product Compare': 'ffProductCompare', 'Quick View': 'ffQuickView', 'Recently Viewed': 'ffRecentlyViewed', 'Blog': 'ffBlog', 'Gift Cards': 'ffGiftCards', 'Loyalty Program': 'ffLoyalty', 'Newsletter': 'ffNewsletter', 'Flash Sales': 'ffFlashSales', 'WhatsApp Chat': 'ffWhatsApp', 'Cookie Consent': 'ffCookieConsent', 'Maintenance Mode': 'ffMaintenanceMode', 'Multi-Country': 'ffMultiCountry', 'Multi-Language': 'ffMultiLang', 'E-Invoicing': 'ffEInvoicing', 'Dynamic Tax': 'ffDynamicTax', 'Cash on Delivery': 'ffCOD', 'Installments': 'ffInstallments', 'Guest Checkout': 'ffGuestCheckout', 'Order Tracking': 'ffOrderTracking', 'Returns & Refunds': 'ffReturnsRefunds', 'Multi-Database': 'ffMultiDB', 'Promo Ticker Bar': 'ffPromoTicker', 'Breadcrumbs': 'ffBreadcrumbs', 'Strikethrough Pricing': 'ffStrikethrough', 'Discount Badge': 'ffDiscountBadge', 'Sizes on Cards': 'ffSizesOnCard', 'Advanced Sort': 'ffAdvancedSort', 'Category Quick Chips': 'ffCategoryChips', 'Recommended Products': 'ffRecommended', 'Product Count': 'ffProductCount', 'Social Media Links': 'ffSocialLinks', 'Payment Icons': 'ffPaymentIcons', 'Delivery Accordion': 'ffDeliveryAccordion', 'Brand on Cards': 'ffBrandOnCard', 'Buy Now Pay Later': 'ffBnplBanner' };
-  const ffDescMap: Record<string, string> = { 'Customer reviews & ratings': 'ffProductReviewsDesc', 'Save favorite products': 'ffWishlistDesc', 'Compare up to 4 products': 'ffProductCompareDesc', 'Preview product in modal': 'ffQuickViewDesc', 'Track recently viewed products': 'ffRecentlyViewedDesc', 'Blog and articles': 'ffBlogDesc', 'Digital gift cards': 'ffGiftCardsDesc', 'Points and rewards': 'ffLoyaltyDesc', 'Email subscription': 'ffNewsletterDesc', 'Time-limited offers': 'ffFlashSalesDesc', 'WhatsApp floating button': 'ffWhatsAppDesc', 'Cookie consent banner': 'ffCookieConsentDesc', 'Show maintenance page': 'ffMaintenanceModeDesc', 'Multi-country support': 'ffMultiCountryDesc', 'Multi-language support': 'ffMultiLangDesc', 'Electronic invoicing system': 'ffEInvoicingDesc', 'Dynamic tax per country': 'ffDynamicTaxDesc', 'COD payment method': 'ffCODDesc', 'Buy now pay later': 'ffInstallmentsDesc', 'Checkout without account': 'ffGuestCheckoutDesc', 'Public order tracking': 'ffOrderTrackingDesc', 'Online return requests': 'ffReturnsRefundsDesc', 'Separate DB per country': 'ffMultiDBDesc', 'Rotating promotional messages at top of page': 'ffPromoTickerDesc', 'Navigation trail on all pages': 'ffBreadcrumbsDesc', 'Show original price crossed out next to sale price': 'ffStrikethroughDesc', 'Show discount percentage badge on product images': 'ffDiscountBadgeDesc', 'Show available sizes on product cards': 'ffSizesOnCardDesc', 'Multiple sort options: price, newest, discount, rating': 'ffAdvancedSortDesc', 'Horizontal scrollable category tags': 'ffCategoryChipsDesc', 'Show recently viewed products carousel': 'ffRecentlyViewedDesc2', 'Related products on product detail page': 'ffRecommendedDesc', 'Show total product count on shop page': 'ffProductCountDesc', 'Social media links in footer': 'ffSocialLinksDesc', 'Payment method icons in footer': 'ffPaymentIconsDesc', 'Expandable delivery & returns info on product page': 'ffDeliveryAccordionDesc', 'Show brand name on product cards': 'ffBrandOnCardDesc', 'BNPL promotional banner on homepage': 'ffBnplBannerDesc', 'Category links bar below main navigation': 'ffCategoryNavDesc', 'Show/hide product prices': 'ffShowPriceDesc', 'Show/hide product badge (Best Seller, New, etc.)': 'ffShowBadgeDesc', 'Show/hide stock indicator on product cards': 'ffShowStockDesc' };
+  const ffNameMap: Record<string, string> = { 'Product Reviews': 'ffProductReviews', 'Wishlist': 'ffWishlist', 'Product Compare': 'ffProductCompare', 'Quick View': 'ffQuickView', 'Recently Viewed': 'ffRecentlyViewed', 'Blog': 'ffBlog', 'Gift Cards': 'ffGiftCards', 'Loyalty Program': 'ffLoyalty', 'Newsletter': 'ffNewsletter', 'Flash Sales': 'ffFlashSales', 'WhatsApp Chat': 'ffWhatsApp', 'Cookie Consent': 'ffCookieConsent', 'Maintenance Mode': 'ffMaintenanceMode', 'Multi-Country': 'ffMultiCountry', 'Multi-Language': 'ffMultiLang', 'E-Invoicing': 'ffEInvoicing', 'Dynamic Tax': 'ffDynamicTax', 'Cash on Delivery': 'ffCOD', 'Installments': 'ffInstallments', 'Guest Checkout': 'ffGuestCheckout', 'Order Tracking': 'ffOrderTracking', 'Returns & Refunds': 'ffReturnsRefunds', 'Multi-Database': 'ffMultiDB', 'Promo Ticker Bar': 'ffPromoTicker', 'Breadcrumbs': 'ffBreadcrumbs', 'Strikethrough Pricing': 'ffStrikethrough', 'Discount Badge': 'ffDiscountBadge', 'Sizes on Cards': 'ffSizesOnCard', 'Advanced Sort': 'ffAdvancedSort', 'Category Quick Chips': 'ffCategoryChips', 'Recommended Products': 'ffRecommended', 'Product Count': 'ffProductCount', 'Social Media Links': 'ffSocialLinks', 'Payment Icons': 'ffPaymentIcons', 'Delivery Accordion': 'ffDeliveryAccordion', 'Brand on Cards': 'ffBrandOnCard', 'Buy Now Pay Later': 'ffBnplBanner', 'Social Proof': 'ffSocialProof', 'Urgency Stock Warning': 'ffUrgencyStock', 'Free Shipping Progress': 'ffFreeShippingBar' };
+  const ffDescMap: Record<string, string> = { 'Customer reviews & ratings': 'ffProductReviewsDesc', 'Save favorite products': 'ffWishlistDesc', 'Compare up to 4 products': 'ffProductCompareDesc', 'Preview product in modal': 'ffQuickViewDesc', 'Track recently viewed products': 'ffRecentlyViewedDesc', 'Blog and articles': 'ffBlogDesc', 'Digital gift cards': 'ffGiftCardsDesc', 'Points and rewards': 'ffLoyaltyDesc', 'Email subscription': 'ffNewsletterDesc', 'Time-limited offers': 'ffFlashSalesDesc', 'WhatsApp floating button': 'ffWhatsAppDesc', 'Cookie consent banner': 'ffCookieConsentDesc', 'Show maintenance page': 'ffMaintenanceModeDesc', 'Multi-country support': 'ffMultiCountryDesc', 'Multi-language support': 'ffMultiLangDesc', 'Electronic invoicing system': 'ffEInvoicingDesc', 'Dynamic tax per country': 'ffDynamicTaxDesc', 'COD payment method': 'ffCODDesc', 'Buy now pay later': 'ffInstallmentsDesc', 'Checkout without account': 'ffGuestCheckoutDesc', 'Public order tracking': 'ffOrderTrackingDesc', 'Online return requests': 'ffReturnsRefundsDesc', 'Separate DB per country': 'ffMultiDBDesc', 'Rotating promotional messages at top of page': 'ffPromoTickerDesc', 'Navigation trail on all pages': 'ffBreadcrumbsDesc', 'Show original price crossed out next to sale price': 'ffStrikethroughDesc', 'Show discount percentage badge on product images': 'ffDiscountBadgeDesc', 'Show available sizes on product cards': 'ffSizesOnCardDesc', 'Multiple sort options: price, newest, discount, rating': 'ffAdvancedSortDesc', 'Horizontal scrollable category tags': 'ffCategoryChipsDesc', 'Show recently viewed products carousel': 'ffRecentlyViewedDesc2', 'Related products on product detail page': 'ffRecommendedDesc', 'Show total product count on shop page': 'ffProductCountDesc', 'Social media links in footer': 'ffSocialLinksDesc', 'Payment method icons in footer': 'ffPaymentIconsDesc', 'Expandable delivery & returns info on product page': 'ffDeliveryAccordionDesc', 'Show viewing count and purchase stats': 'ffSocialProofDesc', 'Show urgent low stock warnings with animation': 'ffUrgencyStockDesc', 'Show progress bar toward free shipping threshold': 'ffFreeShippingBarDesc', 'Show brand name on product cards': 'ffBrandOnCardDesc', 'BNPL promotional banner on homepage': 'ffBnplBannerDesc', 'Category links bar below main navigation': 'ffCategoryNavDesc', 'Show/hide product prices': 'ffShowPriceDesc', 'Show/hide product badge (Best Seller, New, etc.)': 'ffShowBadgeDesc', 'Show/hide stock indicator on product cards': 'ffShowStockDesc' };
   const ffCatMap: Record<string, string> = { 'Products': 'ffCatProducts', 'Content': 'ffCatContent', 'Payments': 'ffCatPayments', 'Marketing': 'ffCatMarketing', 'Support': 'ffCatSupport', 'Legal': 'ffCatLegal', 'System': 'ffCatSystem', 'Finance': 'ffCatFinance', 'Checkout': 'ffCatCheckout', 'Orders': 'ffCatOrders', 'Navigation': 'ffCatNavigation', 'Pages': 'ffCatPages' };
 
   const t: TFunc = useCallback((key: string, replacements?: Record<string, string>) => {
@@ -406,18 +408,18 @@ const App: React.FC = () => {
           onGuestCheckout={handleGuestCheckout} fromCheckout={authRedirect === 'checkout'} />;
       case 'home':
         return <HomePage lang={lang} tc={tc} tb={tb} theme={theme} setPage={setPage} setFilter={setFilter} onSelectProduct={selectProduct}
-          onAddToCart={addToCart} onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
+          onAddToCart={addToCart} onQuickView={setQuickViewProduct} onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
           wishlist={wishlist} compareList={compareList} recentlyViewed={recentlyViewed}
           t={t} formatPrice={formatPrice} featureFlags={featureFlags}
           testimonials={siteSettings.testimonials} featuredProductIds={siteSettings.featuredProductIds} />;
       case 'shop':
         return <ShopPage lang={lang} getProductName={getProductName} getProductDesc={getProductDesc} tb={tb} filter={filter} setFilter={setFilter} tc={tc} setPage={setPage} onSelectProduct={selectProduct}
-          onAddToCart={addToCart} onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
+          onAddToCart={addToCart} onQuickView={setQuickViewProduct} onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
           wishlist={wishlist} compareList={compareList} t={t} formatPrice={formatPrice} featureFlags={featureFlags} />;
       case 'detail':
         return selectedProduct ? (
           <ProductDetailPage tb={tb} tc={tc} lang={lang} product={selectedProduct} onAddToCart={addToCart}
-            onBuyNow={buyNow}
+            onBuyNow={buyNow} onQuickView={setQuickViewProduct}
             onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
             wishlist={wishlist} compareList={compareList}
             onSelectProduct={selectProduct} setPage={setPage} t={t} formatPrice={formatPrice} isInWishlist={wishlist.includes(selectedProduct.id)} isInCompare={compareList.includes(selectedProduct.id)}
@@ -441,7 +443,7 @@ const App: React.FC = () => {
       case 'category':
         return <CategoryPage categoryId={selectedCategoryId} lang={lang} t={t} tc={tc} tb={tb}
           formatPrice={formatPrice} getProductName={getProductName} getProductDesc={getProductDesc}
-          setPage={setPage} onSelectProduct={selectProduct} onAddToCart={addToCart}
+          setPage={setPage} onSelectProduct={selectProduct} onAddToCart={addToCart} onQuickView={setQuickViewProduct}
           onToggleWishlist={toggleWishlist} onToggleCompare={toggleCompare}
           wishlist={wishlist} compareList={compareList} featureFlags={featureFlags}
           productsData={productsData} />;
@@ -508,6 +510,21 @@ const App: React.FC = () => {
       )}
       <main className="main">{renderPage()}</main>
       <Footer setPage={setPage} theme={theme} t={t} lang={lang} country={currentCountry} socialLinks={siteSettings.socialLinks} featureFlags={featureFlags} footerLinks={siteSettings.footerLinks} />
+
+      {/* Quick View Modal */}
+      {quickViewProduct && featureFlags.find(f => f.id === 'ff_quick_view')?.enabled !== false && (
+        <QuickViewModal
+          product={quickViewProduct}
+          onClose={() => setQuickViewProduct(null)}
+          onAddToCart={(p) => { addToCart(p); setShowCart(true); }}
+          onBuyNow={buyNow}
+          onViewDetails={selectProduct}
+          onToggleWishlist={toggleWishlist}
+          isInWishlist={wishlist.includes(quickViewProduct.id)}
+          t={t} lang={lang} formatPrice={formatPrice}
+          featureFlags={featureFlags}
+        />
+      )}
 
       {/* Cart Sidebar */}
       {showCart && <CartSidebar lang={lang} cart={cart} show={showCart}

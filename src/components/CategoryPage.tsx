@@ -15,6 +15,7 @@ interface CategoryPageProps {
   setPage: (p: Page) => void;
   onSelectProduct: (p: Product) => void;
   onAddToCart: (p: Product) => void;
+  onQuickView?: (p: Product) => void;
   onToggleWishlist: (id: string) => void;
   onToggleCompare: (id: string) => void;
   wishlist: string[];
@@ -25,7 +26,7 @@ interface CategoryPageProps {
 
 export const CategoryPage: React.FC<CategoryPageProps> = ({
   categoryId, lang, t, tc, tb, formatPrice, getProductName, getProductDesc,
-  setPage, onSelectProduct, onAddToCart, onToggleWishlist, onToggleCompare,
+  setPage, onSelectProduct, onAddToCart, onQuickView, onToggleWishlist, onToggleCompare,
   wishlist, compareList, featureFlags, productsData
 }) => {
   const [selectedSubCat, setSelectedSubCat] = useState<string | null>(null);

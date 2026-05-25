@@ -30,6 +30,7 @@ interface HomePageProps {
   setFilter: (c: string) => void;
   onSelectProduct: (p: Product) => void;
   onAddToCart: (p: Product) => void;
+  onQuickView?: (p: Product) => void;
   onToggleWishlist: (id: number) => void;
   onToggleCompare: (id: number) => void;
   wishlist: number[];
@@ -48,6 +49,7 @@ interface HomePageProps {
 export const HomePage: React.FC<HomePageProps> = ({
   theme, setPage, setFilter, onSelectProduct, onAddToCart,
   onToggleWishlist, onToggleCompare, wishlist, compareList, recentlyViewed, t, tc, tb, lang, formatPrice, featureFlags,
+  onQuickView,
   testimonials, featuredProductIds
 }) => {
   const ff = (id: string) => featureFlags?.find(f => f.id === id)?.enabled ?? true;
@@ -147,7 +149,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
           <div className="products-grid">
             {featured.slice(0, 8).map(p => (
-              <ProductCard lang={lang} key={p.id} p={p} onSelect={onSelectProduct} onAddToCart={onAddToCart}
+              <ProductCard lang={lang} key={p.id} p={p} onSelect={onSelectProduct} onAddToCart={onAddToCart} onQuickView={onQuickView}
                 onToggleWishlist={onToggleWishlist} onToggleCompare={onToggleCompare}
                 isInWishlist={wishlist.includes(p.id)} isInCompare={compareList.includes(p.id)} t={t} tb={tb} formatPrice={formatPrice} featureFlags={featureFlags} />
             ))}
@@ -170,7 +172,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </div>
             <div className="products-scroll">
               {recentProducts.map(p => (
-                <ProductCard lang={lang} key={p.id} p={p} onSelect={onSelectProduct} onAddToCart={onAddToCart}
+                <ProductCard lang={lang} key={p.id} p={p} onSelect={onSelectProduct} onAddToCart={onAddToCart} onQuickView={onQuickView}
                   onToggleWishlist={onToggleWishlist} onToggleCompare={onToggleCompare}
                   isInWishlist={wishlist.includes(p.id)} isInCompare={compareList.includes(p.id)} t={t} tb={tb} formatPrice={formatPrice} featureFlags={featureFlags} />
               ))}

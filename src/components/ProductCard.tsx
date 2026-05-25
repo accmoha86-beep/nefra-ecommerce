@@ -8,6 +8,7 @@ interface ProductCardProps {
   onSelect: (p: Product) => void;
   onAddToCart: (p: Product) => void;
   onBuyNow?: (p: Product) => void;
+  onQuickView?: (p: Product) => void;
   onToggleWishlist: (id: number) => void;
   onToggleCompare: (id: number) => void;
   isInWishlist: boolean;
@@ -53,7 +54,7 @@ const getAllSizesForCat = (p: Product): string[] => {
   return [];
 };
 
-export const ProductCard: React.FC<ProductCardProps> = ({ p, onSelect, onAddToCart, onBuyNow, onToggleWishlist, onToggleCompare, isInWishlist, isInCompare, t, tb, lang, formatPrice, featureFlags }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ p, onSelect, onAddToCart, onBuyNow, onQuickView, onToggleWishlist, onToggleCompare, isInWishlist, isInCompare, t, tb, lang, formatPrice, featureFlags }) => {
   const [imgError, setImgError] = useState(false);
   const d = disc(p.price, p.old);
 
@@ -89,7 +90,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ p, onSelect, onAddToCa
             <Scale size={16} />
           </button>}
           {ff('ff_quick_view') && <button className="pcard-action-btn"
-            onClick={e => { e.stopPropagation(); onSelect(p); }} title={t('view')}>
+            onClick={e => { e.stopPropagation(); onQuickView ? onQuickView(p) : onSelect(p); }} title={t('view')}>
             <Eye size={16} />
           </button>}
         </div>

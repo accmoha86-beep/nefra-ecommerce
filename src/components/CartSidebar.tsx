@@ -85,9 +85,20 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({lang, cart, show, onClo
                 <div className="cart-summary-total"><span>{t('total')}</span><span>{formatPrice(total)}</span></div>
               </div>
 
-              {subtotal < 500 && (
-                <div className="cart-free-shipping">
-                  <Truck size={14}/> {t('addAmountForFreeShipping').replace('{amount}', formatPrice(500 - subtotal))}
+              {subtotal < 500 ? (
+                <div className="cart-free-shipping-wrap">
+                  <div className="free-ship-bar-header">
+                    <Truck size={14}/>
+                    <span>{t('addAmountForFreeShipping').replace('{amount}', formatPrice(500 - subtotal))}</span>
+                  </div>
+                  <div className="free-ship-progress-track">
+                    <div className="free-ship-progress-fill" style={{ width: `${Math.min(100, (subtotal / 500) * 100)}%` }}></div>
+                  </div>
+                  <div className="free-ship-progress-label">{Math.round((subtotal / 500) * 100)}%</div>
+                </div>
+              ) : (
+                <div className="cart-free-shipping-unlocked">
+                  <Truck size={14}/> <span>{t('freeShipping.unlocked')}</span>
                 </div>
               )}
 

@@ -5453,3 +5453,250 @@ ul, ol { list-style: none; }
   .cat-prod-price { font-size: 0.85rem; }
   .cat-prod-cart-btn span { display: none; }
 }
+
+/* ═══════════════════════════════════════════════════════
+   QUICK VIEW MODAL
+   ═══════════════════════════════════════════════════════ */
+.qv-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.25s ease;
+}
+.qv-overlay.visible { opacity: 1; }
+
+.qv-modal {
+  background: var(--bg-primary); border-radius: 16px;
+  max-width: 850px; width: 92vw; max-height: 85vh;
+  overflow-y: auto; position: relative;
+  transform: scale(0.9) translateY(20px);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+  border: 1px solid var(--border);
+}
+.qv-modal.visible { transform: scale(1) translateY(0); }
+
+.qv-close {
+  position: absolute; top: 12px; right: 12px; z-index: 10;
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  color: var(--text-primary); border-radius: 50%;
+  width: 36px; height: 36px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+[dir="rtl"] .qv-close { right: auto; left: 12px; }
+.qv-close:hover { background: var(--accent); color: #000; }
+
+.qv-content {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+}
+
+.qv-image-wrap {
+  position: relative; background: var(--bg-secondary);
+  display: flex; align-items: center; justify-content: center;
+  min-height: 300px; border-radius: 16px 0 0 16px; overflow: hidden;
+}
+[dir="rtl"] .qv-image-wrap { border-radius: 0 16px 16px 0; }
+
+.qv-image {
+  width: 100%; height: 100%; max-height: 420px;
+  object-fit: contain; padding: 20px;
+}
+.qv-image-fallback {
+  width: 100%; height: 300px; border-radius: 12px;
+}
+.qv-badge {
+  position: absolute; top: 12px; left: 12px;
+  padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;
+  background: var(--accent); color: #000;
+}
+
+.qv-info {
+  padding: 28px; display: flex; flex-direction: column; gap: 10px;
+}
+
+.qv-brand {
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--accent); font-weight: 600;
+}
+.qv-name {
+  font-size: 1.25rem; font-weight: 700; color: var(--text-primary);
+  line-height: 1.3; margin: 0;
+}
+.qv-rating {
+  display: flex; align-items: center; gap: 6px;
+}
+.qv-reviews { font-size: 0.8rem; color: var(--text-secondary); }
+
+.qv-price-row { display: flex; align-items: center; gap: 10px; }
+.qv-price {
+  font-size: 1.4rem; font-weight: 800; color: var(--accent);
+}
+.qv-old-price {
+  font-size: 1rem; color: var(--text-muted);
+  text-decoration: line-through; opacity: 0.6;
+}
+
+.qv-desc {
+  font-size: 0.85rem; color: var(--text-secondary);
+  line-height: 1.5; margin: 0;
+}
+
+/* Urgency Triggers */
+.qv-urgency, .detail-urgency {
+  display: flex; flex-direction: column; gap: 6px;
+  margin: 4px 0;
+}
+.urgency-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.8rem; font-weight: 600;
+  padding: 6px 12px; border-radius: 8px;
+  animation: urgencyPulse 2s ease-in-out infinite;
+}
+.urgency-item.viewing {
+  background: rgba(59, 130, 246, 0.12); color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+.urgency-item.purchased {
+  background: rgba(34, 197, 94, 0.12); color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+}
+.urgency-item.low-stock-urgent {
+  background: rgba(239, 68, 68, 0.15); color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  animation: urgencyShake 0.5s ease-in-out infinite alternate;
+}
+@keyframes urgencyPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+@keyframes urgencyShake {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(2px); }
+}
+
+/* Quick View Actions */
+.qv-action-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 6px;
+}
+.qv-qty {
+  display: flex; align-items: center; gap: 0;
+  border: 1px solid var(--border); border-radius: 8px;
+  overflow: hidden;
+}
+.qv-qty button {
+  width: 36px; height: 36px; background: var(--bg-secondary);
+  border: none; color: var(--text-primary); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.qv-qty button:hover { background: var(--accent); color: #000; }
+.qv-qty span {
+  width: 36px; text-align: center; font-weight: 600;
+  color: var(--text-primary); font-size: 0.9rem;
+}
+.qv-add-cart {
+  flex: 1; padding: 10px 16px; border-radius: 8px;
+  background: var(--accent); color: #000; border: none;
+  font-weight: 700; font-size: 0.9rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: all 0.2s;
+}
+.qv-add-cart:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+.qv-wishlist-btn {
+  width: 40px; height: 40px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--bg-secondary);
+  color: var(--text-secondary); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.qv-wishlist-btn:hover, .qv-wishlist-btn.active {
+  border-color: #ef4444; color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.qv-buy-now {
+  width: 100%; padding: 10px; border-radius: 8px;
+  background: transparent; color: var(--accent);
+  border: 1.5px solid var(--accent); font-weight: 700;
+  font-size: 0.9rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: all 0.2s;
+}
+.qv-buy-now:hover { background: var(--accent); color: #000; }
+
+.qv-view-details {
+  width: 100%; padding: 8px; text-align: center;
+  background: transparent; border: none;
+  color: var(--accent); font-weight: 600; font-size: 0.85rem;
+  cursor: pointer; text-decoration: underline;
+  text-underline-offset: 3px; transition: opacity 0.2s;
+}
+.qv-view-details:hover { opacity: 0.8; }
+
+/* Responsive Quick View */
+@media (max-width: 640px) {
+  .qv-content { grid-template-columns: 1fr; }
+  .qv-image-wrap { min-height: 200px; border-radius: 16px 16px 0 0; }
+  [dir="rtl"] .qv-image-wrap { border-radius: 16px 16px 0 0; }
+  .qv-image { max-height: 250px; }
+  .qv-info { padding: 16px; }
+  .qv-name { font-size: 1.1rem; }
+  .qv-price { font-size: 1.2rem; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   FREE SHIPPING PROGRESS BAR (Cart)
+   ═══════════════════════════════════════════════════════ */
+.cart-free-shipping-wrap {
+  padding: 10px 14px; border-radius: 10px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  margin-bottom: 10px;
+}
+.free-ship-bar-header {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.8rem; color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.free-ship-bar-header svg { color: var(--accent); flex-shrink: 0; }
+.free-ship-progress-track {
+  width: 100%; height: 6px; border-radius: 3px;
+  background: var(--bg-secondary); overflow: hidden;
+}
+.free-ship-progress-fill {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent), #f59e0b);
+  transition: width 0.5s ease;
+}
+.free-ship-progress-label {
+  text-align: right; font-size: 0.7rem; color: var(--accent);
+  font-weight: 700; margin-top: 4px;
+}
+[dir="rtl"] .free-ship-progress-label { text-align: left; }
+
+.cart-free-shipping-unlocked {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px; border-radius: 10px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  font-size: 0.8rem; font-weight: 700; color: #4ade80;
+  margin-bottom: 10px;
+  animation: unlockBounce 0.5s ease;
+}
+@keyframes unlockBounce {
+  0% { transform: scale(0.95); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   DETAIL PAGE URGENCY SECTION
+   ═══════════════════════════════════════════════════════ */
+.detail-urgency {
+  margin: 8px 0 4px 0;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}

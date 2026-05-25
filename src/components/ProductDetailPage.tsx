@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Heart, Scale, ShoppingBag, Truck, RotateCcw, Shield, Star, Share2, Minus, Plus, Check, Zap, ChevronDown, ChevronUp, Package, Clock, CreditCard, Link2, Copy, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Heart, Scale, ShoppingBag, Truck, RotateCcw, Shield, Star, Share2, Minus, Plus, Check, Zap, ChevronDown, ChevronUp, Package, Clock, CreditCard, Link2, Copy, MessageCircle, Eye, TrendingUp, AlertTriangle } from 'lucide-react';
 import { Product, Page, FeatureFlag } from '../types';
 import { products, disc } from '../data';
 import { Stars } from './ProductCard';
@@ -9,6 +9,7 @@ interface ProductDetailPageProps {
   product: Product;
   setPage: (p: Page) => void;
   onAddToCart: (p: Product) => void;
+  onQuickView?: (p: Product) => void;
   onToggleWishlist: (id: number) => void;
   onToggleCompare: (id: number) => void;
   isInWishlist: boolean;
@@ -40,6 +41,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [showLightbox, setShowLightbox] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>('');
+  const [viewingNow] = useState(() => Math.floor(Math.random() * 18) + 5);
+  const [purchasedThisWeek] = useState(() => Math.floor(Math.random() * 40) + 8);
   const p = product;
   const d = disc(p.price, p.old);
   const related = products.filter(r => r.cat === p.cat && r.id !== p.id).slice(0, 4);
@@ -271,6 +274,26 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             )}
           </div>
 
+          {/* URGENCY TRIGGERS — Social Proof */}
+          {ff('ff_social_proof') && (
+            <div className="detail-urgency">
+              <div className="urgency-item viewing">
+                <Eye size={14}/>
+                <span>{t('urgency.viewingNow').replace('{count}', String(viewingNow))}</span>
+              </div>
+              <div className="urgency-item purchased">
+                <TrendingUp size={14}/>
+                <span>{t('urgency.purchasedWeek').replace('{count}', String(purchasedThisWeek))}</span>
+              </div>
+              {ff('ff_urgency_stock') && p.stock <= 10 && p.stock > 0 && (
+                <div className="urgency-item low-stock-urgent">
+                  <AlertTriangle size={14}/>
+                  <span>{t('urgency.onlyLeft').replace('{count}', String(p.stock))}</span>
+                </div>
+              )}
+            </div>
+          )}
+
 
           {/* SIZE SELECTOR - for shoes */}
           {ff('ff_size_selector') && (p.cat === 'Shoes') && (
@@ -483,7 +506,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <h2 className="section-title">{t('relatedProducts')}</h2>
             <div className="products-grid">
               {related.map(r => (
-                <ProductCard lang={lang} tb={tb} key={r.id} p={r} onSelect={onSelectProduct} onAddToCart={onAddToCart}
+                <ProductCard lang={lang} tb={tb} key={r.id} p={r} onSelect={onSelectProduct} onAddToCart={onAddToCart} onQuickView={onQuickView}
                   onToggleWishlist={onToggleWishlist} onToggleCompare={onToggleCompare}
                   isInWishlist={wishlist.includes(r.id)} isInCompare={compareList.includes(r.id)} t={t} formatPrice={formatPrice} featureFlags={featureFlags} />
               ))}
@@ -499,7 +522,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <h2 className="section-title">{t('recommendedForYou')}</h2>
             <div className="products-grid">
               {recommended.map(r => (
-                <ProductCard lang={lang} tb={tb} key={r.id} p={r} onSelect={onSelectProduct} onAddToCart={onAddToCart}
+                <ProductCard lang={lang} tb={tb} key={r.id} p={r} onSelect={onSelectProduct} onAddToCart={onAddToCart} onQuickView={onQuickView}
                   onToggleWishlist={onToggleWishlist} onToggleCompare={onToggleCompare}
                   isInWishlist={wishlist.includes(r.id)} isInCompare={compareList.includes(r.id)} t={t} formatPrice={formatPrice} featureFlags={featureFlags} />
               ))}
@@ -515,7 +538,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <h2 className="section-title">{t('recentlyViewed')}</h2>
             <div className="products-grid">
               {recentFiltered.map(r => (
-                <ProductCard lang={lang} tb={tb} key={r.id} p={r} onSelect={onSelectProduct} onAddToCart={onAddToCart}
+                <ProductCard lang={lang} tb={tb} key={r.id} p={r} onSelect={onSelectProduct} onAddToCart={onAddToCart} onQuickView={onQuickView}
                   onToggleWishlist={onToggleWishlist} onToggleCompare={onToggleCompare}
                   isInWishlist={wishlist.includes(r.id)} isInCompare={compareList.includes(r.id)} t={t} formatPrice={formatPrice} featureFlags={featureFlags} />
               ))}

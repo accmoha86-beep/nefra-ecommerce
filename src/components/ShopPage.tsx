@@ -9,6 +9,7 @@ interface ShopPageProps {
   setFilter: (c: string) => void;
   onSelectProduct: (p: Product) => void;
   onAddToCart: (p: Product) => void;
+  onQuickView?: (p: Product) => void;
   onToggleWishlist: (id: number) => void;
   onToggleCompare: (id: number) => void;
   wishlist: number[];
@@ -23,8 +24,7 @@ interface ShopPageProps {
 }
 
 export const ShopPage: React.FC<ShopPageProps> = ({
-  filter, setFilter, onSelectProduct, onAddToCart,
-  onToggleWishlist, onToggleCompare, wishlist, compareList,
+  filter, setFilter, onSelectProduct, onAddToCart, onQuickView, onToggleWishlist, onToggleCompare, wishlist, compareList,
   t, tc, tb, lang, formatPrice, featureFlags
 }) => {
   const ff = (id: string) => !featureFlags || featureFlags.find(f => f.id === id)?.enabled !== false;
@@ -484,7 +484,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
       ) : (
         <div className="products-grid">
           {filtered.map(p => (
-            <ProductCard key={p.id} p={p} onSelect={onSelectProduct} onAddToCart={onAddToCart}
+            <ProductCard key={p.id} p={p} onSelect={onSelectProduct} onAddToCart={onAddToCart} onQuickView={onQuickView}
               onToggleWishlist={onToggleWishlist} onToggleCompare={onToggleCompare}
               isInWishlist={wishlist.includes(p.id)} isInCompare={compareList.includes(p.id)}
               t={t} tb={tb} lang={lang} formatPrice={formatPrice} featureFlags={featureFlags} />
