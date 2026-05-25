@@ -264,6 +264,13 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
           })
         )}
       </div>
+    
+      {/* Category SEO Block */}
+      <div className="shop-seo-block">
+        <h2 className="shop-seo-title">{t(`seo.cat.${categoryId}.title`)}</h2>
+        <p className="shop-seo-text">{t(`seo.cat.${categoryId}.text`)}</p>
+      </div>
+
     </div>
   );
 };

@@ -113,6 +113,7 @@ const App: React.FC = () => {
   const [recentlyViewed, setRecentlyViewed] = useState<number[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showCart, setShowCart] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [filter, setFilter] = useState('All');
   const [activeCat, setActiveCat] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState(() => { const parsed = parseHash(); return parsed.categoryId || ''; });
@@ -531,6 +532,8 @@ const App: React.FC = () => {
           onUpdateQty={updateQty} onRemove={removeFromCart}
           requireAuth={requireAuth} isLoggedIn={isLoggedIn}
           guestCheckoutEnabled={featureFlags.find(f => f.id === 'ff_guest_checkout')?.enabled ?? true}
+          exchangeRate={currentCountry.exchangeRate || 1}
+          featureFlags={featureFlags}
           onClose={() => setShowCart(false)} setPage={(p: Page) => { setPage(p); setShowCart(false); }}
           t={t} formatPrice={formatPrice} />}
 

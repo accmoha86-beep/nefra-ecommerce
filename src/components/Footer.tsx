@@ -124,6 +124,19 @@ export const Footer: React.FC<FooterProps> = ({ setPage, theme = 'elegant-dark',
           </div>
         </div>
       </div>
+      
+      {/* Newsletter */}
+      {ff('ff_newsletter') && (
+        <div className="footer-newsletter">
+          <h3>{t('newsletter.title')}</h3>
+          <p>{t('newsletter.subtitle')}</p>
+          <form className="newsletter-form" onSubmit={(e) => { e.preventDefault(); const inp = (e.target as HTMLFormElement).querySelector('input'); if(inp) { inp.value = ''; } }}>
+            <input type="email" placeholder={t('newsletter.placeholder')} required />
+            <button type="submit">{t('newsletter.subscribe')}</button>
+          </form>
+        </div>
+      )}
+
       <div className="footer-bottom">
         <p>{t('copyright')}</p>
         {country && <p className="footer-country-note">{country.flag} {t('servingIn')} {country.name}</p>}

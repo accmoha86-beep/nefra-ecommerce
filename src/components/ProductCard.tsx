@@ -101,6 +101,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ p, onSelect, onAddToCa
         <div className="pcard-rating">
           <Stars rating={p.rating} />
           <span className="pcard-reviews">({p.reviews.toLocaleString()})</span>
+            {p.colors && p.colors.length > 1 && (
+              <div className="color-swatches">
+                {p.colors.slice(0, 5).map((c, i) => (
+                  <span key={i} className="color-dot" style={{background: c}} title={c}></span>
+                ))}
+                {p.colors.length > 5 && <span className="color-dot-more">+{p.colors.length - 5}</span>}
+              </div>
+            )}
+
         </div>
         {showSizes && sizes.length > 0 && (
           <div className="pcard-sizes">

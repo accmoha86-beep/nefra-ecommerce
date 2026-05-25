@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, CreditCard, MapPin, Truck, Shield, Check, Lock, Smartphone, Building2, Banknote, Wallet, Copy } from 'lucide-react';
-import { CartItem, Page, Country } from '../types';
+import { CartItem, Page, Country, FeatureFlag } from '../types';
 
 
 interface CheckoutPageProps {
@@ -12,6 +12,7 @@ interface CheckoutPageProps {
   formatPrice: (n: number) => string;
   currentCountry: Country;
   guestCheckoutEnabled?: boolean;
+  featureFlags?: FeatureFlag[];
 }
 
 const paymentMethodConfig: Record<string, { icon: React.ReactNode; id: string }> = {
@@ -36,8 +37,9 @@ const paymentMethodConfig: Record<string, { icon: React.ReactNode; id: string }>
   'Paymob': { icon: <CreditCard size={18}/>, id: 'paymob' },
 };
 
-export const CheckoutPage: React.FC<CheckoutPageProps> = ({ lang, cart, setPage, t, formatPrice, currentCountry }) => {
+export const CheckoutPage: React.FC<CheckoutPageProps> = ({ lang, cart, setPage, t, formatPrice, currentCountry, featureFlags = [] }) => {
   const [step, setStep] = useState(1);
+  const ff = (id: string) => !featureFlags || featureFlags.find(f => f.id === id)?.enabled !== false;
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [copied, setCopied] = useState('');
@@ -56,7 +58,11 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({ lang, cart, setPage,
   };
 
   // Build payment options dynamically from country
-  const countryPayments = currentCountry.paymentMethods || [];
+  const countryPayments = (currentCountry.paymentMethods || []).filter(pm => {
+    if (pm === 'Cash on Delivery' && !ff('ff_cod')) return false;
+    if ((pm === 'valU' || pm === 'Tabby') && !ff('ff_installments')) return false;
+    return true;
+  });
 
   if (orderPlaced) {
     return (

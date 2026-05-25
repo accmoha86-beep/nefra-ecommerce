@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, Minus, Plus, Trash2, ShoppingBag, Tag, Truck, ArrowRight } from 'lucide-react';
-import { CartItem, Page } from '../types';
+import { CartItem, Page, FeatureFlag } from '../types';
 
 
 interface CartSidebarProps {
@@ -16,15 +16,20 @@ interface CartSidebarProps {
   requireAuth?: (page: Page) => void;
   isLoggedIn?: boolean;
   guestCheckoutEnabled?: boolean;
+  exchangeRate?: number;
+  featureFlags?: FeatureFlag[];
 }
 
-export const CartSidebar: React.FC<CartSidebarProps> = ({lang, cart, show, onClose, onUpdateQty, onRemove, setPage, t, formatPrice, requireAuth, isLoggedIn, guestCheckoutEnabled }) => {
+export const CartSidebar: React.FC<CartSidebarProps> = ({lang, cart, show, onClose, onUpdateQty, onRemove, setPage, t, formatPrice, requireAuth, isLoggedIn, guestCheckoutEnabled, exchangeRate = 1, featureFlags = [] }) => {
   const [coupon, setCoupon] = useState('');
   const [couponApplied, setCouponApplied] = useState(false);
   const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
   const discount = couponApplied ? Math.round(subtotal * 0.1) : 0;
-  const shipping = subtotal > 500 ? 0 : 25;
+  const freeShipThreshold = Math.round(500 * exchangeRate);
+  const shippingBase = Math.round(25 * exchangeRate);
+  const shipping = subtotal >= freeShipThreshold ? 0 : shippingBase;
   const total = subtotal - discount + shipping;
+  const showFreeShipBar = featureFlags.find(f => f.id === 'ff_free_shipping_bar')?.enabled ?? true;
 
   return (
     <>
@@ -85,22 +90,22 @@ export const CartSidebar: React.FC<CartSidebarProps> = ({lang, cart, show, onClo
                 <div className="cart-summary-total"><span>{t('total')}</span><span>{formatPrice(total)}</span></div>
               </div>
 
-              {subtotal < 500 ? (
+              {showFreeShipBar && (subtotal < freeShipThreshold ? (
                 <div className="cart-free-shipping-wrap">
                   <div className="free-ship-bar-header">
                     <Truck size={14}/>
-                    <span>{t('addAmountForFreeShipping').replace('{amount}', formatPrice(500 - subtotal))}</span>
+                    <span>{t('addAmountForFreeShipping').replace('{amount}', formatPrice(freeShipThreshold - subtotal))}</span>
                   </div>
                   <div className="free-ship-progress-track">
-                    <div className="free-ship-progress-fill" style={{ width: `${Math.min(100, (subtotal / 500) * 100)}%` }}></div>
+                    <div className="free-ship-progress-fill" style={{ width: `${Math.min(100, (subtotal / freeShipThreshold) * 100)}%` }}></div>
                   </div>
-                  <div className="free-ship-progress-label">{Math.round((subtotal / 500) * 100)}%</div>
+                  <div className="free-ship-progress-label">{Math.round((subtotal / freeShipThreshold) * 100)}%</div>
                 </div>
               ) : (
                 <div className="cart-free-shipping-unlocked">
                   <Truck size={14}/> <span>{t('freeShipping.unlocked')}</span>
                 </div>
-              )}
+              ))}
 
               <button className="btn-checkout" onClick={() => { onClose(); if (!isLoggedIn && !guestCheckoutEnabled && requireAuth) { requireAuth('checkout'); } else { setPage('checkout'); } }}>
                 {t('checkout')} <ArrowRight size={16}/>

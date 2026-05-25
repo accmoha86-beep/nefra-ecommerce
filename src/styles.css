@@ -5700,3 +5700,167 @@ ul, ol { list-style: none; }
   padding: 10px 0;
   border-top: 1px solid var(--border);
 }
+
+/* ═══════════════════════════════════════════════════ */
+/* Newsletter Section                                  */
+/* ═══════════════════════════════════════════════════ */
+.footer-newsletter {
+  text-align: center;
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+  margin-top: 16px;
+}
+.footer-newsletter h3 {
+  color: var(--accent);
+  font-size: 1.1rem;
+  margin-bottom: 6px;
+}
+.footer-newsletter p {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+}
+.newsletter-form {
+  display: flex;
+  gap: 8px;
+  max-width: 420px;
+  margin: 0 auto;
+}
+.newsletter-form input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+.newsletter-form button {
+  padding: 10px 20px;
+  background: var(--accent);
+  color: var(--bg-primary);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.newsletter-form button:hover { opacity: 0.85; }
+
+/* ═══════════════════════════════════════════════════ */
+/* Maintenance Mode                                    */
+/* ═══════════════════════════════════════════════════ */
+.maintenance-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.maintenance-box {
+  text-align: center;
+  padding: 40px;
+  max-width: 500px;
+}
+.maintenance-box h1 {
+  color: var(--accent);
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+.maintenance-box p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════════ */
+/* Grid/List View Switcher                             */
+/* ═══════════════════════════════════════════════════ */
+.view-mode-switcher {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+.view-btn {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+}
+.view-btn.active {
+  background: var(--accent);
+  color: var(--bg-primary);
+  border-color: var(--accent);
+}
+.products-grid.list-view {
+  grid-template-columns: 1fr !important;
+}
+.products-grid.list-view .pcard {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 16px;
+}
+.products-grid.list-view .pcard-img-wrap {
+  height: 200px;
+}
+
+/* ═══════════════════════════════════════════════════ */
+/* Color Swatches on Product Cards                     */
+/* ═══════════════════════════════════════════════════ */
+.color-swatches {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin-top: 4px;
+  justify-content: center;
+}
+.color-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  display: inline-block;
+}
+.color-dot:hover {
+  transform: scale(1.3);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.color-dot-more {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  margin-inline-start: 2px;
+}
+
+/* ═══════════════════════════════════════════════════ */
+/* Scroll Progress Bar                                 */
+/* ═══════════════════════════════════════════════════ */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--accent);
+  z-index: 10000;
+  transition: width 0.1s linear;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════ */
+/* Review Count on Product Cards                       */
+/* ═══════════════════════════════════════════════════ */
+.pcard-reviews {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}

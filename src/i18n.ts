@@ -2013,6 +2013,8 @@ const ar: Translations = {
   'loyalty': 'نقاط الولاء',
   'loyaltyProgram': 'برنامج الولاء',
   'maintenanceMode': 'وضع الصيانة',
+  'maintenance.title': 'الموقع تحت الصيانة',
+  'maintenance.message': 'نعمل على تحسين تجربتكم. سنعود قريباً إن شاء الله!',
   'marketing': 'التسويق',
   'marketing.abandonedCart': 'السلة المتروكة',
   'marketing.abandonedCarts': 'السلات المتروكة',

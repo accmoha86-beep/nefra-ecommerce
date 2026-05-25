@@ -131,6 +131,7 @@ export interface Product {
   countryPrices?: { [countryCode: string]: number };
   attributes?: Record<string, string>;
   hidden?: boolean;
+  colors?: string[];  // hex color codes for swatches
 }
 
 export interface CartItem extends Product {

@@ -37,6 +37,8 @@ export const ShopPage: React.FC<ShopPageProps> = ({
   const [selectedAttrs, setSelectedAttrs] = useState<Record<string, string>>({});
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [showMoreFilters, setShowMoreFilters] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid'|'list'>('grid');
+  const showGridSwitcher = featureFlags?.find(f => f.id === 'ff_grid_view_switcher')?.enabled ?? false;
   const filtersRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown on outside click
@@ -482,7 +484,18 @@ export const ShopPage: React.FC<ShopPageProps> = ({
           <button className="btn-primary" onClick={resetAll}>{t('clearFilters')}</button>
         </div>
       ) : (
-        <div className="products-grid">
+        
+        {showGridSwitcher && (
+          <div className="view-mode-switcher">
+            <button className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`} onClick={() => setViewMode('grid')} title="Grid View">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="0" width="7" height="7"/><rect x="9" y="0" width="7" height="7"/><rect x="0" y="9" width="7" height="7"/><rect x="9" y="9" width="7" height="7"/></svg>
+            </button>
+            <button className={`view-btn ${viewMode === 'list' ? 'active' : ''}`} onClick={() => setViewMode('list')} title="List View">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="0" width="16" height="3"/><rect x="0" y="5" width="16" height="3"/><rect x="0" y="10" width="16" height="3"/></svg>
+            </button>
+          </div>
+        )}
+        <div className={`products-grid ${viewMode === "list" ? "list-view" : ""}`}>
           {filtered.map(p => (
             <ProductCard key={p.id} p={p} onSelect={onSelectProduct} onAddToCart={onAddToCart} onQuickView={onQuickView}
               onToggleWishlist={onToggleWishlist} onToggleCompare={onToggleCompare}
