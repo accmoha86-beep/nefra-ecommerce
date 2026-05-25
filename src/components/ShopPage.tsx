@@ -484,7 +484,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
           <button className="btn-primary" onClick={resetAll}>{t('clearFilters')}</button>
         </div>
       ) : (
-        
+        <>
         {showGridSwitcher && (
           <div className="view-mode-switcher">
             <button className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`} onClick={() => setViewMode('grid')} title="Grid View">
@@ -503,6 +503,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
               t={t} tb={tb} lang={lang} formatPrice={formatPrice} featureFlags={featureFlags} />
           ))}
         </div>
+        </>
       )}
 
       {/* SEO Block */}
